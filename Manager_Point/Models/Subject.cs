@@ -10,5 +10,6 @@ namespace Manager_Point.Models
         public Status Status { get; set; }
 
         public virtual ICollection<Subject_Teacher>? Subject_Teachers { get; set; }
+        public virtual ICollection<GradePoint>? GradePoints { get; set; }
     }
 }

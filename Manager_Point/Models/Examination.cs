@@ -8,5 +8,7 @@ namespace Manager_Point.Models
         public int GradePointId { get; set; }
         public float Point { get; set; }
         public TypePoint TypePoint { get; set; }
+
+        public virtual GradePoint GradePoint { get; set; } = null!;
     }
 }
