@@ -8,5 +8,7 @@ namespace Manager_Point.Models
         public string? Name { get; set; }
         public string? Description { get; set; }
         public Status Status { get; set; }
+
+        public virtual ICollection<User_Role>? User_Roles { get; set; }
     }
 }

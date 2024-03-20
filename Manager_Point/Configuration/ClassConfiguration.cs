@@ -14,7 +14,7 @@ namespace Manager_Point.Configuration
             builder.Property(t => t.GradeId);
             builder.HasIndex(t => t.GradeId);
             //Class Code
-            builder.Property(t => t.ClassCode).IsRequired().HasMaxLength(10);
+            builder.Property(t => t.ClassCode).IsRequired().IsUnicode(false).HasMaxLength(10);
             builder.HasIndex(t => t.ClassCode).IsUnique();
             //Property
             builder.Property(t => t.Name).HasMaxLength(100);

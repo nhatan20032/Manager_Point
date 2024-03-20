@@ -11,6 +11,6 @@ namespace Manager_Point.Models
         public string? Description { get; set; }
         public Status Status { get; set; }
 
-        public virtual ICollection<Class> Classes { get; set; }
+        public virtual ICollection<Class> Classes { get; set; } = null!;
     }
 }
