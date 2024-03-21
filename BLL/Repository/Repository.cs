@@ -12,21 +12,32 @@ namespace Data.Repository
         }
         public async Task<T> CreateAsync(T entity)
         {
+            await using var transaction = await _dbcontext.Database.BeginTransactionAsync(); // khởi tạo 1 transaction mới
             var obj = await _dbcontext.Set<T>().AddAsync(entity);
             await _dbcontext.SaveChangesAsync();
+            await transaction.CommitAsync();
             return obj.Entity;
         }
 
-        public async Task<List<T>> GetAllAsync()
+        public async Task<IEnumerable<T>> CreateMultipleAsync(IEnumerable<T> entities)
         {
-            var obj = await _dbcontext.Set<T>().ToListAsync();
+            await using var transaction = await _dbcontext.Database.BeginTransactionAsync();
+            await _dbcontext.Set<T>().AddRangeAsync(entities);
+            await _dbcontext.SaveChangesAsync();
+            await transaction.CommitAsync();
+            return entities;
+        }
+
+        public async Task<IEnumerable<T>> GetAllAsync()
+        {
+            var obj = await _dbcontext.Set<T>().AsNoTracking().ToListAsync(); // AsNoTracking nó giống kiểu read-only ý
             return obj;
         }
 
         public async Task<T> GetByIdAsync(int id)
         {
             var obj = await _dbcontext.Set<T>().FindAsync(id);
-            return obj;
+            return obj!;
         }
 
         public async Task<T> RemoveAsync(int id)
@@ -34,33 +45,35 @@ namespace Data.Repository
             var obj = await _dbcontext.Set<T>().FindAsync(id);
             if (obj != null)
             {
-                _dbcontext.Set<T>().Remove(obj);
+                _dbcontext.Set<T>().RemoveRange(obj);
                 await _dbcontext.SaveChangesAsync();
             }
-            return obj;
+            return obj!;
         }
-
-        public async Task<T> RemoveAsync(T obj)
+        public async Task<IEnumerable<T>> RemoveMultipleAsync(IEnumerable<int> ids)
         {
-            if (obj != null)
+            var objectsToRemove = await _dbcontext.Set<T>()
+                                    .Where(x => ids.Contains(EF.Property<int>(x, "Id")))
+                                    .ToListAsync();
+            if (objectsToRemove.Any())
             {
-                _dbcontext.Set<T>().Remove(obj);
+                _dbcontext.Set<T>().RemoveRange(objectsToRemove);
                 await _dbcontext.SaveChangesAsync();
             }
-            return obj;
+
+            return objectsToRemove;
         }
 
         public async Task<T> UpdateAsync(int id, T entity)
         {
-            var existingEntity = await _dbcontext.Set<T>().FindAsync(id);
-
-            if (existingEntity != null)
+            var obj = await _dbcontext.Set<T>().FindAsync(id);
+            if (obj != null)
             {
-                _dbcontext.Entry(existingEntity).CurrentValues.SetValues(entity);
+                _dbcontext.Entry(obj).State = EntityState.Modified;
+                _dbcontext.Entry(obj).CurrentValues.SetValues(entity);
                 await _dbcontext.SaveChangesAsync();
             }
-
-            return existingEntity;
+            return obj!;
         }
     }
 }
