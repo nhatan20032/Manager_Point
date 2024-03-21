@@ -13,7 +13,7 @@ namespace Manager_Point.Models
         public float Average { get; set; }
 
         public virtual User User { get; set; } = null!;
-        public virtual Subject Subject{ get; set; } = null!;
+        public virtual Subject Subject { get; set; } = null!;
         public virtual ICollection<Examination>? Examinations { get; set; }
     }
 }
