@@ -13,7 +13,7 @@ namespace Manager_Point.ApplicationDbContext
         #region ================= Database Set =================
         public virtual DbSet<Class> Classes { get; set; }
         public virtual DbSet<Examination> Examinations { get; set; }
-        public virtual DbSet<GradeLevel> GradeLevels { get; set; }
+        public virtual DbSet<Course> Courses { get; set; }
         public virtual DbSet<GradePoint> GradePoints { get; set; }
         public virtual DbSet<Message> Messages { get; set; }
         public virtual DbSet<Role> Roles { get; set; }
@@ -38,7 +38,7 @@ namespace Manager_Point.ApplicationDbContext
             modelBuilder.ApplyConfiguration(new UserConfiguration());
             modelBuilder.ApplyConfiguration(new ClassConfiguration());
             modelBuilder.ApplyConfiguration(new ExaminationConfiguration());
-            modelBuilder.ApplyConfiguration(new GradeLevelConfiguration());
+            modelBuilder.ApplyConfiguration(new CourseConfiguration());
             modelBuilder.ApplyConfiguration(new GradePointConfiguration());
             modelBuilder.ApplyConfiguration(new MessageConfiguration());
             modelBuilder.ApplyConfiguration(new RoleConfiguration());
