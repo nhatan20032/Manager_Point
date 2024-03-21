@@ -30,17 +30,13 @@ namespace Data.Repository
 
         public async Task<IEnumerable<T>> GetAllAsync()
         {
-            await using var transaction = await _dbcontext.Database.BeginTransactionAsync();
             var obj = await _dbcontext.Set<T>().AsNoTracking().ToListAsync(); // AsNoTracking nó giống kiểu read-only ý
-            await transaction.CommitAsync();
             return obj;
         }
 
         public async Task<T> GetByIdAsync(int id)
         {
-            await using var transaction = await _dbcontext.Database.BeginTransactionAsync();
             var obj = await _dbcontext.Set<T>().FindAsync(id);
-            await transaction.CommitAsync();
             return obj!;
         }
 
