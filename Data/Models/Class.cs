@@ -1,4 +1,6 @@
-﻿namespace Manager_Point.Models
+﻿using Manager_Point.Models.Enum;
+
+namespace Manager_Point.Models
 {
     public class Class
     {
@@ -6,6 +8,7 @@
         public int GradeId { get; set; }
         public required string ClassCode { get; set; }
         public string? Name { get; set; }
+        public Status Status { get; set; }
 
 
         public virtual ICollection<Message>? Messages { get; set; }
