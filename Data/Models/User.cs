@@ -1,4 +1,5 @@
-﻿using Manager_Point.Models.Enum;
+﻿using Data.Models;
+using Manager_Point.Models.Enum;
 
 namespace Manager_Point.Models
 {
@@ -7,6 +8,7 @@ namespace Manager_Point.Models
         public int Id { get; set; }
         public required string User_Code { get; set; }
         public required string Password { get; set; }
+        public string? PhoneNumber { get; set; }
         public string? Name { get; set; }
         public string? Email { get; set; }
         public string? Description { get; set; }
@@ -14,7 +16,7 @@ namespace Manager_Point.Models
         public Gender Gender { get; set; }
         public string? AvatarUrl { get; set; }
         public string? Address { get; set; }
-        public string? Hometown { get; set; }
+        public string? Nation { get; set; }
         public Status Status { get; set; }
 
         public virtual ICollection<Teacher_Class>? Teacher_Classes { get; set; }
@@ -22,5 +24,6 @@ namespace Manager_Point.Models
         public virtual ICollection<User_Role>? User_Roles { get; set; }
         public virtual ICollection<Subject_Teacher>? Subject_Teachers { get; set; }
         public virtual ICollection<GradePoint>? GradePoints { get; set; }
+        public virtual ICollection<AcademicPerformance>? AcademicPerformances { get; set; }
     }
 }

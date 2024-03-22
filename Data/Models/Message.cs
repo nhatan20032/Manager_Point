@@ -8,6 +8,7 @@ namespace Manager_Point.Models
         public int ClassId { get; set; }
         public string? Content { get; set; }
         public Status Status { get; set; }
+        public DateTime DateCreated { get; set; }
 
         public virtual Class Class { get; set; } = null!;
     }

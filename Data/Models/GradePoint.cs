@@ -1,4 +1,5 @@
-﻿using Manager_Point.Models.Enum;
+﻿using Data.Models;
+using Manager_Point.Models.Enum;
 
 namespace Manager_Point.Models
 {
@@ -13,9 +14,10 @@ namespace Manager_Point.Models
         public float Final_Grades { get; set; }
         public float Average { get; set; }
 
-        public virtual Class Class{ get; set; } = null!;
+        public virtual Class Class { get; set; } = null!;
         public virtual User User { get; set; } = null!;
         public virtual Subject Subject { get; set; } = null!;
         public virtual ICollection<Examination>? Examinations { get; set; }
+        public virtual ICollection<AcademicPerformance>? AcademicPerformances { get; set; }
     }
 }
