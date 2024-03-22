@@ -37,20 +37,22 @@ namespace BLL.Services.RoleServices.Impliment
             }
         }
 
-        public Task<List<Role>> CreateMultipleAsync(List<Role> entities)
+        public async Task<List<Role>> CreateMultipleAsync(List<Role> entities)
         {
             if (entities == null || !entities.Any()) throw new ArgumentNullException(nameof(entities), "Entity list cannot be null or empty");
             try
             {
                 var addRoles = entities.Where(entity => entity != null)
-                .Select(entity => new Role
-                {
-                    Name = entity.Name,
-                    Description = entity.Description,
-                    Status = entity.Status
-                })
-                .ToList();
-                var result = _repositories.CreateMultipleAsync(addRoles);
+                    .Select(entity => new Role
+                    {
+                        Name = entity.Name,
+                        Description = entity.Description,
+                        Status = entity.Status
+                    })
+                    .ToList();
+
+                // Gọi phương thức CreateMultipleAsync với await
+                var result = await _repositories.CreateMultipleAsync(addRoles);
                 return result;
             }
             catch (Exception ex)
@@ -58,6 +60,7 @@ namespace BLL.Services.RoleServices.Impliment
                 throw new ApplicationException("Error occurred while adding Role.", ex);
             }
         }
+
 
         public async Task<string> GetAllAsync(int pageNumber = 1, int pageSize = 10, string search = "")
         {
