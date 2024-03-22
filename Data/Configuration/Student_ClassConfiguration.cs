@@ -9,6 +9,7 @@ namespace Manager_Point.Configuration
         public void Configure(EntityTypeBuilder<Student_Class> builder)
         {
             builder.HasKey(t => t.Id);
+            builder.Property(t => t.Id).ValueGeneratedOnAdd();
             builder.HasIndex(t => t.Id).IsUnique();
             //User Id
             builder.Property(t => t.UserId);
