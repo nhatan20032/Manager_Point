@@ -17,10 +17,18 @@ namespace Manager_Point.Configuration
             builder.Property(t => t.UserId);
             builder.HasIndex(t => t.UserId);
 
+            builder.Property(t => t.Class);
+            builder.HasIndex(t => t.Class);
+
             builder.Property(t => t.Semester).HasMaxLength(5);
             builder.Property(t => t.Midterm_Grades).HasMaxLength(5);
             builder.Property(t => t.Final_Grades).HasMaxLength(5);
             builder.Property(t => t.Final_Grades).HasMaxLength(5);
+
+            //Set Relationship
+            builder.HasOne<Subject>(t => t.Subject).WithMany(t => t.GradePoints).HasForeignKey(t => t.SubjectId);
+            builder.HasOne<Class>(t => t.Class).WithMany(t => t.GradePoints).HasForeignKey(t => t.ClassId);
+            builder.HasOne<User>(t => t.User).WithMany(t => t.GradePoints).HasForeignKey(t => t.UserId);
         }
     }
 }
