@@ -1,4 +1,4 @@
-﻿namespace Data.Repository
+﻿namespace BLL.Repository
 {
     public partial interface IRepository<T> where T : class
     {

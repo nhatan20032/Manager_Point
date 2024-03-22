@@ -1,7 +1,7 @@
 ﻿using Manager_Point.ApplicationDbContext;
 using Microsoft.EntityFrameworkCore;
 
-namespace Data.Repository
+namespace BLL.Repository
 {
     public partial class Repository<T> : IRepository<T> where T : class
     {
