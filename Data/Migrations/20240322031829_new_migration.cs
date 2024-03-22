@@ -11,6 +11,7 @@ namespace Data.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            Down(migrationBuilder);
             migrationBuilder.CreateTable(
                 name: "Courses",
                 columns: table => new

@@ -4,10 +4,10 @@
     {
         public Task<T> CreateAsync(T entity);
         public Task<T> UpdateAsync(int id, T entity);
-        public Task<IEnumerable<T>> GetAllAsync();
+        public Task<List<T>> GetAllAsync(int pageNumber, int pageSize);
         public Task<T> GetByIdAsync(int id);
         public Task<T> RemoveAsync(int id);
-        public Task<IEnumerable<T>> CreateMultipleAsync(IEnumerable<T> entities);
-        public Task<IEnumerable<T>> RemoveMultipleAsync(IEnumerable<int> ids);
+        public Task<List<T>> CreateMultipleAsync(List<T> entities);
+        public Task<List<T>> RemoveMultipleAsync(List<int> ids);
     }
 }

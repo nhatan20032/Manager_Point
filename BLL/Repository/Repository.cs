@@ -19,7 +19,7 @@ namespace Data.Repository
             return obj.Entity;
         }
 
-        public async Task<IEnumerable<T>> CreateMultipleAsync(IEnumerable<T> entities)
+        public async Task<List<T>> CreateMultipleAsync(List<T> entities)
         {
             await using var transaction = await _dbcontext.Database.BeginTransactionAsync();
             await _dbcontext.Set<T>().AddRangeAsync(entities);
@@ -28,10 +28,11 @@ namespace Data.Repository
             return entities;
         }
 
-        public async Task<IEnumerable<T>> GetAllAsync()
+        public async Task<List<T>> GetAllAsync(int pageNumber, int pageSize)
         {
             var obj = await _dbcontext.Set<T>().AsNoTracking().ToListAsync(); // AsNoTracking nó giống kiểu read-only ý
-            return obj;
+            var roles = obj.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList(); // Phân trang
+            return roles;
         }
 
         public async Task<T> GetByIdAsync(int id)
@@ -52,7 +53,7 @@ namespace Data.Repository
             }
             return obj!;
         }
-        public async Task<IEnumerable<T>> RemoveMultipleAsync(IEnumerable<int> ids)
+        public async Task<List<T>> RemoveMultipleAsync(List<int> ids)
         {
             await using var transaction = await _dbcontext.Database.BeginTransactionAsync();
             var objectsToRemove = await _dbcontext.Set<T>()
