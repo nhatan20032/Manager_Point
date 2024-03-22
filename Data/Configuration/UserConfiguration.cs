@@ -25,7 +25,7 @@ namespace Manager_Point.Configuration
             builder.Property(t => t.Email).HasMaxLength(100).IsUnicode(false);
             builder.Property(t => t.AvatarUrl);
             builder.Property(t => t.Address);
-            builder.Property(t => t.Hometown);
+            builder.Property(t => t.Nation);
             builder.Property(t => t.Status).HasMaxLength(10);
         }
     }
