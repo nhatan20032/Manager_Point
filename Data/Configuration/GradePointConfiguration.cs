@@ -17,8 +17,8 @@ namespace Manager_Point.Configuration
             builder.Property(t => t.UserId);
             builder.HasIndex(t => t.UserId);
 
-            builder.Property(t => t.Class);
-            builder.HasIndex(t => t.Class);
+            builder.Property(t => t.ClassId);
+            builder.HasIndex(t => t.ClassId);
 
             builder.Property(t => t.Semester).HasMaxLength(5);
             builder.Property(t => t.Midterm_Grades).HasMaxLength(5);
