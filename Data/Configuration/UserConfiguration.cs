@@ -20,11 +20,12 @@ namespace Manager_Point.Configuration
             builder.Property(t => t.Name).HasMaxLength(100);
             builder.Property(t => t.Description).HasMaxLength(100);
             builder.Property(t => t.DOB);
+            builder.Property(t => t.PhoneNumber).HasMaxLength(11);
             builder.Property(t => t.Gender).HasMaxLength(10);
             builder.Property(t => t.Email).HasMaxLength(100).IsUnicode(false);
             builder.Property(t => t.AvatarUrl);
             builder.Property(t => t.Address);
-            builder.Property(t => t.Hometown);
+            builder.Property(t => t.Nation);
             builder.Property(t => t.Status).HasMaxLength(10);
         }
     }

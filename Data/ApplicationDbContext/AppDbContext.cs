@@ -1,4 +1,6 @@
-﻿using Manager_Point.Configuration;
+﻿using Data.Configuration;
+using Data.Models;
+using Manager_Point.Configuration;
 using Manager_Point.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,8 +14,9 @@ namespace Manager_Point.ApplicationDbContext
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
         #region ================= Database Set =================
         public virtual DbSet<Class> Classes { get; set; }
+        public virtual DbSet<AcademicPerformance> AcademicPerformances { get; set; }
         public virtual DbSet<Examination> Examinations { get; set; }
-        public virtual DbSet<GradeLevel> GradeLevels { get; set; }
+        public virtual DbSet<Course> Courses { get; set; }
         public virtual DbSet<GradePoint> GradePoints { get; set; }
         public virtual DbSet<Message> Messages { get; set; }
         public virtual DbSet<Role> Roles { get; set; }
@@ -36,9 +39,10 @@ namespace Manager_Point.ApplicationDbContext
 
             #region ================= Configuration =================
             modelBuilder.ApplyConfiguration(new UserConfiguration());
+            modelBuilder.ApplyConfiguration(new AcademicPerformConfiguration());
             modelBuilder.ApplyConfiguration(new ClassConfiguration());
             modelBuilder.ApplyConfiguration(new ExaminationConfiguration());
-            modelBuilder.ApplyConfiguration(new GradeLevelConfiguration());
+            modelBuilder.ApplyConfiguration(new CourseConfiguration());
             modelBuilder.ApplyConfiguration(new GradePointConfiguration());
             modelBuilder.ApplyConfiguration(new MessageConfiguration());
             modelBuilder.ApplyConfiguration(new RoleConfiguration());

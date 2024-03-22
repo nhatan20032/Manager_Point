@@ -11,8 +11,8 @@ namespace Manager_Point.Configuration
             builder.HasKey(t => t.Id);
             builder.HasIndex(t => t.Id).IsUnique();
             //Grade Id
-            builder.Property(t => t.GradeId);
-            builder.HasIndex(t => t.GradeId);
+            builder.Property(t => t.CourseId);
+            builder.HasIndex(t => t.CourseId);
             //Class Code
             builder.Property(t => t.ClassCode).IsRequired().IsUnicode(false).HasMaxLength(10);
             builder.HasIndex(t => t.ClassCode).IsUnique();
@@ -20,7 +20,7 @@ namespace Manager_Point.Configuration
             builder.Property(t => t.Name).HasMaxLength(100);
 
             //Set Relationship
-            builder.HasOne<GradeLevel>(t => t.GradeLevel).WithMany(t => t.Classes).HasForeignKey(t => t.GradeId);
+            builder.HasOne<Course>(t => t.Course).WithMany(t => t.Classes).HasForeignKey(t => t.CourseId);
         }
     }
 }
