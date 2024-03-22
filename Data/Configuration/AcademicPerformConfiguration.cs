@@ -10,6 +10,7 @@ namespace Data.Configuration
         public void Configure(EntityTypeBuilder<AcademicPerformance> builder)
         {
             builder.HasKey(t => t.Id);
+            builder.Property(t => t.Id).ValueGeneratedOnAdd();
             builder.HasIndex(t => t.Id).IsUnique();
 
             builder.Property(t => t.GradePointId);
