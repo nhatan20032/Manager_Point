@@ -1,5 +1,5 @@
-﻿using BLL.Services.SubjectServices.Interface;
-using Manager_Point.Models;
+﻿using BLL.Services.Interface;
+using BLL.ViewModels.Subject;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
@@ -8,58 +8,55 @@ namespace API.Controllers
     [ApiController]
     public class SubjectsController : ControllerBase
     {
-        private readonly ISubjectServices? _subjectServices;
-        public SubjectsController(ISubjectServices subjectServices)
+        private readonly ISubjectServices _subjectServices;
+        public SubjectsController(ISubjectServices services)
         {
-            _subjectServices = subjectServices;
-        }
-        [HttpPost("/subject/Create")]
-        public async Task<IActionResult> CreateSubject(Subject Subject)
-        {
-            var result = await _subjectServices!.AddItem(Subject);
-            return Ok(result);
+            _subjectServices = services;
         }
 
-        [HttpPost("/subject/Create_Multiple")]
-        public async Task<IActionResult> CreateMultipleSubjects(List<Subject> Subjects)
+        [HttpGet("/subject/get_all")]
+        public async Task<IActionResult> Get_All_Item(int page_number = 1, int page_size = 10, string search = "")
         {
-            var result = await _subjectServices!.CreateMultipleAsync(Subjects);
-            return Ok(result);
+            return Ok(await _subjectServices.Get_All_Async(page_number, page_size, search));
         }
 
-        [HttpPut("/subject/Modified")]
-        public async Task<IActionResult> ModifiedSubject(int id, Subject Subject)
+        [HttpGet("/subject/get_by_id")]
+        public async Task<IActionResult> Get_By_Id(int id)
         {
-            var result = await _subjectServices!.ModifiedItem(id, Subject);
-            return Ok(result);
+            return Ok(await _subjectServices.Get_By_Id(id));
         }
 
-        [HttpDelete("/subject/Delete")]
-        public async Task<IActionResult> DeleteSubject(int id)
+        [HttpPost("/subject/create")]
+        public async Task<IActionResult> Create_Item([FromBody] vm_create_subject request)
         {
-            var result = await _subjectServices!.RemoveItem(id);
-            return Ok(result);
+            if (request == null) { return BadRequest("request null check object again, make sure request have a value"); }
+            return Ok(await _subjectServices.Create_Item(request));
         }
 
-        [HttpDelete("/subject/Delete_Multiple")]
-        public async Task<IActionResult> DeleteSubject(List<int> ids)
+        [HttpPost("/subject/batch_create")]
+        public async Task<IActionResult> Batch_Create_Item([FromBody] List<vm_create_subject> requests)
         {
-            var result = await _subjectServices!.RemoveMultipleAsync(ids);
-            return Ok(result);
+            if (requests == null) { return BadRequest("request null check object again, make sure request have a value"); }
+            return Ok(await _subjectServices.Batch_Create_Item(requests));
         }
 
-        [HttpGet("/subject/Get_All")]
-        public async Task<IActionResult> GetAllSubject(int page_number, int page_size, string search)
+        [HttpPut("/subject/modified")]
+        public async Task<IActionResult> Modified_Item(int id, [FromBody] vm_update_subject request)
         {
-            var result = await _subjectServices!.GetAllAsync(page_number, page_size, search);
-            return Ok(result);
+            if (request == null) { return BadRequest("request null check object again, make sure request have a value"); }
+            return Ok(await _subjectServices.Modified_Item(id, request));
         }
 
-        [HttpGet("/subject/Get_By_Id")]
-        public async Task<IActionResult> GetByIdSubjects(int id)
+        [HttpDelete("/subject/remove")]
+        public async Task<IActionResult> Remove_Item(int id)
         {
-            var result = await _subjectServices!.GetByIdAsync(id);
-            return Ok(result);
+            return Ok(await _subjectServices.Remove_Item(id));
+        }
+
+        [HttpDelete("/subject/batch_remove")]
+        public async Task<IActionResult> Batch_Remove_Item(List<int> ids)
+        {
+            return Ok(await _subjectServices.Batch_Remove_Item(ids));
         }
     }
 }

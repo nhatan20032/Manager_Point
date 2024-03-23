@@ -1,7 +1,6 @@
-﻿using BLL.Services.RoleServices.Impliment;
-using BLL.Services.RoleServices.Interface;
-using BLL.Services.SubjectServices.Implement;
-using BLL.Services.SubjectServices.Interface;
+﻿using BLL.Extentions.Automapper;
+using BLL.Services.Implement;
+using BLL.Services.Interface;
 using Manager_Point.ApplicationDbContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -19,8 +18,13 @@ namespace BLL.Extentions
                 options.UseSqlServer(configuration.GetConnectionString("DbConnection"));
             });
 
-            services.AddTransient<IRoleServices, RoleServices>();
+            #region ================== DI Services ==================
             services.AddTransient<ISubjectServices, SubjectServices>();
+            #endregion
+
+            #region ================== DI Mapper ==================
+            services.AddAutoMapper(typeof(Subject_Mapping).Assembly);
+            #endregion
 
             return services;
         }

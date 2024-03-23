@@ -1,8 +1,8 @@
 ﻿using Manager_Point.Models.Enum;
 
-namespace BLL.ViewModels.Role
+namespace BLL.ViewModels.Subject
 {
-    public class VM_Create_Roles
+    public class vm_update_subject
     {
         public string? Name { get; set; }
         public string? Description { get; set; }
