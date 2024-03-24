@@ -24,6 +24,5 @@ namespace Manager_Point.Models
         public virtual ICollection<User_Role>? User_Roles { get; set; }
         public virtual ICollection<Subject_Teacher>? Subject_Teachers { get; set; }
         public virtual ICollection<GradePoint>? GradePoints { get; set; }
-        public virtual ICollection<AcademicPerformance>? AcademicPerformances { get; set; }
     }
 }
