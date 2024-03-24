@@ -20,10 +20,12 @@ namespace BLL.Extentions
 
             #region ================== DI Services ==================
             services.AddTransient<ISubjectServices, SubjectServices>();
+            services.AddTransient<IRoleServices, RoleServices>();
             #endregion
 
             #region ================== DI Mapper ==================
             services.AddAutoMapper(typeof(Subject_Mapping).Assembly);
+            services.AddAutoMapper(typeof(Role_Mapping).Assembly);
             #endregion
 
             return services;

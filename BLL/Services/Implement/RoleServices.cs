@@ -1,31 +1,29 @@
 ﻿using AutoMapper;
 using BLL.Services.Interface;
 using BLL.ViewModels;
-using BLL.ViewModels.Subject;
+using BLL.ViewModels.Role;
 using Manager_Point.ApplicationDbContext;
 using Manager_Point.Models;
-using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System.Data.Entity;
 
 namespace BLL.Services.Implement
 {
-    public class SubjectServices : ISubjectServices
+    public class RoleServices : IRoleServices
     {
         private readonly AppDbContext _appContext;
         private readonly IMapper _mapper;
-        public SubjectServices(IMapper mapper)
+        public RoleServices(IMapper mapper)
         {
             _appContext = new AppDbContext();
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
-
-        public async Task<List<int>> Batch_Create_Item(List<vm_create_subject> requests)
+        public async Task<List<int>> Batch_Create_Item(List<vm_create_role> requests)
         {
             try
             {
-                var obj = _mapper.Map<List<Subject>>(requests);
-                _appContext.Subjects.AddRange(obj);
+                var obj = _mapper.Map<List<Role>>(requests);
+                _appContext.Roles.AddRange(obj);
                 await _appContext.SaveChangesAsync();
                 var ids = obj.Select(t => t.Id).ToList();
                 return ids;
@@ -41,7 +39,7 @@ namespace BLL.Services.Implement
         {
             try
             {
-                var subjectsToDelete = _appContext.Subjects.Where(t => ids.Contains(t.Id)).ToList();
+                var subjectsToDelete = await _appContext.Subjects.Where(t => ids.Contains(t.Id)).ToListAsync();
 
                 if (subjectsToDelete.Any())
                 {
@@ -59,13 +57,12 @@ namespace BLL.Services.Implement
         }
 
 
-
-        public async Task<int> Create_Item(vm_create_subject request)
+        public async Task<int> Create_Item(vm_create_role request)
         {
             try
             {
-                var obj = _mapper.Map<Subject>(request);
-                _appContext.Subjects.AddRange(obj);
+                var obj = _mapper.Map<Role>(request);
+                _appContext.Roles.AddRange(obj);
                 await _appContext.SaveChangesAsync();
                 return obj.Id;
             }
@@ -81,23 +78,23 @@ namespace BLL.Services.Implement
             try
             {
                 int skip = (page_number - 1) * page_size;
-                var query = _appContext.Subjects
+                var query = _appContext.Roles
                     .Where(t => string.IsNullOrEmpty(search) || t.Name!.Contains(search))
                     .Skip(skip)
                     .Take(page_size);
                 var subjects = query.ToList();
 
-                int totalCount = _appContext.Subjects
+                int totalCount = _appContext.Roles
                     .Where(s => string.IsNullOrEmpty(search) || s.Name!.Contains(search))
                     .Count();
 
-                var vmSubjects = _mapper.Map<List<vm_subject>>(subjects);
-                var paginatedResult = new PaginatedResult<vm_subject>
+                var vm_Roles = _mapper.Map<List<vm_role>>(subjects);
+                var paginatedResult = new PaginatedResult<vm_role>
                 {
                     TotalCount = totalCount,
                     PageNumber = page_number,
                     PageSize = page_size,
-                    Data = vmSubjects
+                    Data = vm_Roles
                 };
 
                 var jsonResult = JsonConvert.SerializeObject(paginatedResult, Formatting.Indented);
@@ -110,21 +107,20 @@ namespace BLL.Services.Implement
             }
         }
 
-
-        public async Task<vm_subject> Get_By_Id(int id)
+        public async Task<vm_role> Get_By_Id(int id)
         {
             try
             {
-                var existingSubject = await _appContext.Subjects.FindAsync(id); // kiểm tra trog db context có không thì lấy luôn
+                var existingSubject = await _appContext.Roles.FindAsync(id); // kiểm tra trog db context có không thì lấy luôn
                 if (existingSubject != null)
                 {
-                    var vmSubject = _mapper.Map<vm_subject>(existingSubject);
-                    return vmSubject;
+                    var vm_Role = _mapper.Map<vm_role>(existingSubject);
+                    return vm_Role;
                 }
-                var subject = await _appContext.Subjects.FirstOrDefaultAsync(s => s.Id == id); // không thì truy cập vào db để lấy đối tượng ra
-                if (subject == null) return null!;
-                var vmSubjectFromDb = _mapper.Map<vm_subject>(subject);
-                return vmSubjectFromDb;
+                var role = await _appContext.Roles.FirstOrDefaultAsync(s => s.Id == id); // không thì truy cập vào db để lấy đối tượng ra
+                if (role == null) return null!;
+                var vm_role_fromDb = _mapper.Map<vm_role>(role);
+                return vm_role_fromDb;
             }
             catch (Exception ex)
             {
@@ -133,7 +129,7 @@ namespace BLL.Services.Implement
             }
         }
 
-        public async Task<int> Modified_Item(int id, vm_update_subject request)
+        public async Task<int> Modified_Item(int id, vm_update_role request)
         {
             try
             {
@@ -157,15 +153,15 @@ namespace BLL.Services.Implement
         {
             try
             {
-                var objToRemove = await _appContext.Subjects.FindAsync(id);
+                var objToRemove = await _appContext.Roles.FindAsync(id);
                 // Xử lý trường hợp không tìm thấy đối tượng
                 if (objToRemove == null) return false;
 
                 // Kiểm tra xem đối tượng đã được theo dõi trong DbContext hay không
-                var local = _appContext.Subjects.Local.FirstOrDefault(x => x.Id == id);
+                var local = _appContext.Roles.Local.FirstOrDefault(x => x.Id == id);
 
                 // Sử dụng toán tử ba ngôi để xác định đối tượng cần xóa
-                _appContext.Subjects.Remove(local != null ? local : objToRemove);
+                _appContext.Roles.Remove(local != null ? local : objToRemove);
 
                 // Lưu các thay đổi vào cơ sở dữ liệu
                 await _appContext.SaveChangesAsync();
@@ -178,6 +174,5 @@ namespace BLL.Services.Implement
                 throw;
             }
         }
-
     }
 }
