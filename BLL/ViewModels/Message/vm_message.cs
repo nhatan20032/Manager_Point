@@ -2,7 +2,7 @@
 
 namespace BLL.ViewModels.Message
 {
-    public class vm_message
+	public class vm_message
 	{
 		public int Id { get; set; }
 		public int ClassId { get; set; }

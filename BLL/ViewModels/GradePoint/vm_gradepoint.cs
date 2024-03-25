@@ -2,7 +2,7 @@
 
 namespace BLL.ViewModels.GradePoint
 {
-    public class vm_gradepoint
+	public class vm_gradepoint
 	{
 		public int Id { get; set; }
 		public int SubjectId { get; set; }
