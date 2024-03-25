@@ -6,10 +6,10 @@ namespace API.Controllers
 {
 	[Route("api/[controller]")]
 	[ApiController]
-	public class Messages_Controller : Controller
+	public class MessageController : Controller
 	{
 		IMessageServices _messageService;
-		public Messages_Controller(IMessageServices messageService)
+		public MessageController(IMessageServices messageService)
 		{
 			_messageService = messageService;
 		}

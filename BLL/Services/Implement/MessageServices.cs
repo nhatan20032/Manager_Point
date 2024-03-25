@@ -9,11 +9,11 @@ using System.Data.Entity;
 
 namespace BLL.Services.Implement
 {
-	public class MessagesServices : IMessageServices
+	public class MessageServices : IMessageServices
 	{
 		private readonly AppDbContext _appContext;
 		private readonly IMapper _mapper;
-		public MessagesServices(IMapper mapper)
+		public MessageServices(IMapper mapper)
         {
 			_appContext = new AppDbContext();
 			_mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
@@ -30,7 +30,7 @@ namespace BLL.Services.Implement
 			}
 			catch (Exception ex)
 			{
-				Console.WriteLine($"Error in Batch_Create_Item: {ex.Message}");
+				Console.WriteLine($"Error in  Batch_Create_Item: {ex.Message}");
 				throw;
 			}
 		}

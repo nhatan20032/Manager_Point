@@ -23,7 +23,7 @@ namespace BLL.Extentions
             services.AddTransient<IRoleServices, RoleServices>();
             services.AddTransient<IClassServices, ClassServices>();
             services.AddTransient<ICourseServices, CourseServices>();
-            services.AddTransient<IMessageServices, MessagesServices>();
+            services.AddTransient<IMessageServices, MessageServices>();
             services.AddTransient<IGradePointServices, GradePointServices>();
             services.AddTransient<IExaminationServices, ExaminationServices>();
             services.AddTransient<IAcademicPerformanceServices, AcademicPerformanceServices>();
