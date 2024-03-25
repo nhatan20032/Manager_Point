@@ -1,7 +1,5 @@
-﻿using BLL.Services.Implement;
-using BLL.Services.Interface;
+﻿using BLL.Services.Interface;
 using BLL.ViewModels.Class;
-using BLL.ViewModels.Role;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers

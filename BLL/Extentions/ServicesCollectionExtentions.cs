@@ -23,6 +23,8 @@ namespace BLL.Extentions
             services.AddTransient<IRoleServices, RoleServices>();
             services.AddTransient<IClassServices, ClassServices>();
             services.AddTransient<ICourseService, CourseServices>();
+            services.AddTransient<IMessageService, MessagesService>();
+            services.AddTransient<IGradePointService, GradePointService>();
             #endregion
 
             #region ================== DI Mapper ==================
@@ -30,6 +32,8 @@ namespace BLL.Extentions
             services.AddAutoMapper(typeof(Role_Mapping).Assembly);
             services.AddAutoMapper(typeof(Class_Mapping).Assembly);
             services.AddAutoMapper(typeof(Course_Mapping).Assembly);
+            services.AddAutoMapper(typeof(GradePoint_Mapping).Assembly);
+            services.AddAutoMapper(typeof(Message_Mapping).Assembly);
             #endregion
 
             return services;

@@ -1,10 +1,4 @@
-﻿using BLL.ViewModels.Class;
-using BLL.ViewModels.Course;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using BLL.ViewModels.Course;
 
 namespace BLL.Services.Interface
 {
