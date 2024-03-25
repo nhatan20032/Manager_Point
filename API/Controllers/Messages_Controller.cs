@@ -8,8 +8,8 @@ namespace API.Controllers
 	[ApiController]
 	public class Messages_Controller : Controller
 	{
-		IMessageService _messageService;
-		public Messages_Controller(IMessageService messageService)
+		IMessageServices _messageService;
+		public Messages_Controller(IMessageServices messageService)
 		{
 			_messageService = messageService;
 		}

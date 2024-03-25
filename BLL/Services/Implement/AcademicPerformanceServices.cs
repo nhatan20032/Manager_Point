@@ -1,29 +1,29 @@
 ﻿using AutoMapper;
 using BLL.Services.Interface;
 using BLL.ViewModels;
-using BLL.ViewModels.Course;
+using BLL.ViewModels.AcademicPerformance;
+using Data.Models;
 using Manager_Point.ApplicationDbContext;
-using Manager_Point.Models;
 using Newtonsoft.Json;
 using System.Data.Entity;
 
 namespace BLL.Services.Implement
 {
-	public class CourseServices : ICourseServices
+	public class AcademicPerformanceServices : IAcademicPerformanceServices
 	{
 		private readonly AppDbContext _appContext;
 		private readonly IMapper _mapper;
-        public CourseServices(IMapper mapper)
-        {
-            _appContext = new AppDbContext();
+		public AcademicPerformanceServices(IMapper mapper)
+		{
+			_appContext = new AppDbContext();
 			_mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
 		}
-        public async Task<List<int>> Batch_Create_Item(List<vm_create_course> requests)
+		public async Task<List<int>> Batch_Create_Item(List<vm_create_academicperformance> requests)
 		{
 			try
 			{
-				var obj = _mapper.Map<List<Course>>(requests);
-				_appContext.Courses.AddRange(obj);
+				var obj = _mapper.Map<List<AcademicPerformance>>(requests);
+				_appContext.AcademicPerformances.AddRange(obj);
 				await _appContext.SaveChangesAsync();
 				var ids = obj.Select(t => t.Id).ToList();
 				return ids;
@@ -39,11 +39,11 @@ namespace BLL.Services.Implement
 		{
 			try
 			{
-				var courseToDelete = await _appContext.Courses.Where(t => ids.Contains(t.Id)).ToListAsync();
+				var academicperformanceToDelete = await _appContext.AcademicPerformances.Where(t => ids.Contains(t.Id)).ToListAsync();
 
-				if (courseToDelete.Any())
+				if (academicperformanceToDelete.Any())
 				{
-					_appContext.Courses.RemoveRange(courseToDelete);
+					_appContext.AcademicPerformances.RemoveRange(academicperformanceToDelete);
 					await _appContext.SaveChangesAsync();
 				}
 
@@ -56,12 +56,13 @@ namespace BLL.Services.Implement
 			}
 		}
 
-		public async Task<int> Create_Item(vm_create_course request)
+		public async Task<int> Create_Item(vm_create_academicperformance request)
 		{
+
 			try
 			{
-				var obj = _mapper.Map<Course>(request);
-				_appContext.Courses.AddRange(obj);
+				var obj = _mapper.Map<AcademicPerformance>(request);
+				_appContext.AcademicPerformances.AddRange(obj);
 				await _appContext.SaveChangesAsync();
 				return obj.Id;
 			}
@@ -87,13 +88,13 @@ namespace BLL.Services.Implement
 					.Where(s => string.IsNullOrEmpty(search) || s.Name!.Contains(search))
 					.Count();
 
-				var vm_course = _mapper.Map<List<vm_course>>(subjects);
-				var paginatedResult = new PaginatedResult<vm_course>
+				var vm_academicperformance = _mapper.Map<List<vm_academicperformance>>(subjects);
+				var paginatedResult = new PaginatedResult<vm_academicperformance>
 				{
 					TotalCount = totalCount,
 					PageNumber = page_number,
 					PageSize = page_size,
-					Data = vm_course
+					Data = vm_academicperformance
 				};
 
 				var jsonResult = JsonConvert.SerializeObject(paginatedResult, Formatting.Indented);
@@ -106,20 +107,20 @@ namespace BLL.Services.Implement
 			}
 		}
 
-		public async Task<vm_course> Get_By_Id(int id)
+		public async Task<vm_academicperformance> Get_By_Id(int id)
 		{
 			try
 			{
-				var existingCourse = await _appContext.Courses.FindAsync(id); // kiểm tra trog db context có không thì lấy luôn
-				if (existingCourse != null)
+				var existingSubject = await _appContext.AcademicPerformances.FindAsync(id); // kiểm tra trog db context có không thì lấy luôn
+				if (existingSubject != null)
 				{
-					var vm_course= _mapper.Map<vm_course>(existingCourse);
-					return vm_course;
+					var vm_academicperformance = _mapper.Map<vm_academicperformance>(existingSubject);
+					return vm_academicperformance;
 				}
-				var course = await _appContext.Classes.FirstOrDefaultAsync(s => s.Id == id); // không thì truy cập vào db để lấy đối tượng ra
-				if (course == null) return null!;
-				var vm_course_fromDb = _mapper.Map<vm_course>(course);
-				return vm_course_fromDb;
+				var academicperformance = await _appContext.AcademicPerformances.FirstOrDefaultAsync(s => s.Id == id); // không thì truy cập vào db để lấy đối tượng ra
+				if (academicperformance == null) return null!;
+				var vm_academicperformance_fromDb = _mapper.Map<vm_academicperformance>(academicperformance);
+				return vm_academicperformance_fromDb;
 			}
 			catch (Exception ex)
 			{
@@ -128,16 +129,14 @@ namespace BLL.Services.Implement
 			}
 		}
 
-		public async Task<int> Modified_Item(int id, vm_update_course request)
+		public async Task<int> Modified_Item(int id, vm_update_academicperformance request)
 		{
 			try
 			{
-				var objForUpdate = await _appContext.Courses.FindAsync(id);
+				var objForUpdate = await _appContext.AcademicPerformances.FindAsync(id);
 				if (objForUpdate == null) return -1;
-				objForUpdate.Name = request.Name;
-				objForUpdate.StartTime = request.StartTime;
-				objForUpdate.EndTime = request.EndTime;
-				objForUpdate.Description = request.Name;
+				objForUpdate.GradePointId = request.GradePointId;
+				objForUpdate.Performance = request.Performance;
 				objForUpdate.Status = request.Status;
 				// Không cần gọi Attach hoặc Update vì objForUpdate đã được
 				// theo dõi trong DbContext neuse có sự thay đổi thì nó sẽ cập nhật vô DB
@@ -155,15 +154,15 @@ namespace BLL.Services.Implement
 		{
 			try
 			{
-				var objToRemove = await _appContext.Courses.FindAsync(id);
+				var objToRemove = await _appContext.AcademicPerformances.FindAsync(id);
 				// Xử lý trường hợp không tìm thấy đối tượng
 				if (objToRemove == null) return false;
 
 				// Kiểm tra xem đối tượng đã được theo dõi trong DbContext hay không
-				var local = _appContext.Courses.Local.FirstOrDefault(x => x.Id == id);
+				var local = _appContext.AcademicPerformances.Local.FirstOrDefault(x => x.Id == id);
 
 				// Sử dụng toán tử ba ngôi để xác định đối tượng cần xóa
-				_appContext.Courses.Remove(local != null ? local : objToRemove);
+				_appContext.AcademicPerformances.Remove(local != null ? local : objToRemove);
 
 				// Lưu các thay đổi vào cơ sở dữ liệu
 				await _appContext.SaveChangesAsync();
