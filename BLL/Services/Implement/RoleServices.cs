@@ -39,11 +39,11 @@ namespace BLL.Services.Implement
         {
             try
             {
-                var subjectsToDelete = await _appContext.Subjects.Where(t => ids.Contains(t.Id)).ToListAsync();
+                var rolessToDelete = await _appContext.Roles.Where(t => ids.Contains(t.Id)).ToListAsync();
 
-                if (subjectsToDelete.Any())
+                if (rolessToDelete.Any())
                 {
-                    _appContext.Subjects.RemoveRange(subjectsToDelete);
+                    _appContext.Roles.RemoveRange(rolessToDelete);
                     await _appContext.SaveChangesAsync();
                 }
 
@@ -82,13 +82,13 @@ namespace BLL.Services.Implement
                     .Where(t => string.IsNullOrEmpty(search) || t.Name!.Contains(search))
                     .Skip(skip)
                     .Take(page_size);
-                var subjects = query.ToList();
+                var roles = query.ToList();
 
                 int totalCount = _appContext.Roles
                     .Where(s => string.IsNullOrEmpty(search) || s.Name!.Contains(search))
                     .Count();
 
-                var vm_Roles = _mapper.Map<List<vm_role>>(subjects);
+                var vm_Roles = _mapper.Map<List<vm_role>>(roles);
                 var paginatedResult = new PaginatedResult<vm_role>
                 {
                     TotalCount = totalCount,
@@ -133,7 +133,7 @@ namespace BLL.Services.Implement
         {
             try
             {
-                var objForUpdate = await _appContext.Subjects.FindAsync(id);
+                var objForUpdate = await _appContext.Roles.FindAsync(id);
                 if (objForUpdate == null) return -1;
                 objForUpdate.Description = request.Description;
                 objForUpdate.Name = request.Name;
