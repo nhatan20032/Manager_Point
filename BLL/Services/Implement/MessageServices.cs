@@ -30,7 +30,7 @@ namespace BLL.Services.Implement
 			}
 			catch (Exception ex)
 			{
-				Console.WriteLine($"Error in Batch_Create_Item: {ex.Message}");
+				Console.WriteLine($"Error in  Batch_Create_Item: {ex.Message}");
 				throw;
 			}
 		}
