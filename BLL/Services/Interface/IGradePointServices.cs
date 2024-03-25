@@ -2,7 +2,7 @@
 
 namespace BLL.Services.Interface
 {
-	public interface IGradePointService
+	public interface IGradePointServices
     {
         public Task<string> Get_All_Async(int page_number = 1, int page_size = 10, string search = "");
         public Task<vm_gradepoint> Get_By_Id(int id);

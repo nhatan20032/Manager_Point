@@ -8,8 +8,8 @@ namespace API.Controllers
 	[ApiController]
 	public class GradePointsController : Controller
 	{
-        IGradePointService _gradePointService;
-        public GradePointsController(IGradePointService gradePointService)
+        IGradePointServices _gradePointService;
+        public GradePointsController(IGradePointServices gradePointService)
         {
             _gradePointService = gradePointService;
         }
