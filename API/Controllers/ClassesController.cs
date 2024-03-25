@@ -1,15 +1,15 @@
-﻿using BLL.Services.Implement;
-using BLL.Services.Interface;
+﻿using BLL.Services.Interface;
 using BLL.ViewModels.Class;
-using BLL.ViewModels.Role;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
-	public class ClassController : Controller
+	[Route("api/[controller]")]
+	[ApiController]
+	public class ClassesController : Controller
 	{
-		IClassService _classService;
-        public ClassController(IClassService classService)
+		IClassServices _classService;
+        public ClassesController(IClassServices classService)
         {
 			_classService = classService;
         }
