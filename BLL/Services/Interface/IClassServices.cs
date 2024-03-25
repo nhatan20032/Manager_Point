@@ -1,14 +1,8 @@
 ﻿using BLL.ViewModels.Class;
-using BLL.ViewModels.Role;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BLL.Services.Interface
 {
-	public interface IClassService
+	public interface IClassServices
 	{
 		public Task<string> Get_All_Async(int page_number = 1, int page_size = 10, string search = "");
 		public Task<vm_class> Get_By_Id(int id);

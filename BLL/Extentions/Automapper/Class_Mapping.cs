@@ -1,12 +1,6 @@
 ﻿using AutoMapper;
 using BLL.ViewModels.Class;
-using BLL.ViewModels.Role;
 using Manager_Point.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BLL.Extentions.Automapper
 {
