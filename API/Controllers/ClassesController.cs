@@ -6,10 +6,12 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
-	public class ClassController : Controller
+	[Route("api/[controller]")]
+	[ApiController]
+	public class ClassesController : Controller
 	{
-		IClassService _classService;
-        public ClassController(IClassService classService)
+		IClassServices _classService;
+        public ClassesController(IClassServices classService)
         {
 			_classService = classService;
         }

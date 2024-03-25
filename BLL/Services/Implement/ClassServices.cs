@@ -2,24 +2,18 @@
 using BLL.Services.Interface;
 using BLL.ViewModels;
 using BLL.ViewModels.Class;
-using BLL.ViewModels.Role;
 using Manager_Point.ApplicationDbContext;
 using Manager_Point.Models;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
 using System.Data.Entity;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BLL.Services.Implement
 {
-	public class ClassService : IClassService
+	public class ClassServices : IClassServices
 	{
 		private readonly AppDbContext _appContext;
 		private readonly IMapper _mapper;
-        public ClassService(IMapper mapper)
+        public ClassServices(IMapper mapper)
         {
             _appContext = new AppDbContext();
 			_mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
