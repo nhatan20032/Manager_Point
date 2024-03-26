@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using BLL.Services.Interface;
 using BLL.ViewModels;
 using BLL.ViewModels.Role;
+using BLL.ViewModels.Subject;
 using Manager_Point.ApplicationDbContext;
 using Manager_Point.Models;
 using Newtonsoft.Json;
@@ -88,7 +90,7 @@ namespace BLL.Services.Implement
                     .Where(s => string.IsNullOrEmpty(search) || s.Name!.Contains(search))
                     .Count();
 
-                var vm_Roles = _mapper.Map<List<vm_role>>(roles);
+                var vm_Roles = _appContext.Roles.ProjectTo<vm_role>(_mapper.ConfigurationProvider).ToList();
                 var paginatedResult = new PaginatedResult<vm_role>
                 {
                     TotalCount = totalCount,

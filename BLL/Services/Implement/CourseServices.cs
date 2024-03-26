@@ -61,7 +61,7 @@ namespace BLL.Services.Implement
 			try
 			{
 				var obj = _mapper.Map<Course>(request);
-				_appContext.Courses.AddRange(obj);
+				_appContext.Courses.Add(obj);
 				await _appContext.SaveChangesAsync();
 				return obj.Id;
 			}
