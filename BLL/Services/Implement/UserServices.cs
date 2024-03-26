@@ -8,6 +8,7 @@ using Newtonsoft.Json;
 using System.Data.Entity;
 using OfficeOpenXml;
 using Manager_Point.Models.Enum;
+using AutoMapper.QueryableExtensions;
 
 namespace BLL.Services.Implement
 {
@@ -89,7 +90,7 @@ namespace BLL.Services.Implement
                     .Where(s => string.IsNullOrEmpty(search) || s.Name!.Contains(search))
                     .Count();
 
-                var vm_User = _mapper.Map<List<vm_user>>(roles);
+                var vm_User = _appContext.Users.ProjectTo<vm_user>(_mapper.ConfigurationProvider).ToList();
                 var paginatedResult = new PaginatedResult<vm_user>
                 {
                     TotalCount = totalCount,
