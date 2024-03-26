@@ -39,7 +39,7 @@ namespace BLL.Services.Implement
         {
             try
             {
-                var rolessToDelete = await _appContext.Roles.Where(t => ids.Contains(t.Id)).ToListAsync();
+                var rolessToDelete = _appContext.Roles.Where(t => ids.Contains(t.Id)).ToList();
 
                 if (rolessToDelete.Any())
                 {

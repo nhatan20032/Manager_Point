@@ -57,5 +57,31 @@ namespace API.Controllers
         {
             return Ok(await _userServices.Batch_Remove_Item(ids));
         }
+
+        [HttpPost("/user/import_excel")]
+        public async Task<IActionResult> ImportUsersFromExcel(IFormFile file)
+        {
+            if (file == null || file.Length <= 0)
+            {
+                return BadRequest("File is required.");
+            }
+
+            try
+            {
+                using (var memoryStream = new MemoryStream())
+                {
+                    await file.CopyToAsync(memoryStream);
+                    memoryStream.Position = 0;
+
+                    int addedUsersCount = await _userServices.AddUsersFromExcel(memoryStream);
+
+                    return Ok($"Successfully added {addedUsersCount} users from Excel.");
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error importing users: {ex.Message}");
+            }
+        }
     }
 }

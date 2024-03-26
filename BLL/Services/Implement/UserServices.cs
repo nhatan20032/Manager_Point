@@ -7,6 +7,7 @@ using Manager_Point.Models;
 using Newtonsoft.Json;
 using System.Data.Entity;
 using OfficeOpenXml;
+using Manager_Point.Models.Enum;
 
 namespace BLL.Services.Implement
 {
@@ -40,7 +41,7 @@ namespace BLL.Services.Implement
         {
             try
             {
-                var userDelete = await _appContext.Users.Where(t => ids.Contains(t.Id)).ToListAsync();
+                var userDelete = _appContext.Users.Where(t => ids.Contains(t.Id)).ToList();
 
                 if (userDelete.Any())
                 {
@@ -176,6 +177,7 @@ namespace BLL.Services.Implement
         {
             try
             {
+                ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
                 using (var package = new ExcelPackage(excelFileStream))
                 {
                     ExcelWorksheet worksheet = package.Workbook.Worksheets[0]; // Chọn sheet đầu tiên
@@ -187,12 +189,18 @@ namespace BLL.Services.Implement
                     {
                         var user = new vm_create_user
                         {
-                            Name = worksheet.Cells[row, 1].Value?.ToString(), // Cột 1 là tên
-                            Email = worksheet.Cells[row, 2].Value?.ToString(), // Cột 2 là email
-                            User_Code = worksheet.Cells[row, 3].Value.ToString() ?? "null",
-                            Password = worksheet.Cells[row, 4].Value.ToString() ?? "null"
+                            User_Code = worksheet.Cells[row, 2].Value.ToString() ?? "null",
+                            Name = worksheet.Cells[row, 3].Value.ToString(),
+                            Gender = GetGenderFromExcelValue(worksheet.Cells[row, 4].Value.ToString()),
+                            Nation = worksheet.Cells[row, 5].Value.ToString(),
+                            Address = worksheet.Cells[row, 6].Value.ToString(),
+                            Email = worksheet.Cells[row, 7].Value.ToString(),
+                            PhoneNumber = worksheet.Cells[row, 8].Value.ToString(),
+                            Password = worksheet.Cells[row, 9].Value.ToString() ?? "000000000000",
+                            DOB = ConvertExcelDateToDateTime(worksheet.Cells[row, 10].Value.ToString()),
+                            Description = worksheet.Cells[row, 11].Value.ToString(),
+                            Status = GetStatusFromExcelValue(worksheet.Cells[row, 12].Value.ToString())
                         };
-
                         usersToAdd.Add(user);
                     }
                     var obj = _mapper.Map<List<User>>(usersToAdd);
@@ -205,6 +213,56 @@ namespace BLL.Services.Implement
             {
                 Console.WriteLine($"Error in AddUsersFromExcel: {ex.Message}");
                 throw;
+            }
+        }
+        private Gender GetGenderFromExcelValue(string? value)
+        {
+            switch (value)
+            {
+                case "1":
+                    return Gender.Male;
+                case "2":
+                    return Gender.Female;
+                case "3":
+                    return Gender.Other;
+                default:
+                    return 0; // Hoặc giá trị mặc định khác tùy theo yêu cầu của bạn
+            }
+        }
+        private Status GetStatusFromExcelValue(string? value)
+        {
+            switch (value)
+            {
+                case "1":
+                    return Status.Active;
+                case "2":
+                    return Status.Failed;
+                case "3":
+                    return Status.Pass;
+                case "4":
+                    return Status.Ended;
+                case "5":
+                    return Status.During;
+                default:
+                    return 0; // Hoặc giá trị mặc định khác tùy theo yêu cầu của bạn
+            }
+        }
+        private DateTime ConvertExcelDateToDateTime(string? excelDate)
+        {
+            if (string.IsNullOrWhiteSpace(excelDate))
+            {
+                // Nếu đầu vào rỗng, trả về một ngày bất kỳ, ví dụ: 01/01/2000
+                return new DateTime(2000, 1, 1);
+            }
+
+            if (DateTime.TryParse(excelDate, out DateTime result))
+            {
+                return result;
+            }
+            else
+            {
+                // Nếu không chuyển đổi được, trả về ngày mặc định
+                return new DateTime(1900, 1, 1);
             }
         }
     }
