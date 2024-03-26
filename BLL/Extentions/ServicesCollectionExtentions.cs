@@ -22,6 +22,12 @@ namespace BLL.Extentions
             services.AddTransient<ISubjectServices, SubjectServices>();
             services.AddTransient<IRoleServices, RoleServices>();
             services.AddTransient<IClassServices, ClassServices>();
+            services.AddTransient<ICourseService, CourseServices>();
+            services.AddTransient<IMessageService, MessagesService>();
+            services.AddTransient<IGradePointService, GradePointService>();
+            services.AddTransient<IUserServices, UserServices>();
+            services.AddTransient<ISubject_TeacherServices, Subject_TeacherServices>();
+            services.AddTransient<IRole_UserServices, Role_UserServices>();
             services.AddTransient<ICourseServices, CourseServices>();
             services.AddTransient<IMessageServices, MessageServices>();
             services.AddTransient<IGradePointServices, GradePointServices>();
@@ -36,9 +42,11 @@ namespace BLL.Extentions
             services.AddAutoMapper(typeof(Course_Mapping).Assembly);
             services.AddAutoMapper(typeof(GradePoint_Mapping).Assembly);
             services.AddAutoMapper(typeof(Message_Mapping).Assembly);
+            services.AddAutoMapper(typeof(User_Mapping).Assembly);
+            services.AddAutoMapper(typeof(Subject_Teacher_Mapping).Assembly);
+            services.AddAutoMapper(typeof(Role_User_Mapping).Assembly);
             services.AddAutoMapper(typeof(Examination_Mapping).Assembly);
             services.AddAutoMapper(typeof(AcademicPerformances_Mapping).Assembly);
-
             #endregion
 
             return services;

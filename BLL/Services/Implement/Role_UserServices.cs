@@ -37,7 +37,7 @@ namespace BLL.Services.Implement
         {
             try
             {
-                var role_user = await _appContext.Users_Roles.Where(t => ids.Contains(t.Id)).ToListAsync();
+                var role_user = _appContext.Users_Roles.Where(t => ids.Contains(t.Id)).ToList();
 
                 if (role_user.Any())
                 {

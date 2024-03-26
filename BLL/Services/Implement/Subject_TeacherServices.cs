@@ -37,7 +37,7 @@ namespace BLL.Services.Implement
         {
             try
             {
-                var subject_teachers = await _appContext.Subjects_Teachers.Where(t => ids.Contains(t.Id)).ToListAsync();
+                var subject_teachers = _appContext.Subjects_Teachers.Where(t => ids.Contains(t.Id)).ToList();
 
                 if (subject_teachers.Any())
                 {
