@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using BLL.Services.Interface;
 using BLL.ViewModels;
 using BLL.ViewModels.Subject;
+using BLL.ViewModels.User;
 using Manager_Point.ApplicationDbContext;
 using Manager_Point.Models;
 using Microsoft.EntityFrameworkCore;
@@ -91,7 +93,7 @@ namespace BLL.Services.Implement
                     .Where(s => string.IsNullOrEmpty(search) || s.Name!.Contains(search))
                     .Count();
 
-                var vmSubjects = _mapper.Map<List<vm_subject>>(subjects);
+                var vmSubjects = _appContext.Subjects.ProjectTo<vm_subject>(_mapper.ConfigurationProvider).ToList();
                 var paginatedResult = new PaginatedResult<vm_subject>
                 {
                     TotalCount = totalCount,
