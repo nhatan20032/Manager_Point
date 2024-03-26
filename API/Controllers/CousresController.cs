@@ -8,8 +8,8 @@ namespace API.Controllers
 	[ApiController]
 	public class CousresController : Controller
 	{
-		ICourseService _courseService;
-        public CousresController(ICourseService courseService)
+		ICourseServices _courseService;
+        public CousresController(ICourseServices courseService)
         {
             _courseService = courseService;
         }

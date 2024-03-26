@@ -1,8 +1,7 @@
 ﻿using AutoMapper;
 using BLL.Services.Interface;
 using BLL.ViewModels;
-using BLL.ViewModels.Course;
-using BLL.ViewModels.Message;
+using BLL.ViewModels.GradePoint;
 using Manager_Point.ApplicationDbContext;
 using Manager_Point.Models;
 using Newtonsoft.Json;
@@ -10,21 +9,21 @@ using System.Data.Entity;
 
 namespace BLL.Services.Implement
 {
-	public class MessagesService : IMessageService
+	public class GradePointServices : IGradePointServices
 	{
 		private readonly AppDbContext _appContext;
 		private readonly IMapper _mapper;
-		public MessagesService(IMapper mapper)
+		public GradePointServices(IMapper mapper)
         {
 			_appContext = new AppDbContext();
 			_mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
 		}
-        public async Task<List<int>> Batch_Create_Item(List<vm_create_message> requests)
+        public async Task<List<int>> Batch_Create_Item(List<vm_create_gradepoint> requests)
 		{
 			try
 			{
-				var obj = _mapper.Map<List<Message>>(requests);
-				_appContext.Messages.AddRange(obj);
+				var obj = _mapper.Map<List<GradePoint>>(requests);
+				_appContext.GradePoints.AddRange(obj);
 				await _appContext.SaveChangesAsync();
 				var ids = obj.Select(t => t.Id).ToList();
 				return ids;
@@ -40,11 +39,11 @@ namespace BLL.Services.Implement
 		{
 			try
 			{
-				var messageToDelete = await _appContext.Messages.Where(t => ids.Contains(t.Id)).ToListAsync();
+				var gradepointToDelete = await _appContext.GradePoints.Where(t => ids.Contains(t.Id)).ToListAsync();
 
-				if (messageToDelete.Any())
+				if (gradepointToDelete.Any())
 				{
-					_appContext.Messages.RemoveRange(messageToDelete);
+					_appContext.GradePoints.RemoveRange(gradepointToDelete);
 					await _appContext.SaveChangesAsync();
 				}
 
@@ -57,12 +56,12 @@ namespace BLL.Services.Implement
 			}
 		}
 
-		public async Task<int> Create_Item(vm_create_message request)
+		public async Task<int> Create_Item(vm_create_gradepoint request)
 		{
 			try
 			{
-				var obj = _mapper.Map<Message>(request);
-				_appContext.Messages.AddRange(obj);
+				var obj = _mapper.Map<GradePoint>(request);
+				_appContext.GradePoints.AddRange(obj);
 				await _appContext.SaveChangesAsync();
 				return obj.Id;
 			}
@@ -78,23 +77,23 @@ namespace BLL.Services.Implement
 			try
 			{
 				int skip = (page_number - 1) * page_size;
-				var query = _appContext.Classes
-					.Where(t => string.IsNullOrEmpty(search) || t.Name!.Contains(search))
+				var query = _appContext.GradePoints
+					.Where(t => string.IsNullOrEmpty(search) )
 					.Skip(skip)
 					.Take(page_size);
 				var subjects = query.ToList();
 
-				int totalCount = _appContext.Classes
-					.Where(s => string.IsNullOrEmpty(search) || s.Name!.Contains(search))
+				int totalCount = _appContext.GradePoints
+					.Where(s => string.IsNullOrEmpty(search) )
 					.Count();
 
-				var vm_message = _mapper.Map<List<vm_message>>(subjects);
-				var paginatedResult = new PaginatedResult<vm_message>
+				var vm_gradepoint = _mapper.Map<List<vm_gradepoint>>(subjects);
+				var paginatedResult = new PaginatedResult<vm_gradepoint>
 				{
 					TotalCount = totalCount,
 					PageNumber = page_number,
 					PageSize = page_size,
-					Data = vm_message
+					Data = vm_gradepoint
 				};
 
 				var jsonResult = JsonConvert.SerializeObject(paginatedResult, Formatting.Indented);
@@ -107,20 +106,20 @@ namespace BLL.Services.Implement
 			}
 		}
 
-		public async Task<vm_message> Get_By_Id(int id)
+		public async Task<vm_gradepoint> Get_By_Id(int id)
 		{
 			try
 			{
-				var existingCourse = await _appContext.Messages.FindAsync(id); // kiểm tra trog db context có không thì lấy luôn
-				if (existingCourse != null)
+				var existingSubject = await _appContext.GradePoints.FindAsync(id); // kiểm tra trog db context có không thì lấy luôn
+				if (existingSubject != null)
 				{
-					var vm_message = _mapper.Map<vm_message>(existingCourse);
-					return vm_message;
+					var vm_gradepoint = _mapper.Map<vm_gradepoint>(existingSubject);
+					return vm_gradepoint;
 				}
-				var message = await _appContext.Classes.FirstOrDefaultAsync(s => s.Id == id); // không thì truy cập vào db để lấy đối tượng ra
-				if (message == null) return null!;
-				var vm_message_fromDb = _mapper.Map<vm_message>(message);
-				return vm_message_fromDb;
+				var gradepoint = await _appContext.GradePoints.FirstOrDefaultAsync(s => s.Id == id); // không thì truy cập vào db để lấy đối tượng ra
+				if (gradepoint == null) return null!;
+				var vm_gradepoint_fromDb = _mapper.Map<vm_gradepoint>(gradepoint);
+				return vm_gradepoint_fromDb;
 			}
 			catch (Exception ex)
 			{
@@ -129,16 +128,19 @@ namespace BLL.Services.Implement
 			}
 		}
 
-		public async Task<int> Modified_Item(int id, vm_update_message request)
+		public async Task<int> Modified_Item(int id, vm_update_gradepoint request)
 		{
 			try
 			{
-				var objForUpdate = await _appContext.Messages.FindAsync(id);
+				var objForUpdate = await _appContext.GradePoints.FindAsync(id);
 				if (objForUpdate == null) return -1;
+				objForUpdate.SubjectId = request.SubjectId;
+				objForUpdate.UserId = request.UserId;
 				objForUpdate.ClassId = request.ClassId;
-				objForUpdate.Status = request.Status;
-				objForUpdate.Content = request.Content;
-				
+				objForUpdate.Semester = request.Semester;
+				objForUpdate.Midterm_Grades = request.Midterm_Grades;
+				objForUpdate.Final_Grades = request.Final_Grades;
+				objForUpdate.Average = request.Average;
 				// Không cần gọi Attach hoặc Update vì objForUpdate đã được
 				// theo dõi trong DbContext neuse có sự thay đổi thì nó sẽ cập nhật vô DB
 				await _appContext.SaveChangesAsync();
@@ -155,15 +157,15 @@ namespace BLL.Services.Implement
 		{
 			try
 			{
-				var objToRemove = await _appContext.Messages.FindAsync(id);
+				var objToRemove = await _appContext.GradePoints.FindAsync(id);
 				// Xử lý trường hợp không tìm thấy đối tượng
 				if (objToRemove == null) return false;
 
 				// Kiểm tra xem đối tượng đã được theo dõi trong DbContext hay không
-				var local = _appContext.Messages.Local.FirstOrDefault(x => x.Id == id);
+				var local = _appContext.GradePoints.Local.FirstOrDefault(x => x.Id == id);
 
 				// Sử dụng toán tử ba ngôi để xác định đối tượng cần xóa
-				_appContext.Messages.Remove(local != null ? local : objToRemove);
+				_appContext.GradePoints.Remove(local != null ? local : objToRemove);
 
 				// Lưu các thay đổi vào cơ sở dữ liệu
 				await _appContext.SaveChangesAsync();

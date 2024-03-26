@@ -1,13 +1,8 @@
 ﻿using Manager_Point.Models.Enum;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BLL.ViewModels.Class
 {
-	public class vm_update_class
+    public class vm_update_class
 	{
 		public int CourseId { get; set; }
 		public required string ClassCode { get; set; }
