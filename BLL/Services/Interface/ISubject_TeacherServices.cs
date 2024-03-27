@@ -1,5 +1,4 @@
-﻿using BLL.ViewModels.Role;
-using BLL.ViewModels.Subject_Teacher;
+﻿using BLL.ViewModels.Subject_Teacher;
 
 namespace BLL.Services.Interface
 {
