@@ -1,5 +1,4 @@
 ﻿using BLL.ViewModels.Role;
-using BLL.ViewModels.Subject;
 
 namespace BLL.Services.Interface
 {

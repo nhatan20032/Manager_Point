@@ -9,16 +9,17 @@ using System.Data.Entity;
 
 namespace BLL.Services.Implement
 {
-	public class CourseServices : ICourseServices
-	{
-		private readonly AppDbContext _appContext;
-		private readonly IMapper _mapper;
+    public class CourseServices : ICourseServices
+    {
+        private readonly AppDbContext _appContext;
+        private readonly IMapper _mapper;
         public CourseServices(IMapper mapper)
         {
             _appContext = new AppDbContext();
-			_mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
-		}
+            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+        }
         public async Task<List<int>> Batch_Create_Item(List<vm_create_course> requests)
+
 		{
 			try
 			{
@@ -177,4 +178,5 @@ namespace BLL.Services.Implement
 			}
 		}
 	}
+
 }

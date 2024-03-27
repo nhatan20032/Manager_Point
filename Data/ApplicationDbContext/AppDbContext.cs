@@ -21,6 +21,7 @@ namespace Manager_Point.ApplicationDbContext
         public virtual DbSet<Message> Messages { get; set; }
         public virtual DbSet<Role> Roles { get; set; }
         public virtual DbSet<Student_Class> Students_Classes { get; set; }
+        public virtual DbSet<Teacher_Class> Teacher_Classes { get; set; }
         public virtual DbSet<Subject> Subjects { get; set; }
         public virtual DbSet<Subject_Teacher> Subjects_Teachers { get; set; }
         public virtual DbSet<User> Users { get; set; }
