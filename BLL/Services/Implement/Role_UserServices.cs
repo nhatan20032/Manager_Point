@@ -3,7 +3,6 @@ using BLL.Services.Interface;
 using BLL.ViewModels.Role_User;
 using Manager_Point.ApplicationDbContext;
 using Manager_Point.Models;
-using System.Data.Entity;
 
 namespace BLL.Services.Implement
 {

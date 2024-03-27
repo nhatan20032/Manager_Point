@@ -3,7 +3,6 @@ using AutoMapper.QueryableExtensions;
 using BLL.Services.Interface;
 using BLL.ViewModels;
 using BLL.ViewModels.Role;
-using BLL.ViewModels.Subject;
 using Manager_Point.ApplicationDbContext;
 using Manager_Point.Models;
 using Newtonsoft.Json;
