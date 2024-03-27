@@ -1,6 +1,9 @@
-﻿using BLL.Services.Interface;
+﻿using BLL.Services.Implement;
+using BLL.Services.Interface;
 using BLL.ViewModels.GradePoint;
+using Manager_Point.Models.Enum;
 using Microsoft.AspNetCore.Mvc;
+using OfficeOpenXml;
 
 namespace API.Controllers
 {
@@ -8,11 +11,11 @@ namespace API.Controllers
 	[ApiController]
 	public class GradePointsController : Controller
 	{
-        IGradePointServices _gradePointService;
-        public GradePointsController(IGradePointServices gradePointService)
-        {
-            _gradePointService = gradePointService;
-        }
+		IGradePointServices _gradePointService;
+		public GradePointsController(IGradePointServices gradePointService)
+		{
+			_gradePointService = gradePointService;
+		}
 		[HttpGet("/gradepoint/get_all")]
 		public async Task<IActionResult> Get_All_Item(int page_number = 1, int page_size = 10, string search = "")
 		{
@@ -57,5 +60,33 @@ namespace API.Controllers
 		{
 			return Ok(await _gradePointService.Batch_Remove_Item(ids));
 		}
+		[HttpPost("/gradepoint/ImportFile")]
+		[Consumes("multipart/form-data")]
+		public async Task<IActionResult> Import(IFormFile file)
+		{
+			if (file == null || file.Length <= 0)
+			{
+				return BadRequest("File is required.");
+			}
+
+			try
+			{
+				using (var memoryStream = new MemoryStream())
+				{
+					await file.CopyToAsync(memoryStream);
+					memoryStream.Position = 0;
+
+					int addedUsersCount = await _gradePointService.ImportFromExcel(memoryStream);
+
+					return Ok($"Successfully added {addedUsersCount} users from Excel.");
+				}
+			}
+			catch (Exception ex)
+			{
+				return StatusCode(500, $"Error importing users: {ex.Message}");
+			}
+			
+		}
+
 	}
 }
