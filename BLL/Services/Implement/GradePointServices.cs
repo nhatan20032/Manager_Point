@@ -11,6 +11,7 @@ using System.Data.Entity;
 
 namespace BLL.Services.Implement
 {
+
 	public class GradePointServices : IGradePointServices
 	{
 		private readonly AppDbContext _appContext;
@@ -242,4 +243,5 @@ namespace BLL.Services.Implement
 			}
 		}
 	}
+
 }
