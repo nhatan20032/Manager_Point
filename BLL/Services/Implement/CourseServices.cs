@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using BLL.Services.Interface;
 using BLL.ViewModels;
+using BLL.ViewModels.AcademicPerformance;
 using BLL.ViewModels.Course;
 using Manager_Point.ApplicationDbContext;
 using Manager_Point.Models;
@@ -78,17 +80,17 @@ namespace BLL.Services.Implement
 			try
 			{
 				int skip = (page_number - 1) * page_size;
-				var query = _appContext.Classes
+				var query = _appContext.Courses
 					.Where(t => string.IsNullOrEmpty(search) || t.Name!.Contains(search))
 					.Skip(skip)
 					.Take(page_size);
 				var subjects = query.ToList();
 
-				int totalCount = _appContext.Classes
+				int totalCount = _appContext.Courses
 					.Where(s => string.IsNullOrEmpty(search) || s.Name!.Contains(search))
 					.Count();
 
-				var vm_course = _mapper.Map<List<vm_course>>(subjects);
+				var vm_course = _mapper.Map<List<vm_course>>(_mapper.ConfigurationProvider).ToList();
 				var paginatedResult = new PaginatedResult<vm_course>
 				{
 					TotalCount = totalCount,
@@ -111,16 +113,10 @@ namespace BLL.Services.Implement
 		{
 			try
 			{
-				var existingCourse = await _appContext.Courses.FindAsync(id); // kiểm tra trog db context có không thì lấy luôn
-				if (existingCourse != null)
-				{
-					var vm_course= _mapper.Map<vm_course>(existingCourse);
-					return vm_course;
-				}
-				var course = await _appContext.Classes.FirstOrDefaultAsync(s => s.Id == id); // không thì truy cập vào db để lấy đối tượng ra
+
+				var course = await _appContext.GradePoints.ProjectTo<vm_course>(_mapper.ConfigurationProvider).SingleOrDefaultAsync(x => x.Id == id);
 				if (course == null) return null!;
-				var vm_course_fromDb = _mapper.Map<vm_course>(course);
-				return vm_course_fromDb;
+				return course;
 			}
 			catch (Exception ex)
 			{

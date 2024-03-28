@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using BLL.Services.Interface;
 using BLL.ViewModels;
+using BLL.ViewModels.AcademicPerformance;
 using BLL.ViewModels.Class;
 using Manager_Point.ApplicationDbContext;
 using Manager_Point.Models;
@@ -87,7 +89,7 @@ namespace BLL.Services.Implement
                     .Where(s => string.IsNullOrEmpty(search) || s.Name!.Contains(search))
                     .Count();
 
-                var vm_class = _mapper.Map<List<vm_class>>(subjects);
+                var vm_class = _mapper.Map<List<vm_class>>(_mapper.ConfigurationProvider).ToList();
                 var paginatedResult = new PaginatedResult<vm_class>
                 {
                     TotalCount = totalCount,
@@ -110,17 +112,10 @@ namespace BLL.Services.Implement
         {
             try
             {
-                var existingSubject = await _appContext.Classes.FindAsync(id); // kiểm tra trog db context có không thì lấy luôn
-                if (existingSubject != null)
-                {
-                    var vm_class = _mapper.Map<vm_class>(existingSubject);
-                    return vm_class;
-                }
-                var clas = await _appContext.Classes.FirstOrDefaultAsync(s => s.Id == id); // không thì truy cập vào db để lấy đối tượng ra
-                if (clas == null) return null!;
-                var vm_class_fromDb = _mapper.Map<vm_class>(clas);
-                return vm_class_fromDb;
-            }
+				var classes = await _appContext.GradePoints.ProjectTo<vm_class>(_mapper.ConfigurationProvider).SingleOrDefaultAsync(x => x.Id == id);
+				if (classes == null) return null!;
+				return classes;
+			}
             catch (Exception ex)
             {
                 Console.WriteLine($"Error in Get_By_Id: {ex.Message}");

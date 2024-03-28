@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using BLL.Services.Interface;
 using BLL.ViewModels;
+using BLL.ViewModels.AcademicPerformance;
 using BLL.ViewModels.Message;
 using Manager_Point.ApplicationDbContext;
 using Manager_Point.Models;
@@ -87,7 +89,7 @@ namespace BLL.Services.Implement
                     .Where(s => string.IsNullOrEmpty(search) || s.Name!.Contains(search))
                     .Count();
 
-                var vm_message = _mapper.Map<List<vm_message>>(subjects);
+                var vm_message = _mapper.Map<List<vm_message>>(_mapper.ConfigurationProvider).ToList();
                 var paginatedResult = new PaginatedResult<vm_message>
                 {
                     TotalCount = totalCount,
@@ -110,17 +112,10 @@ namespace BLL.Services.Implement
         {
             try
             {
-                var existingCourse = await _appContext.Messages.FindAsync(id); // kiểm tra trog db context có không thì lấy luôn
-                if (existingCourse != null)
-                {
-                    var vm_message = _mapper.Map<vm_message>(existingCourse);
-                    return vm_message;
-                }
-                var message = await _appContext.Classes.FirstOrDefaultAsync(s => s.Id == id); // không thì truy cập vào db để lấy đối tượng ra
-                if (message == null) return null!;
-                var vm_message_fromDb = _mapper.Map<vm_message>(message);
-                return vm_message_fromDb;
-            }
+				var message = await _appContext.GradePoints.ProjectTo<vm_message>(_mapper.ConfigurationProvider).SingleOrDefaultAsync(x => x.Id == id);
+				if (message == null) return null!;
+				return message;
+			}
             catch (Exception ex)
             {
                 Console.WriteLine($"Error in Get_By_Id: {ex.Message}");
