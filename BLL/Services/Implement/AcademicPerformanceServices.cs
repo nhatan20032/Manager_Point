@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using BLL.Services.Interface;
 using BLL.ViewModels;
 using BLL.ViewModels.AcademicPerformance;
+using BLL.ViewModels.GradePoint;
 using Data.Models;
 using Manager_Point.ApplicationDbContext;
 using Newtonsoft.Json;
@@ -88,7 +90,7 @@ namespace BLL.Services.Implement
                     .Where(s => string.IsNullOrEmpty(search) || s.Name!.Contains(search))
                     .Count();
 
-                var vm_academicperformance = _mapper.Map<List<vm_academicperformance>>(subjects);
+                var vm_academicperformance = _mapper.Map<List<vm_academicperformance>>(_mapper.ConfigurationProvider).ToList();
                 var paginatedResult = new PaginatedResult<vm_academicperformance>
                 {
                     TotalCount = totalCount,
@@ -111,16 +113,10 @@ namespace BLL.Services.Implement
         {
             try
             {
-                var existingSubject = await _appContext.AcademicPerformances.FindAsync(id); // kiểm tra trog db context có không thì lấy luôn
-                if (existingSubject != null)
-                {
-                    var vm_academicperformance = _mapper.Map<vm_academicperformance>(existingSubject);
-                    return vm_academicperformance;
-                }
-                var academicperformance = await _appContext.AcademicPerformances.FirstOrDefaultAsync(s => s.Id == id); // không thì truy cập vào db để lấy đối tượng ra
-                if (academicperformance == null) return null!;
-                var vm_academicperformance_fromDb = _mapper.Map<vm_academicperformance>(academicperformance);
-                return vm_academicperformance_fromDb;
+				var academicperformance = await _appContext.GradePoints.ProjectTo<vm_academicperformance>(_mapper.ConfigurationProvider).SingleOrDefaultAsync(x => x.Id == id);
+				if (academicperformance == null) return null!;
+				return academicperformance;
+				
             }
             catch (Exception ex)
             {
