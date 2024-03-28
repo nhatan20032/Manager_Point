@@ -1,4 +1,5 @@
-﻿using BLL.ViewModels.User;
+﻿using BLL.Author;
+using BLL.ViewModels.User;
 
 namespace BLL.Services.Interface
 {
@@ -12,5 +13,6 @@ namespace BLL.Services.Interface
         public Task<bool> Remove_Item(int id);
         public Task<bool> Batch_Remove_Item(List<int> ids);
         public Task<int> AddUsersFromExcel(Stream excelFileStream);
+        public AuthenticateResponse? Authenticate(AuthenticateRequest model);
     }
 }

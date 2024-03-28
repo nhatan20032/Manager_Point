@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using BLL.Author;
+using BLL.Authorization;
 using BLL.Services.Interface;
 using BLL.ViewModels;
 using BLL.ViewModels.User;
@@ -16,10 +18,12 @@ namespace BLL.Services.Implement
     {
         private readonly AppDbContext _appContext;
         private readonly IMapper _mapper;
-        public UserServices(IMapper mapper)
+        private readonly IJwtUtils _jwtUtils;
+        public UserServices(IMapper mapper, IJwtUtils jwtUtils)
         {
             _appContext = new AppDbContext();
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+            _jwtUtils = jwtUtils;
         }
         public async Task<List<int>> Batch_Create_Item(List<vm_create_user> requests)
         {
@@ -233,6 +237,19 @@ namespace BLL.Services.Implement
                 // Nếu không chuyển đổi được, trả về ngày mặc định
                 return new DateTime(1900, 1, 1);
             }
+        }
+
+        public AuthenticateResponse? Authenticate(AuthenticateRequest model)
+        {
+            var existingSubject =  _appContext.Users.Where(x => x.User_Code == model.UserCode && x.Password == model.Password!);
+            var vm_user = _mapper.Map<vm_user>(existingSubject);
+            // return null if user not found
+            if (vm_user == null) return null;
+
+            // authentication successful so generate jwt token
+            var token = _jwtUtils.GenerateJwtToken(vm_user);
+
+            return new AuthenticateResponse(vm_user, token);
         }
     }
 }

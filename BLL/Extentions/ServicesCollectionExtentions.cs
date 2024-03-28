@@ -1,4 +1,5 @@
-﻿using BLL.Extentions.Automapper;
+﻿using BLL.Authorization;
+using BLL.Extentions.Automapper;
 using BLL.Services.Implement;
 using BLL.Services.Interface;
 using Manager_Point.ApplicationDbContext;
@@ -18,7 +19,10 @@ namespace BLL.Extentions
                 options.UseSqlServer(configuration.GetConnectionString("DbConnection"));
             });
 
+
+
             #region ================== DI Services ==================
+            services.AddScoped<IJwtUtils, JwtUtils>();
             services.AddTransient<ISubjectServices, SubjectServices>();
             services.AddTransient<IRoleServices, RoleServices>();
             services.AddTransient<IClassServices, ClassServices>();
