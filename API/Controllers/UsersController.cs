@@ -1,4 +1,6 @@
-﻿using BLL.Services.Interface;
+﻿using BLL.Author;
+using BLL.Authorization;
+using BLL.Services.Interface;
 using BLL.ViewModels.User;
 using Microsoft.AspNetCore.Mvc;
 
@@ -6,6 +8,7 @@ namespace API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class UsersController : ControllerBase
     {
         private readonly IUserServices _userServices;
@@ -23,6 +26,42 @@ namespace API.Controllers
         public async Task<IActionResult> Get_By_Id(int id)
         {
             return Ok(await _userServices.Get_By_Id(id));
+        }
+
+        [AllowAnonymous]
+        [HttpPost("/user/authenticate")]
+        public IActionResult Authenticate(AuthenticateRequest model)
+        {
+            var response = _userServices.Authenticate(model);
+
+            if (response == null)
+                return BadRequest(new { message = "Username or password is incorrect" });
+
+            return Ok(response);
+        }
+
+        [HttpPost("/user/import_excel")]
+        public async Task<IActionResult> ImportUsersFromExcel(IFormFile file)
+        {
+            if (file == null || file.Length <= 0)
+            {
+                return BadRequest("File is required.");
+            }
+
+            try
+            {
+                using var memoryStream = new MemoryStream();
+                await file.CopyToAsync(memoryStream);
+                memoryStream.Position = 0;
+
+                int addedUsersCount = await _userServices.AddUsersFromExcel(memoryStream);
+
+                return Ok($"Successfully added {addedUsersCount} users from Excel.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error importing users: {ex.Message}");
+            }
         }
 
         [HttpPost("/user/create")]
@@ -56,32 +95,6 @@ namespace API.Controllers
         public async Task<IActionResult> Batch_Remove_Item(List<int> ids)
         {
             return Ok(await _userServices.Batch_Remove_Item(ids));
-        }
-
-        [HttpPost("/user/import_excel")]
-        public async Task<IActionResult> ImportUsersFromExcel(IFormFile file)
-        {
-            if (file == null || file.Length <= 0)
-            {
-                return BadRequest("File is required.");
-            }
-
-            try
-            {
-                using (var memoryStream = new MemoryStream())
-                {
-                    await file.CopyToAsync(memoryStream);
-                    memoryStream.Position = 0;
-
-                    int addedUsersCount = await _userServices.AddUsersFromExcel(memoryStream);
-
-                    return Ok($"Successfully added {addedUsersCount} users from Excel.");
-                }
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Error importing users: {ex.Message}");
-            }
         }
     }
 }

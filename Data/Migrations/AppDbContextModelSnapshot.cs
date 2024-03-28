@@ -366,7 +366,7 @@ namespace Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Teacher_Class");
+                    b.ToTable("Teacher_Classes");
                 });
 
             modelBuilder.Entity("Manager_Point.Models.User", b =>

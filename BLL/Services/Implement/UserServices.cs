@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using BLL.Author;
+using BLL.Authorization;
 using BLL.Services.Interface;
 using BLL.ViewModels;
 using BLL.ViewModels.User;
@@ -16,10 +18,12 @@ namespace BLL.Services.Implement
     {
         private readonly AppDbContext _appContext;
         private readonly IMapper _mapper;
-        public UserServices(IMapper mapper)
+        private readonly IJwtUtils _jwtUtils;
+        public UserServices(IMapper mapper, IJwtUtils jwtUtils)
         {
             _appContext = new AppDbContext();
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+            _jwtUtils = jwtUtils;
         }
         public async Task<List<int>> Batch_Create_Item(List<vm_create_user> requests)
         {
@@ -192,15 +196,15 @@ namespace BLL.Services.Implement
                         {
                             User_Code = worksheet.Cells[row, 2].Value.ToString() ?? "null",
                             Name = worksheet.Cells[row, 3].Value.ToString(),
-                            Gender = GetGenderFromExcelValue(worksheet.Cells[row, 4].Value.ToString()),
+                            Gender = Enum.Parse<Gender>(worksheet.Cells[row, 4].Value.ToString() ?? "1"),
                             Nation = worksheet.Cells[row, 5].Value.ToString(),
                             Address = worksheet.Cells[row, 6].Value.ToString(),
                             Email = worksheet.Cells[row, 7].Value.ToString(),
                             PhoneNumber = worksheet.Cells[row, 8].Value.ToString(),
-                            Password = worksheet.Cells[row, 9].Value.ToString() ?? "000000000000",
+                            Password = worksheet.Cells[row, 9].Value.ToString() ?? "123456",
                             DOB = ConvertExcelDateToDateTime(worksheet.Cells[row, 10].Value.ToString()),
                             Description = worksheet.Cells[row, 11].Value.ToString(),
-                            Status = GetStatusFromExcelValue(worksheet.Cells[row, 12].Value.ToString())
+                            Status = Enum.Parse<Status>(worksheet.Cells[row, 12].Value.ToString() ?? "1")
                         };
                         usersToAdd.Add(user);
                     }
@@ -214,38 +218,6 @@ namespace BLL.Services.Implement
             {
                 Console.WriteLine($"Error in AddUsersFromExcel: {ex.Message}");
                 throw;
-            }
-        }
-        private Gender GetGenderFromExcelValue(string? value)
-        {
-            switch (value)
-            {
-                case "1":
-                    return Gender.Male;
-                case "2":
-                    return Gender.Female;
-                case "3":
-                    return Gender.Other;
-                default:
-                    return 0; // Hoặc giá trị mặc định khác tùy theo yêu cầu của bạn
-            }
-        }
-        private Status GetStatusFromExcelValue(string? value)
-        {
-            switch (value)
-            {
-                case "1":
-                    return Status.Active;
-                case "2":
-                    return Status.Failed;
-                case "3":
-                    return Status.Pass;
-                case "4":
-                    return Status.Ended;
-                case "5":
-                    return Status.During;
-                default:
-                    return 0; // Hoặc giá trị mặc định khác tùy theo yêu cầu của bạn
             }
         }
         private DateTime ConvertExcelDateToDateTime(string? excelDate)
@@ -265,6 +237,19 @@ namespace BLL.Services.Implement
                 // Nếu không chuyển đổi được, trả về ngày mặc định
                 return new DateTime(1900, 1, 1);
             }
+        }
+
+        public AuthenticateResponse? Authenticate(AuthenticateRequest model)
+        {
+            var existingSubject =  _appContext.Users.Where(x => x.User_Code == model.UserCode && x.Password == model.Password!);
+            var vm_user = _mapper.Map<vm_user>(existingSubject);
+            // return null if user not found
+            if (vm_user == null) return null;
+
+            // authentication successful so generate jwt token
+            var token = _jwtUtils.GenerateJwtToken(vm_user);
+
+            return new AuthenticateResponse(vm_user, token);
         }
     }
 }

@@ -1,20 +1,22 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net7.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="AutoMapper" Version="13.0.1" />
-    <PackageReference Include="EPPlus" Version="7.0.10" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Abstractions" Version="2.2.0" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="AutoMapper" Version="13.0.1" />
+		<PackageReference Include="EPPlus" Version="7.0.10" />
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.Abstractions" Version="2.2.0" />
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.4" />
+		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.5.0" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Data\Data.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\Data\Data.csproj" />
+	</ItemGroup>
 
 </Project>
