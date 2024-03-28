@@ -3,6 +3,7 @@ using AutoMapper.QueryableExtensions;
 using BLL.Services.Interface;
 using BLL.ViewModels;
 using BLL.ViewModels.Subject;
+using BLL.ViewModels.User;
 using Manager_Point.ApplicationDbContext;
 using Manager_Point.Models;
 using Microsoft.EntityFrameworkCore;
@@ -116,16 +117,9 @@ namespace BLL.Services.Implement
         {
             try
             {
-                var existingSubject = await _appContext.Subjects.FindAsync(id); // kiểm tra trog db context có không thì lấy luôn
-                if (existingSubject != null)
-                {
-                    var vmSubject = _mapper.Map<vm_subject>(existingSubject);
-                    return vmSubject;
-                }
-                var subject = await _appContext.Subjects.FirstOrDefaultAsync(s => s.Id == id); // không thì truy cập vào db để lấy đối tượng ra
-                if (subject == null) return null!;
-                var vmSubjectFromDb = _mapper.Map<vm_subject>(subject);
-                return vmSubjectFromDb;
+                var vm_subject = await _appContext.Subjects.ProjectTo<vm_subject>(_mapper.ConfigurationProvider).SingleOrDefaultAsync(x => x.Id == id); // không thì truy cập vào db để lấy đối tượng ra
+                if (vm_subject == null) return null!;
+                return vm_subject;
             }
             catch (Exception ex)
             {

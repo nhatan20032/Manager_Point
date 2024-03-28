@@ -112,16 +112,9 @@ namespace BLL.Services.Implement
         {
             try
             {
-                var existingSubject = await _appContext.Roles.FindAsync(id); // kiểm tra trog db context có không thì lấy luôn
-                if (existingSubject != null)
-                {
-                    var vm_Role = _mapper.Map<vm_role>(existingSubject);
-                    return vm_Role;
-                }
-                var role = await _appContext.Roles.FirstOrDefaultAsync(s => s.Id == id); // không thì truy cập vào db để lấy đối tượng ra
-                if (role == null) return null!;
-                var vm_role_fromDb = _mapper.Map<vm_role>(role);
-                return vm_role_fromDb;
+                var vm_role = await _appContext.Roles.ProjectTo<vm_role>(_mapper.ConfigurationProvider).SingleOrDefaultAsync(x => x.Id == id); // không thì truy cập vào db để lấy đối tượng ra
+                if (vm_role == null) return null!;
+                return vm_role;
             }
             catch (Exception ex)
             {
