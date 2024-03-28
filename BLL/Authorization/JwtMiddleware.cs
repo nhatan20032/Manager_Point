@@ -17,7 +17,8 @@ namespace BLL.Authorization
             if (userId != null)
             {
                 // attach user to context on successful jwt validation
-                context.Items["User"] = userService.Get_By_Id(userId.Value);
+                var obj = await userService.Get_By_Id(userId.Value);
+                context.Items["User"] = obj;
             }
 
             await _next(context);

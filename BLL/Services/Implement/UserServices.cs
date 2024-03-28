@@ -117,16 +117,9 @@ namespace BLL.Services.Implement
         {
             try
             {
-                var existingSubject = await _appContext.Users.FindAsync(id); // kiểm tra trog db context có không thì lấy luôn
-                if (existingSubject != null)
-                {
-                    var vm_user = _mapper.Map<vm_user>(existingSubject);
-                    return vm_user;
-                }
-                var user = await _appContext.Users.FirstOrDefaultAsync(s => s.Id == id); // không thì truy cập vào db để lấy đối tượng ra
-                if (user == null) return null!;
-                var vm_user_fromDb = _mapper.Map<vm_user>(user);
-                return vm_user_fromDb;
+                var vm_User = await _appContext.Users.ProjectTo<vm_user>(_mapper.ConfigurationProvider).SingleOrDefaultAsync(x => x.Id == id); // không thì truy cập vào db để lấy đối tượng ra
+                if (vm_User == null) return null!;
+                return vm_User;
             }
             catch (Exception ex)
             {
@@ -241,15 +234,14 @@ namespace BLL.Services.Implement
 
         public AuthenticateResponse? Authenticate(AuthenticateRequest model)
         {
-            var existingSubject =  _appContext.Users.Where(x => x.User_Code == model.UserCode && x.Password == model.Password!);
-            var vm_user = _mapper.Map<vm_user>(existingSubject);
+            var vm_User = _appContext.Users.ProjectTo<vm_user>(_mapper.ConfigurationProvider).Where(x => x.User_Code == model.UserCode && x.Password == model.Password).SingleOrDefault();
             // return null if user not found
-            if (vm_user == null) return null;
+            if (vm_User == null) return null;
 
             // authentication successful so generate jwt token
-            var token = _jwtUtils.GenerateJwtToken(vm_user);
+            var token = _jwtUtils.GenerateJwtToken(vm_User);
 
-            return new AuthenticateResponse(vm_user, token);
+            return new AuthenticateResponse(vm_User, token);
         }
     }
 }

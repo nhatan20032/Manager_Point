@@ -22,7 +22,7 @@ namespace BLL.Extentions
 
 
             #region ================== DI Services ==================
-            services.AddScoped<IJwtUtils, JwtUtils>();
+            services.AddTransient<IJwtUtils, JwtUtils>();
             services.AddTransient<ISubjectServices, SubjectServices>();
             services.AddTransient<IRoleServices, RoleServices>();
             services.AddTransient<IClassServices, ClassServices>();
