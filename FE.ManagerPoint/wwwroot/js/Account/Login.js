@@ -10,6 +10,7 @@
             sessionStorage.setItem('UserId', res.id);
             sessionStorage.setItem('UserCode', res.userCode);
             sessionStorage.setItem('UserRole', res.role);
+            sessionStorage.setItem('FullName', res.fullName);
             if (sessionStorage.getItem('Token')) {
                 // Chuyển hướng đến trang Home/Index
                 window.location.href = '/Home/Index';
