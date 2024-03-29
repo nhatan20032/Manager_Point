@@ -1,4 +1,10 @@
-﻿<!DOCTYPE html>
+﻿<script>
+    if(!sessionStorage.getItem('Token')) {
+        window.location.href = "/Account/Login";
+    }
+</script>
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
