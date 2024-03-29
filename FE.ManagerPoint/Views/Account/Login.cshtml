@@ -45,5 +45,11 @@
             console.log(request);
             Login(request);
         })
+        $(document).on("keydown", function (event) {
+            if (event.keyCode === 13) {
+                event.preventDefault();
+                $("#submit").click();
+            }
+        });
     })
 </script>
