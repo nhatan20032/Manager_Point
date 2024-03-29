@@ -8,7 +8,7 @@
             </a>
             <i class="fa-solid fa-exclamation"></i>
         </div>
-        <div class="user">
+        <div class="user" id="user">
             <i class="fa-solid fa-user" style="font-size: 20px;"></i>
             <a href="#">
                 Xin chào : ???
@@ -16,3 +16,12 @@
         </div>
     </div>
 </div>
+<script>
+    $(document).ready(function () {
+        // Lấy giá trị fullname từ session và thay thế vào chỗ "Xin chào: ???"
+        var fullname = sessionStorage.getItem("FullName");
+        if (fullname) {
+            $("#user a").text("Xin chào: " + fullname);
+        }
+    });
+</script>

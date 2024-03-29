@@ -1,5 +1,5 @@
 ﻿<script>
-    if(!sessionStorage.getItem('Token')) {
+    if (!sessionStorage.getItem('Token')) {
         window.location.href = "/Account/Login";
     }
 </script>
@@ -14,7 +14,7 @@
     <link rel="stylesheet" href="~/css/home.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/FE.ManagerPoint.styles.css" asp-append-version="true" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
 </head>
 <body>
     <div class="home-page">
@@ -29,7 +29,6 @@
             </div>
         </div>
     </div>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="~/js/home.js" asp-append-version="true"></script>
