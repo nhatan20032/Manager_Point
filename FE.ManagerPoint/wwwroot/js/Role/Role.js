@@ -26,6 +26,7 @@
             },
             "dataSrc": "data"
         },
+        "rowId": "Id",
         "columns": [
             { 'data': 'Id', "orderable": false },
             { 'data': 'Name', "orderable": false },
@@ -39,18 +40,98 @@
                 }
             },
             {
-                "data": null, "orderable": false, render: function (data) {
-                    let edit = `<a class="link-warning" style="cursor: pointer; margin-right: 20px; text-decoration: none"><i class="fa-solid fa-wrench"></i>Edit</a>`;
-                    let remove = `<a class="link-danger" style="cursor: pointer; text-decoration: none;"><i class="fa-solid fa-trash"></i>Remove</a>`;
+                "data": null, "orderable": false, render: function (row) {
+                    let edit = `<a class="link-warning" onclick="GetById(${row.Id})" style="cursor: pointer; margin-right: 20px; text-decoration: none"><i class="fa-solid fa-wrench"></i>Edit</a>`;
+                    let remove = `<a class="link-danger" onclick="Remove(${row.Id})" style="cursor: pointer; text-decoration: none;"><i class="fa-solid fa-trash"></i>Remove</a>`;
                     return `<div>${edit} ${remove}</div>`;
                 }
             },
         ],
         "searching": false,
         "paging": true,
-        "lengthChange": false,
+        "lengthChange": true,
         "info": true,
         "pageLength": 10,
     });
     window.dt = this.$table;
 }
+function createRole(object) {
+    $.ajax({
+        url: "https://localhost:44335/role/create",
+        method: "POST",
+        data: JSON.stringify(object),
+        contentType: 'application/json',
+        success: function (res) {
+            toastr.success('Tạo vai trò thành công');
+            $("#role_name").val("");
+            $("#description").val("");
+            $('#createModal').modal('hide');
+            $('#role_table').DataTable().ajax.reload();
+        },
+    });
+}
+
+function updateRole(id, object) {
+    $.ajax({
+        url: `https://localhost:44335/role/modified?id=${id}`,
+        method: "PUT",
+        data: JSON.stringify(object),
+        contentType: 'application/json',
+        success: function (res) {
+            if (res < 0) {
+                toastr.error('Tạo vai trò thất bại');
+                return;
+            }
+            toastr.success('Tạo vai trò thành công');
+            $('#updateModal').modal('hide');
+            $('#role_table').DataTable().ajax.reload();
+        },
+    });
+}
+
+function GetById(id) {
+    $.ajax({
+        url: `https://localhost:44335/role/get_by_id`,
+        method: "GET",
+        data: {
+            id: id,
+        },
+        success: function (res) {
+            if (res == null) {
+                toastr.error('Không tìm thấy vai trò');
+                return;
+            }
+            $("#id_role").val(res.id);
+            $("#role_name_md").val(res.name);
+            $("#description_md").val(res.description);
+            $("#updateModal").modal("show");
+        },
+    });
+}
+
+function Remove(id) {
+    swal({
+        title: "Bạn chắc chắn muốn xóa?",
+        text: "Hành động này không thể hoàn tác!",
+        icon: "warning",
+        buttons: ["Hủy", "Xóa"],
+        dangerMode: true,
+    }).then((willDelete) => {
+        if (willDelete) {
+            $.ajax({
+                url: "https://localhost:44335/role/remove?id=" + id,
+                method: "DELETE",
+                success: function (res) {
+                    toastr.success('Xóa vai trò thành công');
+                    $('#role_table').DataTable().ajax.reload();
+                },
+            });
+        } else {
+            // Người dùng nhấn Hủy
+            swal("Hủy xóa!", {
+                icon: "info",
+            });
+        }
+    });
+}
+

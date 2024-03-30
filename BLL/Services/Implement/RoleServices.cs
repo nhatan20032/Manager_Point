@@ -120,7 +120,7 @@ namespace BLL.Services.Implement
         {
             try
             {
-                var vm_role = await _appContext.Roles.ProjectTo<vm_role>(_mapper.ConfigurationProvider).SingleOrDefaultAsync(x => x.Id == id); // không thì truy cập vào db để lấy đối tượng ra
+                var vm_role = _appContext.Roles.ProjectTo<vm_role>(_mapper.ConfigurationProvider).FirstOrDefault(x => x.Id == id);
                 if (vm_role == null) return null!;
                 return vm_role;
             }
