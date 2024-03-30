@@ -5,6 +5,8 @@ using BLL.ViewModels;
 using BLL.ViewModels.Role;
 using Manager_Point.ApplicationDbContext;
 using Manager_Point.Models;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Primitives;
 using Newtonsoft.Json;
 using System.Data.Entity;
 
@@ -12,12 +14,14 @@ namespace BLL.Services.Implement
 {
     public class RoleServices : IRoleServices
     {
+        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly AppDbContext _appContext;
         private readonly IMapper _mapper;
-        public RoleServices(IMapper mapper)
+        public RoleServices(IHttpContextAccessor httpContextAccessor, IMapper mapper)
         {
             _appContext = new AppDbContext();
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+            _httpContextAccessor = httpContextAccessor;
         }
         public async Task<List<int>> Batch_Create_Item(List<vm_create_role> requests)
         {
@@ -74,7 +78,7 @@ namespace BLL.Services.Implement
             }
         }
 
-        public async Task<string> Get_All_Async(int page_number = 1, int page_size = 10, string search = "")
+        public async Task<string>? Get_All_Async(int page_number = 1, int page_size = 10, string search = "")
         {
             try
             {
@@ -89,13 +93,17 @@ namespace BLL.Services.Implement
                     .Where(s => string.IsNullOrEmpty(search) || s.Name!.Contains(search))
                     .Count();
 
+                int draw = 1;
+                var httpRequest = _httpContextAccessor.HttpContext!.Request;
+                if (httpRequest.Query.TryGetValue("draw", out StringValues valueDraw)) try { draw = int.Parse(valueDraw!); } catch { }
+
                 var vm_Roles = _appContext.Roles.ProjectTo<vm_role>(_mapper.ConfigurationProvider).ToList();
-                var paginatedResult = new PaginatedResult<vm_role>
+                var paginatedResult = new Pagination<vm_role>
                 {
-                    TotalCount = totalCount,
-                    PageNumber = page_number,
-                    PageSize = page_size,
-                    Data = vm_Roles
+                    draw = draw,
+                    recordsTotal = totalCount,
+                    recordsFiltered = totalCount,
+                    data = vm_Roles
                 };
 
                 var jsonResult = JsonConvert.SerializeObject(paginatedResult, Formatting.Indented);
