@@ -468,7 +468,7 @@ a:hover {
 .main-content {
     flex-direction: column;
     text-align: center;
-    justify-content: center;
+/*    justify-content: center;*/
     display: flex;
     padding: 10px;
     height: 100vh;
