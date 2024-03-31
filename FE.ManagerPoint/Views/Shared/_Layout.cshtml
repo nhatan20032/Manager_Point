@@ -1,8 +1,8 @@
-﻿<script>
+﻿@* <script>
     if (!sessionStorage.getItem('Token')) {
         window.location.href = "/Account/Login";
     }
-</script>
+</script> *@
 
 <!DOCTYPE html>
 <html lang="en">
@@ -15,16 +15,23 @@
     <link rel="stylesheet" href="~/FE.ManagerPoint.styles.css" asp-append-version="true" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
+
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.0.3/css/dataTables.dataTables.css" />
+    <script src="https://cdn.datatables.net/2.0.3/js/dataTables.js"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 </head>
 <body>
-    <div class="home-page">
-        <partial name="_Sidebar"></partial>
-        <div class="home-section">
-            <partial name="_Navbar"></partial>
-            <div class="main-content">
+	<div class="home-page">
+		<partial name="_Navbar"></partial>
+		<div class="home-section">
+			<partial name="_Sidebar"></partial>
+            <div id='main-content' class="main-content">
                 <div class="main-body">
                     @RenderBody()
-                    <p>Xin chào : Duy đẹp trai !</p>
                 </div>
             </div>
         </div>
