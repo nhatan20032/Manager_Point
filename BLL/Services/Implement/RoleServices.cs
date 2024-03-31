@@ -78,17 +78,10 @@ namespace BLL.Services.Implement
             }
         }
 
-        public async Task<string>? Get_All_Async(int page_number = 1, int page_size = 10, string search = "")
+        public async Task<string>? Get_All_Async(int offset = 0, int limit = 10, string search = "")
         {
             try
             {
-                int skip = (page_number - 1) * page_size;
-                var query = _appContext.Roles
-                    .Where(t => string.IsNullOrEmpty(search) || t.Name!.Contains(search))
-                    .Skip(skip)
-                    .Take(page_size);
-                var roles = query.ToList();
-
                 int totalCount = _appContext.Roles
                     .Where(s => string.IsNullOrEmpty(search) || s.Name!.Contains(search))
                     .Count();
@@ -97,7 +90,8 @@ namespace BLL.Services.Implement
                 var httpRequest = _httpContextAccessor.HttpContext!.Request;
                 if (httpRequest.Query.TryGetValue("draw", out StringValues valueDraw)) try { draw = int.Parse(valueDraw!); } catch { }
 
-                var vm_Roles = _appContext.Roles.ProjectTo<vm_role>(_mapper.ConfigurationProvider).ToList();
+                var vm_Roles = _appContext.Roles.ProjectTo<vm_role>(_mapper.ConfigurationProvider).Where(t => string.IsNullOrEmpty(search) || t.Name!.Contains(search))
+                    .Skip(offset).Take(limit).ToList();
                 var paginatedResult = new Pagination<vm_role>
                 {
                     draw = draw,
