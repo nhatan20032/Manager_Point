@@ -43,31 +43,39 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Tạo quyền mới</h5>
+                <h5 class="modal-title">Tạo quyền mới</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body">
-                <div class="row">
-                    <div class="col-md-2">
-                        <label>Tên quyền</label>
+            <form id="role_create_form" class="needs-validation" novalidate>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-2">
+                            <label for="role_name" class="form-label">Tên quyền</label>
+                        </div>
+                        <div class="col-md-10">
+                            <input id="role_name" class="form-control" type="text" required />
+                            <div class="invalid-feedback">
+                                Xin hãy nhập tên của quyền!
+                            </div>
+                        </div>
                     </div>
-                    <div class="col-md-10">
-                        <input id="role_name" class="form-control" type="text" />
+                    <div class="row mt-3">
+                        <div class="col-md-2">
+                            <label for="description" class="form-label">Mô tả</label>
+                        </div>
+                        <div class="col-md-10">
+                            <textarea id="description" class="form-control" rows="5" required></textarea>
+                            <div class="invalid-feedback">
+                                Xin hãy nhập mô tả cho quyền
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="row mt-3">
-                    <div class="col-md-2">
-                        <label>Mô tả</label>
-                    </div>
-                    <div class="col-md-10">
-                        <textarea id="description" class="form-control" rows="5"></textarea>
-                    </div>
+                <div class="modal-footer">
+                    <button id="save" type="submit" class="btn btn-primary">Lưu</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
                 </div>
-            </div>
-            <div class="modal-footer">
-                <button id="save" type="button" class="btn btn-primary">Lưu</button>
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-            </div>
+            </form>
         </div>
     </div>
 </div>
@@ -80,36 +88,38 @@
                 <h5 class="modal-title" id="exampleModalLabel">Cập nhật quyền</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body">
-                <div class="row">
-                    <div class="col-md-2">
-                        <label>Id</label>
+            <form id="role_update_form" class="needs-validation" novalidate>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-2">
+                            <label>Id</label>
+                        </div>
+                        <div class="col-md-10">
+                            <input id="id_role" class="form-control" type="text" readonly />
+                        </div>
                     </div>
-                    <div class="col-md-10">
-                        <input id="id_role" class="form-control" type="text" readonly />
+                    <div class="row mt-3">
+                        <div class="col-md-2">
+                            <label>Tên quyền</label>
+                        </div>
+                        <div class="col-md-10">
+                            <input id="role_name_md" class="form-control" required />
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-2">
+                            <label>Mô tả</label>
+                        </div>
+                        <div class="col-md-10">
+                            <textarea id="description_md" class="form-control" rows="5" required></textarea>
+                        </div>
                     </div>
                 </div>
-                <div class="row mt-3">
-                    <div class="col-md-2">
-                        <label>Tên quyền</label>
-                    </div>
-                    <div class="col-md-10">
-                        <input id="role_name_md" class="form-control"/>
-                    </div>
+                <div class="modal-footer">
+                    <button id="save_md" type="submit" class="btn btn-primary">Lưu</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
                 </div>
-                <div class="row mt-3">
-                    <div class="col-md-2">
-                        <label>Mô tả</label>
-                    </div>
-                    <div class="col-md-10">
-                        <textarea id="description_md" class="form-control" rows="5"></textarea>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button id="save_md" type="button" class="btn btn-primary">Lưu</button>
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-            </div>
+            </form>
         </div>
     </div>
 </div>
@@ -117,28 +127,53 @@
 <script>
     $(document).ready(function () {
         setupGrid();
-        $("#save").on("click", function () {
-            let role_name = $("#role_name").val();
-            let description = $("#description").val();
-            let status = 1;
-            let object = {
-                Name: role_name,
-                Description: description,
-                Status: status,
-            };
-            createRole(object);
+        $('#role_create_form').on('submit', function (event) {
+            var form = $(this);
+            if (!form[0].checkValidity()) {
+                event.preventDefault();
+                event.stopPropagation();
+            } else {
+                let role_name = $("#role_name").val();
+                let description = $("#description").val();
+                let status = 1;
+                let object = {
+                    Name: role_name,
+                    Description: description,
+                    Status: status,
+                };
+                event.preventDefault();
+                createRole(object, function(){
+                    $("#role_name").val("");
+                    $("#description").val("");
+                    form.addClass('was-validated');
+                    toastr.success('Tạo vai trò thành công');
+                    $('#createModal').modal('hide');
+                });
+            }
         });
-        $("#save_md").on("click", function () {
-            let id = $("#id_role").val();
-            let role_name = $("#role_name_md").val();
-            let description = $("#description_md").val();
-            let status = 1;
-            let object = {
-                Name: role_name,
-                Description: description,
-                Status: status,
-            };
-            updateRole(id, object);
+        $('#role_update_form').on('submit', function (event) {
+            var form = $(this);
+            if (!form[0].checkValidity()) {
+                event.preventDefault();
+                event.stopPropagation();
+            } else {
+                let id = $("#id_role").val();
+                let role_name = $("#role_name_md").val();
+                let description = $("#description_md").val();
+                let status = 1;
+                let object = {
+                    Name: role_name,
+                    Description: description,
+                    Status: status,
+                };
+                event.preventDefault();
+                updateRole(id, object, function () {
+                    form.addClass('was-validated');
+                    toastr.success('Cập nhật vai trò thành công');
+                    $('#updateModal').modal('hide');
+                });
+            }
+
         });
     });
 </script>

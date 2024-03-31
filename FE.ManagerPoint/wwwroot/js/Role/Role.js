@@ -55,35 +55,31 @@
     });
     window.dt = this.$table;
 }
-function createRole(object) {
+function createRole(object, callback) {
     $.ajax({
         url: "https://localhost:44335/role/create",
         method: "POST",
         data: JSON.stringify(object),
         contentType: 'application/json',
         success: function (res) {
-            toastr.success('Tạo vai trò thành công');
-            $("#role_name").val("");
-            $("#description").val("");
-            $('#createModal').modal('hide');
+            if (callback && typeof callback === "function") {
+                callback();
+            }
             $('#role_table').DataTable().ajax.reload();
         },
     });
 }
 
-function updateRole(id, object) {
+function updateRole(id, object, callback) {
     $.ajax({
         url: `https://localhost:44335/role/modified?id=${id}`,
         method: "PUT",
         data: JSON.stringify(object),
         contentType: 'application/json',
         success: function (res) {
-            if (res < 0) {
-                toastr.error('Tạo vai trò thất bại');
-                return;
+            if (callback && typeof callback === "function") {
+                callback();
             }
-            toastr.success('Tạo vai trò thành công');
-            $('#updateModal').modal('hide');
             $('#role_table').DataTable().ajax.reload();
         },
     });
