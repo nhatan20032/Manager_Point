@@ -21,8 +21,8 @@
         "serverSide": true,
         "ajax": {
             "url": "https://localhost:44335/role/get_all",
-            "data": {
-                search: $('#search').val()
+            "data": function (d) {
+                d.search = d.search.value;
             },
             "dataSrc": "data"
         },
@@ -47,7 +47,7 @@
                 }
             },
         ],
-        "searching": false,
+        "searching": true,
         "paging": true,
         "lengthChange": true,
         "info": true,
