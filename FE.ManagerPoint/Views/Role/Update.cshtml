@@ -35,9 +35,18 @@
                 </div>
                 <div class="modal-footer">
                     <button id="save_md" type="submit" class="btn btn-primary">Lưu</button>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                    <button id="un_save_md" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
                 </div>
             </form>
         </div>
     </div>
 </div>
+<script>
+    $(document).ready(function () {
+        $('#un_save_md[data-bs-dismiss="modal"]').on('click', function () {
+            if ($('#role_update_form').hasClass('was-validated')) {
+                $('#role_update_form').removeClass('was-validated');
+            }
+        });
+    });
+</script>
