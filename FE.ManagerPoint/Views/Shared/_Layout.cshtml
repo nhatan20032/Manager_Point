@@ -25,11 +25,11 @@
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 </head>
 <body>
-    <div class="home-page">
-        <partial name="_Sidebar"></partial>
-        <div class="home-section">
-            <partial name="_Navbar"></partial>
-            <div class="main-content">
+	<div class="home-page">
+		<partial name="_Navbar"></partial>
+		<div class="home-section">
+			<partial name="_Sidebar"></partial>
+            <div id='main-content' class="main-content">
                 <div class="main-body">
                     @RenderBody()
                 </div>

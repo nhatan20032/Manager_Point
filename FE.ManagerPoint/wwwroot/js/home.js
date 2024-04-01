@@ -1,4 +1,6 @@
-﻿let btn = document.querySelector(".fa-bars");
+﻿
+
+let btn = document.querySelector(".fa-bars");
 let sidebar = document.querySelector(".sidebar");
 
 btn.addEventListener("click", () => {
@@ -12,4 +14,16 @@ for (var i = 0; i < arrows.length; i++) {
 
         arrowParent.classList.toggle("show");
     });
+}
+
+
+function iconmr() {
+    var sidebar = document.getElementById('sidebar');
+    var mainContent = document.getElementById('main-content');
+
+    if (sidebar.classList.contains('close')) {
+        mainContent.classList.remove('mr');
+    } else {
+        mainContent.classList.add('mr');
+    }
 }
