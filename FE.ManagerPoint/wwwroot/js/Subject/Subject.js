@@ -1,5 +1,5 @@
 ﻿function setupGrid() {
-    this.$table = $('#role_table').DataTable({
+    this.$table = $('#subject_table').DataTable({
         "language": {
             "sProcessing": "Đang xử lý...",
             "sLengthMenu": "Xem _MENU_ mục",
@@ -20,7 +20,7 @@
         "processing": true,
         "serverSide": true,
         "ajax": {
-            "url": "https://localhost:44335/role/get_all",
+            "url": "https://localhost:44335/subject/get_all",
             "data": function (d) {
                 d.search = d.search.value;
             },
@@ -57,7 +57,7 @@
 }
 function createRole(object, callback) {
     $.ajax({
-        url: "https://localhost:44335/role/create",
+        url: "https://localhost:44335/subject/create",
         method: "POST",
         data: JSON.stringify(object),
         contentType: 'application/json',
@@ -65,14 +65,14 @@ function createRole(object, callback) {
             if (callback && typeof callback === "function") {
                 callback();
             }
-            $('#role_table').DataTable().ajax.reload();
+            $('#subject_table').DataTable().ajax.reload();
         },
     });
 }
 
 function updateRole(id, object, callback) {
     $.ajax({
-        url: `https://localhost:44335/role/modified?id=${id}`,
+        url: `https://localhost:44335/subject/modified?id=${id}`,
         method: "PUT",
         data: JSON.stringify(object),
         contentType: 'application/json',
@@ -80,14 +80,14 @@ function updateRole(id, object, callback) {
             if (callback && typeof callback === "function") {
                 callback();
             }
-            $('#role_table').DataTable().ajax.reload();
+            $('#subject_table').DataTable().ajax.reload();
         },
     });
 }
 
 function GetById(id) {
     $.ajax({
-        url: `https://localhost:44335/role/get_by_id`,
+        url: `https://localhost:44335/subject/get_by_id`,
         method: "GET",
         data: {
             id: id,
@@ -97,8 +97,8 @@ function GetById(id) {
                 toastr.error('Không tìm thấy vai trò');
                 return;
             }
-            $("#id_role").val(res.id);
-            $("#role_name_md").val(res.name);
+            $("#id_subject").val(res.id);
+            $("#subject_name_md").val(res.name);
             $("#description_md").val(res.description);
             $("#updateModal").modal("show");
         },
@@ -115,11 +115,11 @@ function Remove(id) {
     }).then((willDelete) => {
         if (willDelete) {
             $.ajax({
-                url: "https://localhost:44335/role/remove?id=" + id,
+                url: "https://localhost:44335/subject/remove?id=" + id,
                 method: "DELETE",
                 success: function (res) {
                     toastr.success('Xóa vai trò thành công');
-                    $('#role_table').DataTable().ajax.reload();
+                    $('#subject_table').DataTable().ajax.reload();
                 },
             });
         } else {

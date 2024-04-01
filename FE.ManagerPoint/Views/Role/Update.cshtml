@@ -1,0 +1,52 @@
+﻿<!-- Modal update -->
+<div class="modal fade" id="updateModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="updateModal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Cập nhật quyền</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="role_update_form" class="needs-validation" novalidate>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-2">
+                            <label>Id</label>
+                        </div>
+                        <div class="col-md-10">
+                            <input id="id_role" class="form-control" type="text" readonly />
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-2">
+                            <label>Tên quyền</label>
+                        </div>
+                        <div class="col-md-10">
+                            <input id="role_name_md" class="form-control" required />
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-2">
+                            <label>Mô tả</label>
+                        </div>
+                        <div class="col-md-10">
+                            <textarea id="description_md" class="form-control" rows="5" required></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="save_md" type="submit" class="btn btn-primary">Lưu</button>
+                    <button id="un_save_md" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        $('#un_save_md[data-bs-dismiss="modal"]').on('click', function () {
+            if ($('#role_update_form').hasClass('was-validated')) {
+                $('#role_update_form').removeClass('was-validated');
+            }
+        });
+    });
+</script>
