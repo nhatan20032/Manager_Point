@@ -15,9 +15,9 @@ namespace API.Controllers
         }
 
         [HttpGet("/subject/get_all")]
-        public async Task<IActionResult> Get_All_Item(int offset = 0, int limit = 10, string search = "")
+        public async Task<IActionResult> Get_All_Item(int start = 0, int length = 10, string search = "")
         {
-            return Ok(await _subjectServices.Get_All_Async(offset, limit, search));
+            return Ok(await _subjectServices.Get_All_Async(start, length, search));
         }
 
         [HttpGet("/subject/get_by_id")]

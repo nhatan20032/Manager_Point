@@ -6,7 +6,6 @@ using BLL.ViewModels.Subject;
 using Manager_Point.ApplicationDbContext;
 using Manager_Point.Models;
 using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Primitives;
 using Newtonsoft.Json;
 using System.Data.Entity;
@@ -93,8 +92,7 @@ namespace BLL.Services.Implement
                 var httpRequest = _httpContextAccessor.HttpContext!.Request;
                 if (httpRequest.Query.TryGetValue("draw", out StringValues valueDraw)) try { draw = int.Parse(valueDraw!); } catch { }
 
-                var vmSubjects = _appContext.Subjects.ProjectTo<vm_subject>(_mapper.ConfigurationProvider).Where(t => string.IsNullOrEmpty(search) || t.Name!.Contains(search))
-                .Skip(offset).Take(limit).ToList();
+                var vmSubjects = _appContext.Subjects.ProjectTo<vm_subject>(_mapper.ConfigurationProvider).Where(t => string.IsNullOrEmpty(search) || t.Name!.Contains(search)).Skip(offset).Take(limit).ToList();
                 var paginatedResult = new Pagination<vm_subject>
                 {
                     draw = draw,
@@ -118,7 +116,7 @@ namespace BLL.Services.Implement
         {
             try
             {
-                var vm_subject = await _appContext.Subjects.ProjectTo<vm_subject>(_mapper.ConfigurationProvider).SingleOrDefaultAsync(x => x.Id == id); // không thì truy cập vào db để lấy đối tượng ra
+                var vm_subject = _appContext.Subjects.ProjectTo<vm_subject>(_mapper.ConfigurationProvider).SingleOrDefault(x => x.Id == id); // không thì truy cập vào db để lấy đối tượng ra
                 if (vm_subject == null) return null!;
                 return vm_subject;
             }
