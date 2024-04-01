@@ -1,5 +1,15 @@
-﻿<div class="home-content">
-    <i class="fas fa-bars"></i>
+﻿
+<div class="home-content">
+    <div class="logo">
+        <div class="anh">
+            <img src="/img/logo.jpg" style="width: 100px;" alt="EDUCATION">
+        </div>
+        <div class="title">
+            <p>EDUCATION</p>
+        </div>
+        <i class="fas fa-bars" onclick="iconmr()"></i>
+    </div>
+
     <div class="menu-infor">
         <div class="bell">
             <i class="fa-solid fa-bell" style="font-size: 20px;"></i>
@@ -8,7 +18,7 @@
             </a>
             <i class="fa-solid fa-exclamation"></i>
         </div>
-        <div class="user" id="user">
+        <div class="user">
             <i class="fa-solid fa-user" style="font-size: 20px;"></i>
             <a href="#">
                 Xin chào : ???
@@ -16,6 +26,7 @@
         </div>
     </div>
 </div>
+
 <script>
     $(document).ready(function () {
         // Lấy giá trị fullname từ session và thay thế vào chỗ "Xin chào: ???"
@@ -24,4 +35,6 @@
             $("#user a").text("Xin chào: " + fullname);
         }
     });
+
+
 </script>
