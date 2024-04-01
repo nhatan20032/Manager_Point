@@ -3,7 +3,7 @@
     ViewBag.Title = "Quản lý môn học";
 }
 <style>
-    #role_table thead th {
+    #subject_table thead th {
         text-align: center;
         vertical-align: middle;
     }
@@ -43,16 +43,16 @@
                 event.preventDefault();
                 event.stopPropagation();
             } else {
-                let role_name = $("#subject_name").val();
+                let subject_name = $("#subject_name").val();
                 let description = $("#description").val();
                 let status = 1;
                 let object = {
-                    Name: role_name,
+                    Name: subject_name,
                     Description: description,
                     Status: status,
                 };
                 event.preventDefault();
-                createRole(object, function () {
+                createSub(object, function () {
                     $("#subject_name").val("");
                     $("#description").val("");
                     toastr.success('Tạo môn học thành công');
@@ -78,7 +78,7 @@
                     Status: status,
                 };
                 event.preventDefault();
-                updateRole(id, object, function () {
+                updateSub(id, object, function () {
                     toastr.success('Cập nhật môn học thành công');
                     form.removeClass('was-validated');
                     $('#updateModal').modal('hide');

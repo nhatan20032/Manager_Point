@@ -8,7 +8,7 @@ namespace API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    //[Authorize]
     public class UsersController : ControllerBase
     {
         private readonly IUserServices _userServices;
@@ -17,9 +17,19 @@ namespace API.Controllers
             _userServices = userServices;
         }
         [HttpGet("/user/get_all")]
-        public async Task<IActionResult> Get_All_Item(int page_number = 1, int page_size = 10, string search = "")
+        public async Task<IActionResult> Get_All_Item(int start = 0, int length = 10, string search = "")
         {
-            return Ok(await _userServices.Get_All_Async(page_number, page_size, search));
+            return Ok(await _userServices.Get_All_Async(start, length, search));
+        }
+        [HttpGet("/user/get_all_teacher")]
+        public async Task<IActionResult> Get_All_Teacher(int start = 0, int length = 10, string search = "", int role = 1, int subject = 0, int classes = 0)
+        {
+            return Ok(await _userServices.Get_All_Teacher(start, length, search, role, subject, classes));
+        }
+        [HttpGet("/user/get_all_student")]
+        public async Task<IActionResult> Get_All_Student(int start = 0, int length = 10, string search = "", int role = 2, int classes = 0)
+        {
+            return Ok(await _userServices.Get_All_Student(start, length, search, role, classes));
         }
 
         [HttpGet("/user/get_by_id")]
@@ -28,7 +38,7 @@ namespace API.Controllers
             return Ok(await _userServices.Get_By_Id(id));
         }
 
-        [AllowAnonymous]
+        //[AllowAnonymous]
         [HttpPost("/user/authenticate")]
         public IActionResult Authenticate(AuthenticateRequest model)
         {

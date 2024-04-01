@@ -22,6 +22,7 @@
         "ajax": {
             "url": "https://localhost:44335/subject/get_all",
             "data": function (d) {
+                delete d.columns;
                 d.search = d.search.value;
             },
             "dataSrc": "data"
@@ -55,7 +56,7 @@
     });
     window.dt = this.$table;
 }
-function createRole(object, callback) {
+function createSub(object, callback) {
     $.ajax({
         url: "https://localhost:44335/subject/create",
         method: "POST",
@@ -70,7 +71,7 @@ function createRole(object, callback) {
     });
 }
 
-function updateRole(id, object, callback) {
+function updateSub(id, object, callback) {
     $.ajax({
         url: `https://localhost:44335/subject/modified?id=${id}`,
         method: "PUT",
