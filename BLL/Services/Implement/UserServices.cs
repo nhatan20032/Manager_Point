@@ -8,6 +8,8 @@ using BLL.ViewModels.User;
 using Manager_Point.ApplicationDbContext;
 using Manager_Point.Models;
 using Manager_Point.Models.Enum;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Primitives;
 using Newtonsoft.Json;
 using OfficeOpenXml;
 using System.Data.Entity;
@@ -16,14 +18,16 @@ namespace BLL.Services.Implement
 {
     public class UserServices : IUserServices
     {
+        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly AppDbContext _appContext;
         private readonly IMapper _mapper;
         private readonly IJwtUtils _jwtUtils;
-        public UserServices(IMapper mapper, IJwtUtils jwtUtils)
+        public UserServices(IMapper mapper, IJwtUtils jwtUtils, IHttpContextAccessor httpContextAccessor)
         {
             _appContext = new AppDbContext();
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _jwtUtils = jwtUtils;
+            _httpContextAccessor = httpContextAccessor;
         }
         public async Task<List<int>> Batch_Create_Item(List<vm_create_user> requests)
         {
@@ -79,28 +83,85 @@ namespace BLL.Services.Implement
             }
         }
 
-        public async Task<string> Get_All_Async(int page_number = 1, int page_size = 10, string search = "")
+        public async Task<string> Get_All_Async(int offset = 0, int limit = 10, string search = "")
         {
             try
             {
-                int skip = (page_number - 1) * page_size;
-                var query = _appContext.Users
-                    .Where(t => string.IsNullOrEmpty(search) || t.Name!.Contains(search))
-                    .Skip(skip)
-                    .Take(page_size);
-                var roles = query.ToList();
-
                 int totalCount = _appContext.Users
                     .Where(s => string.IsNullOrEmpty(search) || s.Name!.Contains(search))
                     .Count();
-
-                var vm_User = _appContext.Users.ProjectTo<vm_user>(_mapper.ConfigurationProvider).ToList();
-                var paginatedResult = new PaginatedResult<vm_user>
+                int draw = 1;
+                var httpRequest = _httpContextAccessor.HttpContext!.Request;
+                if (httpRequest.Query.TryGetValue("draw", out StringValues valueDraw)) try { draw = int.Parse(valueDraw!); } catch { }
+                var vm_User = _appContext.Users.ProjectTo<vm_user>(_mapper.ConfigurationProvider);
+                var result = vm_User.Where(t => (string.IsNullOrEmpty(search) || t.Name!.Contains(search))).Skip(offset).Take(limit).ToList();
+                var paginatedResult = new Pagination<vm_user>
                 {
-                    TotalCount = totalCount,
-                    PageNumber = page_number,
-                    PageSize = page_size,
-                    Data = vm_User
+                    draw = draw,
+                    recordsTotal = totalCount,
+                    recordsFiltered = totalCount,
+                    data = result
+                };
+
+                var jsonResult = JsonConvert.SerializeObject(paginatedResult, Formatting.Indented);
+                return jsonResult;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in Get_All_Async: {ex.Message}");
+                throw;
+            }
+        }
+
+        public async Task<string> Get_All_Teacher (int offset = 0, int limit = 10, string search = "", int role = 1, int subject = 0, int classes = 0)
+        {
+            try
+            {
+                int totalCount = _appContext.Users.ProjectTo<vm_user>(_mapper.ConfigurationProvider).Where(s => (string.IsNullOrEmpty(search) || s.Name!.Contains(search)) && s.Role_id!.Contains(role)).Count();
+                int draw = 1;
+                var httpRequest = _httpContextAccessor.HttpContext!.Request;
+                if (httpRequest.Query.TryGetValue("draw", out StringValues valueDraw)) try { draw = int.Parse(valueDraw!); } catch { }
+                var vm_User = _appContext.Users.ProjectTo<vm_user>(_mapper.ConfigurationProvider);
+                var result = vm_User.Where(t => string.IsNullOrEmpty(search) || t.Name!.Contains(search)).Skip(offset).Take(limit).ToList();
+                if (role != 0) result = result.Where(t => t.Role_id!.Contains(role)).ToList();
+                if (subject != 0) result = result.Where(t => t.Subject_id!.Contains(subject)).ToList();
+                if (classes != 0) result = result.Where(t => t.Class_id!.Contains(classes)).ToList();
+                var paginatedResult = new Pagination<vm_user>
+                {
+                    draw = draw,
+                    recordsTotal = totalCount,
+                    recordsFiltered = totalCount,
+                    data = result
+                };
+
+                var jsonResult = JsonConvert.SerializeObject(paginatedResult, Formatting.Indented);
+                return jsonResult;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in Get_All_Async: {ex.Message}");
+                throw;
+            }
+        }
+
+        public async Task<string> Get_All_Student(int offset = 0, int limit = 10, string search = "", int role = 2, int classes = 0)
+        {
+            try
+            {
+                int totalCount = _appContext.Users.ProjectTo<vm_user>(_mapper.ConfigurationProvider).Where(s => (string.IsNullOrEmpty(search) || s.Name!.Contains(search)) && s.Role_id!.Contains(role)).Count();
+                int draw = 1;
+                var httpRequest = _httpContextAccessor.HttpContext!.Request;
+                if (httpRequest.Query.TryGetValue("draw", out StringValues valueDraw)) try { draw = int.Parse(valueDraw!); } catch { }
+                var vm_User = _appContext.Users.ProjectTo<vm_user>(_mapper.ConfigurationProvider);
+                var result = vm_User.Where(t => string.IsNullOrEmpty(search) || t.Name!.Contains(search)).Skip(offset).Take(limit).ToList();
+                if (role != 0) result = result.Where(t => t.Role_id!.Contains(role)).ToList();
+                if (classes != 0) result = result.Where(t => t.Class_id!.Contains(classes)).ToList();
+                var paginatedResult = new Pagination<vm_user>
+                {
+                    draw = draw,
+                    recordsTotal = totalCount,
+                    recordsFiltered = totalCount,
+                    data = result
                 };
 
                 var jsonResult = JsonConvert.SerializeObject(paginatedResult, Formatting.Indented);
@@ -117,7 +178,7 @@ namespace BLL.Services.Implement
         {
             try
             {
-                var vm_User = await _appContext.Users.ProjectTo<vm_user>(_mapper.ConfigurationProvider).SingleOrDefaultAsync(x => x.Id == id); // không thì truy cập vào db để lấy đối tượng ra
+                var vm_User = _appContext.Users.ProjectTo<vm_user>(_mapper.ConfigurationProvider).SingleOrDefault(x => x.Id == id); // không thì truy cập vào db để lấy đối tượng ra
                 if (vm_User == null) return null!;
                 return vm_User;
             }

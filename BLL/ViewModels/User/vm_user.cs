@@ -6,9 +6,12 @@ namespace BLL.ViewModels.User
     public class vm_user
     {
         public int Id { get; set; }
-        public ICollection<string>? Role_User { get; set; }
-        public ICollection<string>? Subject_User { get; set; }
-        public ICollection<string>? User_Class { get; set; }
+        public List<string>? Role_User { get; set; }
+        public List<int>? Role_id { get; set; }
+        public List<string>? Subject_User { get; set; }
+        public List<int>? Subject_id { get; set; }
+        public List<string>? User_Class { get; set; }
+        public List<int>? Class_id { get; set; }
         public string? User_Code { get; set; }
 
         [JsonIgnore]

@@ -17,27 +17,9 @@
                 <!-- <i class="fas fa-caret-down arrow"></i> -->
             </div>
             <ul class="sub-menu">
-
                 <li>
                     <a id="role" class="role" href="/Role/Index">
                         Quản lý quyền
-                    </a>
-                </li>
-            </ul>
-        </li>
-        <li>
-            <div class="icon-link">
-                <a id="subject" class="subject" href="/Subject/Index">
-                    <i class="fa-solid fa-book-open"></i>
-                    <span class="link-name">Quản lý môn học</span>
-                </a>
-                <!-- <i class="fas fa-caret-down arrow"></i> -->
-            </div>
-            <ul class="sub-menu">
-
-                <li>
-                    <a id="subject" class="subject" href="/Subject/Index">
-                        Quản lý môn học
                     </a>
                 </li>
             </ul>
@@ -137,6 +119,26 @@
         </li>
         <li>
             <div class="icon-link">
+                <a id="user" class="user" href="/User/Index">
+                    <i class="fa-solid fa-user-group"></i>
+                    <span class="link-name">Quản lý người dùng</span>
+                </a>
+            </div>
+
+            <ul class="sub-menu">
+                <li><a class="link-name">Quản lý người dùng</a></li>
+                <li>
+                    <a id="user" class="user" href="/User/Index">
+                        Danh sách người dùng
+                    </a>
+                    <a asp-area="MyArea" asp-controller="MyController" asp-action="MyAction">
+                        Phân quyền cho người dùng
+                    </a>
+                </li>
+            </ul>
+        </li>
+        <li>
+            <div class="icon-link">
                 <a asp-area="MyArea" asp-controller="MyController" asp-action="MyAction">
                     <!-- <i class="fa-solid fa-graduation-cap"></i> -->
 
@@ -145,13 +147,11 @@
                 </a>
                 <i class="fas fa-caret-down arrow"></i>
             </div>
-
             <ul class="sub-menu">
                 <li><a class="link-name">Quản lý giáo viên / học sinh </a></li>
                 <li>
                     <a asp-area="MyArea" asp-controller="MyController" asp-action="MyAction">
-                        Giáo viên
-                        / học sinh
+                        Danh sách lớp học
                     </a>
                 </li>
                 <li>
@@ -192,8 +192,8 @@
         </li>
         <li>
             <div class="icon-link">
-                <a asp-area="MyArea" asp-controller="MyController" asp-action="MyAction">
-                    <i class="fa-solid fa-book"></i>
+                <a id="subject" class="subject" href="/Subject/Index">
+                    <i class="fa-solid fa-book-open"></i>
                     <span class="link-name">Quản lý môn học</span>
                 </a>
                 <i class="fas fa-caret-down arrow"></i>
@@ -202,13 +202,11 @@
             <ul class="sub-menu">
                 <li><a class="link-name">Quản lý môn học</a></li>
                 <li>
-                    <a asp-area="MyArea" asp-controller="MyController" asp-action="MyAction">
-                        Gán môn
-                        học cho lớp
+                    <a id="subject" class="subject" href="/Subject/Index">
+                        Danh sách môn học
                     </a>
                     <a asp-area="MyArea" asp-controller="MyController" asp-action="MyAction">
-                        Phân công
-                        môn học cho giáo viên
+                        Phân công môn học cho giáo viên
                     </a>
                 </li>
             </ul>

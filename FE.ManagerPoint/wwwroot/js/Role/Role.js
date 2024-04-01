@@ -22,6 +22,7 @@
         "ajax": {
             "url": "https://localhost:44335/role/get_all",
             "data": function (d) {
+                delete d.columns;
                 d.search = d.search.value;
             },
             "dataSrc": "data"
