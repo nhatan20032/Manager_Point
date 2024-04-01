@@ -126,7 +126,7 @@ namespace BLL.Services.Implement
             }
         }
 
-        public async Task<int> ImportFromExcel(Stream excelFileStream)
+      /*  public async Task<int> ImportFromExcel(Stream excelFileStream)
         {
 
             try
@@ -185,9 +185,100 @@ namespace BLL.Services.Implement
                 Console.WriteLine($"Error in AddUsersFromExcel: {ex.Message}");
                 throw;
             }
-        }
+        }*/
+		public async Task<(int, byte[])> ImportFromExcel(Stream excelFileStream)
+		{
+			try
+			{
+				var gradeDataList = new List<vm_update_gradepoint>();
+				var invalidRows = new List<int>(); // Danh sách lưu trữ các hàng không hợp lệ
 
-        public async Task<int> Modified_Item(int id, vm_update_gradepoint request)
+				using (var package = new ExcelPackage(excelFileStream))
+				{
+					ExcelWorksheet worksheet = package.Workbook.Worksheets[0]; // Lấy sheet đầu tiên
+
+					int rowCount = worksheet.Dimension.Rows;
+					int colCount = worksheet.Dimension.Columns;
+
+					for (int row = 2; row <= rowCount; row++) // Bắt đầu từ hàng thứ hai, bỏ qua tiêu đề
+					{
+						var gradeData = new vm_update_gradepoint();
+						try
+						{
+							gradeData.SubjectId = Convert.ToInt32(worksheet.Cells[row, 1].Value.ToString());
+							gradeData.UserId = Convert.ToInt32(worksheet.Cells[row, 2].Value.ToString());
+							gradeData.ClassId = Convert.ToInt32(worksheet.Cells[row, 3].Value.ToString());
+							gradeData.Semester = Enum.Parse<Semester>(worksheet.Cells[row, 4].Value.ToString());
+							gradeData.Midterm_Grades = float.Parse(worksheet.Cells[row, 5].Value.ToString());
+							gradeData.Final_Grades = float.Parse(worksheet.Cells[row, 6].Value.ToString());
+							gradeData.Average = (gradeData.Midterm_Grades + gradeData.Final_Grades) / 2;
+							gradeDataList.Add(gradeData);
+						}
+						catch (Exception ex)
+						{
+							// Nếu hàng không hợp lệ, thêm số thứ tự hàng vào danh sách không hợp lệ
+							invalidRows.Add(row);
+							Console.WriteLine($"Error in row {row}: {ex.Message}");
+						}
+					}
+
+					// Kiểm tra xem có hàng không hợp lệ không
+					if (invalidRows.Any())
+					{
+						// Tạo một tập tin Excel mới để chứa các hàng không hợp lệ
+						using (var invalidPackage = new ExcelPackage())
+						{
+							ExcelWorksheet invalidWorksheet = invalidPackage.Workbook.Worksheets.Add("InvalidRows");
+
+							// Sao chép các hàng không hợp lệ vào tập tin Excel mới
+							foreach (var invalidRow in invalidRows)
+							{
+								for (int col = 1; col <= colCount; col++)
+								{
+									invalidWorksheet.Cells[invalidRow, col].Value = worksheet.Cells[invalidRow, col].Value;
+								}
+							}
+
+							// Chuyển tập tin Excel thành mảng byte để trả về
+							byte[] invalidExcelBytes = invalidPackage.GetAsByteArray();
+							return (gradeDataList.Count, invalidExcelBytes);
+						}
+					}
+
+					foreach (var gradeData in gradeDataList)
+					{
+						var checkedGrade = _appContext.GradePoints.FirstOrDefault(c => c.ClassId == gradeData.ClassId && c.UserId == gradeData.UserId && c.SubjectId == gradeData.SubjectId);
+						if (checkedGrade != null)
+						{
+							// Cập nhật thuộc tính chỉ khi nó là null hoặc 0
+							if (checkedGrade.Midterm_Grades == null || checkedGrade.Midterm_Grades == 0)
+								checkedGrade.Midterm_Grades = gradeData.Midterm_Grades;
+
+							if (checkedGrade.Final_Grades == null || checkedGrade.Final_Grades == 0)
+								checkedGrade.Final_Grades = gradeData.Final_Grades;
+
+							// Cập nhật cơ sở dữ liệu
+							_appContext.GradePoints.Update(checkedGrade);
+						}
+						else
+						{
+							// Thêm mới bản ghi nếu không tìm thấy
+							var newGrade = _mapper.Map<GradePoint>(gradeData);
+							_appContext.GradePoints.Add(newGrade);
+						}
+					}
+					await _appContext.SaveChangesAsync();
+					return (gradeDataList.Count, null); // Trả về null vì không có tập tin Excel không hợp lệ
+				}
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine($"Error in AddUsersFromExcel: {ex.Message}");
+				throw;
+			}
+		}
+
+		public async Task<int> Modified_Item(int id, vm_update_gradepoint request)
         {
             try
             {

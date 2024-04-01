@@ -4,8 +4,11 @@ using BLL.Services.Interface;
 using BLL.ViewModels;
 using BLL.ViewModels.AcademicPerformance;
 using BLL.ViewModels.Course;
+using BLL.ViewModels.Subject;
 using Manager_Point.ApplicationDbContext;
 using Manager_Point.Models;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Primitives;
 using Newtonsoft.Json;
 using System.Data.Entity;
 
@@ -13,10 +16,12 @@ namespace BLL.Services.Implement
 {
     public class CourseServices : ICourseServices
     {
+        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly AppDbContext _appContext;
         private readonly IMapper _mapper;
-        public CourseServices(IMapper mapper)
+        public CourseServices(IHttpContextAccessor httpContextAccessor,IMapper mapper)
         {
+			_httpContextAccessor = httpContextAccessor;
             _appContext = new AppDbContext();
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
@@ -64,6 +69,7 @@ namespace BLL.Services.Implement
 			try
 			{
 				var obj = _mapper.Map<Course>(request);
+				obj.Name = request.StartTime.Value.Year.ToString() + "-" + request.EndTime.Value.Year.ToString();
 				_appContext.Courses.Add(obj);
 				await _appContext.SaveChangesAsync();
 				return obj.Id;
@@ -75,39 +81,36 @@ namespace BLL.Services.Implement
 			}
 		}
 
-		public async Task<string> Get_All_Async(int page_number = 1, int page_size = 10, string search = "")
+		public async Task<string> Get_All_Async(int offset = 0, int limit = 10, string search = "")
 		{
-			try
-			{
-				int skip = (page_number - 1) * page_size;
-				var query = _appContext.Courses
-					.Where(t => string.IsNullOrEmpty(search) || t.Name!.Contains(search))
-					.Skip(skip)
-					.Take(page_size);
-				var subjects = query.ToList();
+            try
+            {
+                int totalCount = _appContext.Courses
+                    .Where(s => string.IsNullOrEmpty(search) || s.Name!.Contains(search))
+                    .Count();
 
-				int totalCount = _appContext.Courses
-					.Where(s => string.IsNullOrEmpty(search) || s.Name!.Contains(search))
-					.Count();
+                int draw = 1;
+                var httpRequest = _httpContextAccessor.HttpContext!.Request;
+                if (httpRequest.Query.TryGetValue("draw", out StringValues valueDraw)) try { draw = int.Parse(valueDraw!); } catch { }
 
-				var vm_course = _mapper.Map<List<vm_course>>(_mapper.ConfigurationProvider).ToList();
-				var paginatedResult = new PaginatedResult<vm_course>
-				{
-					TotalCount = totalCount,
-					PageNumber = page_number,
-					PageSize = page_size,
-					Data = vm_course
-				};
+                var vm_courses = _appContext.Courses.ProjectTo<vm_course>(_mapper.ConfigurationProvider).Where(t => string.IsNullOrEmpty(search) || t.Name!.Contains(search)).Skip(offset).Take(limit).ToList();
+                var paginatedResult = new Pagination<vm_course>
+                {
+                    draw = draw,
+                    recordsTotal = totalCount,
+                    recordsFiltered = totalCount,
+                    data = vm_courses
+                };
 
-				var jsonResult = JsonConvert.SerializeObject(paginatedResult, Formatting.Indented);
-				return jsonResult;
-			}
-			catch (Exception ex)
-			{
-				Console.WriteLine($"Error in Get_All_Async: {ex.Message}");
-				throw;
-			}
-		}
+                var jsonResult = JsonConvert.SerializeObject(paginatedResult, Formatting.Indented);
+                return jsonResult;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in Get_All_Async: {ex.Message}");
+                throw;
+            }
+        }
 
 		public async Task<vm_course> Get_By_Id(int id)
 		{
