@@ -53,8 +53,7 @@
                 };
                 event.preventDefault();
                 createRole(object, function () {
-                    $("#role_name").val("");
-                    $("#description").val("");
+                    $('#role_create_form').trigger('reset');
                     toastr.success('Tạo vai trò thành công');
                     $('#createModal').modal('hide');
                     form.removeClass('was-validated');

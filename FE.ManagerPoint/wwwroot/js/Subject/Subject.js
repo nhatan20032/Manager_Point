@@ -95,7 +95,7 @@ function GetById(id) {
         },
         success: function (res) {
             if (res == null) {
-                toastr.error('Không tìm thấy vai trò');
+                toastr.error('Không tìm thấy môn học');
                 return;
             }
             $("#id_subject").val(res.id);

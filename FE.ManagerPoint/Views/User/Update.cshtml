@@ -1,1 +1,153 @@
-﻿
+﻿<!-- Modal Update -->
+<div class="modal fade" id="updateModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="updateModal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Chỉnh sửa người dùng</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="user_update_form" class="needs-validation" novalidate>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-2">
+                            <label for="id" class="form-label">Id</label>
+                        </div>
+                        <div class="col-md-10">
+                            <input id="id" class="form-control" type="text" required readonly />
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-2">
+                            <label for="user_Code_md" class="form-label">Mã người dùng</label>
+                        </div>
+                        <div class="col-md-10">
+                            <input id="user_Code_md" class="form-control" type="text" required readonly />
+                            <div class="invalid-feedback">
+                                Xin hãy nhập tên người dùng!
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-2">
+                            <label for="name_md" class="form-label">Họ và tên</label>
+                        </div>
+                        <div class="col-md-10">
+                            <input id="name_md" type="text" class="form-control" required />
+                            <div class="invalid-feedback">
+                                Xin hãy nhập họ và tên!
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-2">
+                            <label for="gender_md" class="form-label">Giới tính</label>
+                        </div>
+                        <div class="col-md-10">
+                            <select id="gender_md" class="form-control">
+                                <option selected>--- Chọn giới tính ---</option>
+                                <option value="1">Nam</option>
+                                <option value="2">Nữ</option>
+                                <option value="3">Khác</option>
+                            </select>
+                            <div class="invalid-feedback">
+                                Xin hãy nhập giới tính!
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-2">
+                            <label for="nation_md" class="form-label">Quốc tịch</label>
+                        </div>
+                        <div class="col-md-10">
+                            <select id="nation_md" class="form-control">
+                                <option selected>--- Chọn quốc tịch ---</option>
+                                <option value="vi">Việt Nam</option>
+                                <option value="kr">Hàn Quốc</option>
+                                <option value="zh">Trung quốc</option>
+                                <option value="us">Mỹ</option>
+                                <option value="uk">Anh</option>
+                            </select>
+                            <div class="invalid-feedback">
+                                Xin hãy quốc tịch!
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-2">
+                            <label for="address_md" class="form-label">Địa chỉ</label>
+                        </div>
+                        <div class="col-md-10">
+                            <input id="address_md" type="text" class="form-control" required />
+                            <div class="invalid-feedback">
+                                Xin hãy nhập địa chỉ!
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-2">
+                            <label for="email_md" class="form-label">Email</label>
+                        </div>
+                        <div class="col-md-10">
+                            <input id="email_md" type="email" class="form-control" required />
+                            <div class="invalid-feedback">
+                                Xin hãy nhập địa chỉ!
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-2">
+                            <label for="phone_md" class="form-label">Số điện thoại</label>
+                        </div>
+                        <div class="col-md-10">
+                            <input id="phone_md" type="number" maxlength="11" class="form-control" required />
+                            <div class="invalid-feedback">
+                                Xin hãy nhập số điện thoại!
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-2">
+                            <label for="DOB_md" class="form-label">Năm sinh</label>
+                        </div>
+                        <div class="col-md-10">
+                            <input id="DOB_md" type="date" class="form-control" required />
+                            <div class="invalid-feedback">
+                                Xin hãy nhập mật khẩu!
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-2">
+                            <label for="description_md" class="form-label">Mô tả</label>
+                        </div>
+                        <div class="col-md-10">
+                            <textarea id="description_md" type="text" class="form-control"></textarea>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-2">
+                            <label for="avarta_md" class="form-label">Avatar</label>
+                        </div>
+                        <div class="col-md-10">
+                            <input id="avarta_md" type="file" class="form-control" />
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="save_md" type="submit" class="btn btn-primary">Lưu</button>
+                    <button id="un_save_md" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        $('#un_save_md[data-bs-dismiss="modal"]').on('click', function () {
+            $('#user_update_form').trigger('reset');
+            if ($('#user_update_form').hasClass('was-validated')) {
+                $('#user_update_form').removeClass('was-validated');
+            }
+        });
+    });
+</script>

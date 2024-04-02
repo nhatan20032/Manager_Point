@@ -135,6 +135,7 @@
     </div>
 </div>
 <partial name="Create" />
+<partial name="Update" />
 <script src="~/js/User/User.js"></script>
 <script>
     $(document).ready(function () {
@@ -173,9 +174,45 @@
                 console.log(formData);
                 event.preventDefault();
                 createUser(formData, function () {
-                    $('#subject_create_form').trigger('reset');
+                    $('#user_create_form').trigger('reset');
                     toastr.success('Tạo môn học thành công');
                     $('#createModal').modal('hide');
+                    form.removeClass('was-validated');
+                });
+            }
+            form.addClass('was-validated');
+        });
+        $('#user_update_form').on('submit', function (event) {
+            var form = $(this);
+            if (!form[0].checkValidity()) {
+                event.preventDefault();
+                event.stopPropagation();
+            } else {
+                let id = $("#id").val();
+                let user_Code = $("#user_Code_md").val();
+                let name = $("#name_md").val();
+                let gender = parseInt($("#gender_md").val());
+                let nation = $("#nation_md").val();
+                let address = $("#address_md").val();
+                let email = $("#email_md").val();
+                let phoneNumber = $("#phone_md").val();
+                let description = $("#description_md").val();
+                let DOB = $("#DOB_md").val();
+                let object = {
+                    Name: name,
+                    Gender: gender,
+                    DOB: DOB,
+                    Nation: nation,
+                    Address: address,
+                    Email: email,
+                    PhoneNumber: phoneNumber,
+                    Description: description,
+                    Status: 1
+                }
+                event.preventDefault();
+                updateUser(id, object, function () {
+                    toastr.success('Cập nhật người dùng thành công');
+                    let = $('#updateModal').modal('hide');
                     form.removeClass('was-validated');
                 });
             }

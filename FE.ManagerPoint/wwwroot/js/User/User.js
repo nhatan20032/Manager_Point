@@ -187,7 +187,7 @@ function userNoRoleGrid() {
             },
             {
                 "data": null, "orderable": false, render: function (row) {
-                    let edit = `<a class="link-warning" style="cursor: pointer; margin-right: 20px; text-decoration: none"><i class="fa-solid fa-wrench"></i>Edit</a>`;
+                    let edit = `<a class="link-warning" onclick="GetById(${row.Id})" style="cursor: pointer; margin-right: 20px; text-decoration: none"><i class="fa-solid fa-wrench"></i>Edit</a>`;
                     let remove = `<a class="link-danger" style="cursor: pointer; text-decoration: none;"><i class="fa-solid fa-trash"></i>Remove</a>`;
                     return `<div>${edit} ${remove}</div>`;
                 }
@@ -246,4 +246,48 @@ function createUser(object, callback) {
             $('#user_table').DataTable().ajax.reload();
         },
     })
+}
+
+function updateUser(id, object, callback) {
+    $.ajax({
+        url: `https://localhost:44335/user/modified?id=${id}`,
+        method: "PUT",
+        data: JSON.stringify(object),
+        contentType: 'application/json',
+        success: function (res) {
+            if (callback && typeof callback === "function") {
+                callback();
+            }
+            $('#user_table').DataTable().ajax.reload();
+        },
+    });
+}
+
+function GetById(id) {
+    $.ajax({
+        url: `https://localhost:44335/user/get_by_id`,
+        method: "GET",
+        data: {
+            id: id,
+        },
+        success: function (res) {
+            if (res == null) {
+                toastr.error('Không tìm thấy người dùng');
+                return;
+            }
+            console.log(res);
+            $("#id").val(res.id);
+            $("#user_Code_md").val(res.user_Code);
+            $("#name_md").val(res.name);
+            $("#gender_md").val(res.gender);
+            $("#nation_md").val(res.nation);
+            $("#password_md").val(res.password);
+            $("#address_md").val(res.address);
+            $("#email_md").val(res.email);
+            $("#DOB_md").val(res.dob);
+            $("#phone_md").val(res.phoneNumber);
+            $("#description_md").val(res.description);
+            $("#updateModal").modal("show");
+        },
+    });
 }

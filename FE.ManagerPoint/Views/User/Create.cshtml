@@ -3,7 +3,7 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Tạo môn người dùng mới</h5>
+                <h5 class="modal-title">Tạo người dùng mới</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <form id="user_create_form" class="needs-validation" novalidate>
@@ -132,7 +132,7 @@
                             <label for="avarta" class="form-label">Avatar</label>
                         </div>
                         <div class="col-md-10">
-                            <input id="description" type="file" class="form-control" />
+                            <input id="avarta" type="file" class="form-control" />
                         </div>
                     </div>
                 </div>
@@ -147,7 +147,7 @@
 <script>
     function generateStudentCode(username) {
         var words = username.trim().split(' ');
-        var code = 'User_';
+        var code = 'US_';
         for (var i = 0; i < words.length; i++) {
             if (words[i]) {
                 var firstLetter = words[i][0].toUpperCase();
