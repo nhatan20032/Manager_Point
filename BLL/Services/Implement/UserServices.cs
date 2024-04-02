@@ -113,7 +113,7 @@ namespace BLL.Services.Implement
             }
         }
 
-        public async Task<string> Get_All_Teacher (int offset = 0, int limit = 10, string search = "", int role = 1, int subject = 0, int classes = 0)
+        public async Task<string> Get_All_Teacher(int offset = 0, int limit = 10, string search = "", int role = 1, int subject = 0, int classes = 0)
         {
             try
             {
@@ -124,8 +124,9 @@ namespace BLL.Services.Implement
                 var vm_User = _appContext.Users.ProjectTo<vm_user>(_mapper.ConfigurationProvider);
                 var result = vm_User.Where(t => string.IsNullOrEmpty(search) || t.Name!.Contains(search)).Skip(offset).Take(limit).ToList();
                 if (role != 0) result = result.Where(t => t.Role_id!.Contains(role)).ToList();
-                if (subject != 0) result = result.Where(t => t.Subject_id!.Contains(subject)).ToList();
-                if (classes != 0) result = result.Where(t => t.Class_id!.Contains(classes)).ToList();
+                if (subject != 0 && classes == 0) result = result.Where(t => t.Subject_id!.Contains(subject)).ToList();
+                if (classes != 0 && subject == 0) result = result.Where(t => t.Teacher_Class_id!.Contains(classes)).ToList();
+                if (classes != 0 && subject != 0) result = result.Where(t => t.Teacher_Class_id!.Contains(classes) && t.Subject_id!.Contains(subject)).ToList();
                 var paginatedResult = new Pagination<vm_user>
                 {
                     draw = draw,
@@ -155,7 +156,7 @@ namespace BLL.Services.Implement
                 var vm_User = _appContext.Users.ProjectTo<vm_user>(_mapper.ConfigurationProvider);
                 var result = vm_User.Where(t => string.IsNullOrEmpty(search) || t.Name!.Contains(search)).Skip(offset).Take(limit).ToList();
                 if (role != 0) result = result.Where(t => t.Role_id!.Contains(role)).ToList();
-                if (classes != 0) result = result.Where(t => t.Class_id!.Contains(classes)).ToList();
+                if (classes != 0) result = result.Where(t => t.Student_Class_id!.Contains(classes)).ToList();
                 var paginatedResult = new Pagination<vm_user>
                 {
                     draw = draw,

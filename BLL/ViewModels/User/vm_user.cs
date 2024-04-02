@@ -10,8 +10,10 @@ namespace BLL.ViewModels.User
         public List<int>? Role_id { get; set; }
         public List<string>? Subject_User { get; set; }
         public List<int>? Subject_id { get; set; }
-        public List<string>? User_Class { get; set; }
-        public List<int>? Class_id { get; set; }
+        public List<string>? Teacher_Class { get; set; }
+        public List<string>? Student_Class { get; set; }
+        public List<int>? Student_Class_id { get; set; }
+        public List<int>? Teacher_Class_id { get; set; }
         public string? User_Code { get; set; }
 
         [JsonIgnore]

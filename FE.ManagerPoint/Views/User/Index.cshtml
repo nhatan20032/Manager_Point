@@ -26,14 +26,14 @@
                 <div class="form-group">
                     <label for="search_subject">Tìm kiếm theo môn học</label>
                     <select id="search_subject" class="form-control">
-                        <option selected>---Tất cả---</option>
+                        <option value="0" selected>---Tất cả---</option>
                     </select>
                 </div>
             </div>
             <div class="col-md-3">
                 <label for="search_class">Tìm kiếm theo lớp học</label>
                 <select id="search_class" class="form-control">
-                    <option selected>---Tất cả---</option>
+                    <option value="0" selected>---Tất cả---</option>
                 </select>
             </div>
         </div>
@@ -58,7 +58,6 @@
                             <th>Mật khẩu</th>
                             <th>Số điện thoại</th>
                             <th>Họ và tên</th>
-                            <th>Mô tả</th>
                             <th>Ngày sinh</th>
                             <th>Giới tính</th>
                             <th>Email</th>
@@ -114,9 +113,16 @@
 <script>
     $(document).ready(function () {
         getSubject();
-        studentGrid();
-        teacherGrid();        
-        $("#search_class").select2();
         $("#search_subject").select2();
+        getClass();
+        $("#search_class").select2();
+        studentGrid();
+        teacherGrid();
+        $("#search_subject").change(function () {
+            $('#teacher_table').DataTable().ajax.reload();
+        });
+        $("#search_class").change(function () {
+            $('#teacher_table').DataTable().ajax.reload();
+        });
     });
 </script>
