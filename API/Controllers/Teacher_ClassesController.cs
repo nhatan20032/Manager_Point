@@ -1,6 +1,4 @@
-﻿using BLL.Services.Implement;
-using BLL.Services.Interface;
-using BLL.ViewModels.Subject_Teacher;
+﻿using BLL.Services.Interface;
 using BLL.ViewModels.Teacher_Class;
 using Microsoft.AspNetCore.Mvc;
 

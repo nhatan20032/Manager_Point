@@ -179,7 +179,7 @@ namespace BLL.Services.Implement
         {
             try
             {
-                var vm_User = _appContext.Users.ProjectTo<vm_user>(_mapper.ConfigurationProvider).SingleOrDefault(x => x.Id == id); // không thì truy cập vào db để lấy đối tượng ra
+                var vm_User = _appContext.Users.ProjectTo<vm_user>(_mapper.ConfigurationProvider).SingleOrDefault(x => x.Id == id);
                 if (vm_User == null) return null!;
                 return vm_User;
             }

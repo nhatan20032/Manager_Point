@@ -1,5 +1,4 @@
-﻿using Data.Models;
-using Manager_Point.Models.Enum;
+﻿using Manager_Point.Models.Enum;
 
 namespace Manager_Point.Models
 {
