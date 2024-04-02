@@ -174,6 +174,33 @@ namespace BLL.Services.Implement
                 throw;
             }
         }
+        public async Task<string> Get_User_No_Role(int offset = 0, int limit = 10, string search = "")
+        {
+            try
+            {
+                int totalCount = _appContext.Users.ProjectTo<vm_user>(_mapper.ConfigurationProvider).Where(s => (string.IsNullOrEmpty(search) || s.Name!.Contains(search)) && !s.Role_id!.Any()).Count();
+                int draw = 1;
+                var httpRequest = _httpContextAccessor.HttpContext!.Request;
+                if (httpRequest.Query.TryGetValue("draw", out StringValues valueDraw)) try { draw = int.Parse(valueDraw!); } catch { }
+                var vm_User = _appContext.Users.ProjectTo<vm_user>(_mapper.ConfigurationProvider);
+                var result = vm_User.Where(t => (string.IsNullOrEmpty(search) || t.Name!.Contains(search)) && !t.Role_id!.Any()).Skip(offset).Take(limit).ToList();
+                var paginatedResult = new Pagination<vm_user>
+                {
+                    draw = draw,
+                    recordsTotal = totalCount,
+                    recordsFiltered = totalCount,
+                    data = result
+                };
+
+                var jsonResult = JsonConvert.SerializeObject(paginatedResult, Formatting.Indented);
+                return jsonResult;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in Get_All_Async: {ex.Message}");
+                throw;
+            }
+        }
 
         public async Task<vm_user> Get_By_Id(int id)
         {
