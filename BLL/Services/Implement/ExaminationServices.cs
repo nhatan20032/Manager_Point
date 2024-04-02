@@ -2,7 +2,6 @@
 using AutoMapper.QueryableExtensions;
 using BLL.Services.Interface;
 using BLL.ViewModels;
-using BLL.ViewModels.AcademicPerformance;
 using BLL.ViewModels.Examination;
 using Manager_Point.ApplicationDbContext;
 using Manager_Point.Models;
@@ -113,10 +112,10 @@ namespace BLL.Services.Implement
 
             try
             {
-				var examination = await _appContext.GradePoints.ProjectTo<vm_examination>(_mapper.ConfigurationProvider).SingleOrDefaultAsync(x => x.Id == id);
-				if (examination == null) return null!;
-				return examination;
-			}
+                var examination = await _appContext.GradePoints.ProjectTo<vm_examination>(_mapper.ConfigurationProvider).SingleOrDefaultAsync(x => x.Id == id);
+                if (examination == null) return null!;
+                return examination;
+            }
             catch (Exception ex)
             {
                 Console.WriteLine($"Error in Get_By_Id: {ex.Message}");

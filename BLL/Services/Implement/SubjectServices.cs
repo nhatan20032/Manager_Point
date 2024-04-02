@@ -111,6 +111,14 @@ namespace BLL.Services.Implement
             }
         }
 
+        public List<vm_subject> Get_List()
+        {
+            var vmSubjects = _appContext.Subjects
+             .ProjectTo<vm_subject>(_mapper.ConfigurationProvider)
+             .ToList();
+
+            return vmSubjects;
+        }
 
         public async Task<vm_subject> Get_By_Id(int id)
         {

@@ -19,6 +19,11 @@ namespace API.Controllers
         {
             return Ok(await _subjectServices.Get_All_Async(start, length, search));
         }
+        [HttpGet("/subject/get_list")]
+        public IActionResult Get_List()
+        {
+            return Ok(_subjectServices.Get_List());
+        }
 
         [HttpGet("/subject/get_by_id")]
         public async Task<IActionResult> Get_By_Id(int id)
