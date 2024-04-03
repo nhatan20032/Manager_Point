@@ -1,0 +1,83 @@
+﻿@{
+	Layout = "~/Views/Shared/_Layout.cshtml";
+	ViewBag.Title = "Quản lý khóa học";
+}
+
+<div class="card">
+	<div class="card-header">
+		<div class="row">
+			<div class="col-md-11">Bảng hiển thị nội dung</div>
+			<div class="col-md-1">
+				<button type="button" class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#createModal">Thêm mới</button>
+			</div>
+		</div>
+	</div>
+	<div class="card-body">
+		<table id="course_table" class="table table-striped table-hover">
+			<thead>
+				<tr>
+					<th>Id</th>
+					<th>Khóa học</th>
+					<th>Ngày bắt đầu</th>
+					<th>Ngày kết thúc ( dự kiến )</th>
+					<th>Mô tả</th>
+					<th>Trạng thái</th>
+					<th>Thao tác</th>
+				</tr>
+			</thead>
+		</table>
+	</div>
+</div>
+<partial name="Create" />
+<script src="~/js/Course/Course.js"></script>
+<script>
+	
+	$(document).ready(function () {
+		setupGrid()
+		$('#course_create_form').on('submit', function (event) {
+			var form = $(this);
+			if (!form[0].checkValidity()) {
+				event.preventDefault();
+				event.stopPropagation();
+			} else {
+				let course_dateStart = $("#dateStart").val();
+				let course_endStart = $("#dateEnd").val();
+				let course_description = $("#course_description").val();
+				let status_list = $("#status_list").val();
+				let object = {
+					StartTime : course_dateStart,
+					EndTime : course_endStart,
+					Description : course_description,
+					Status : status_list,
+				};
+				event.preventDefault();
+				createCourse(object, function () {
+					$("#dateStart").val("");
+					$("#dateEnd").val("");
+					$("#course_description").val("");
+					$("#status_list").val("");
+					toastr.success('Tạo khóa học thành công');
+					$('#createModal').modal('hide');
+					form.removeClass('was-validated');
+				});
+			}
+			form.addClass('was-validated');
+		});
+	})
+
+	function createCourse(object, callback) {
+		
+		$.ajax({
+			url: "https://localhost:44335/course/create",
+			method: "POST",
+			data: JSON.stringify(object),
+			contentType: 'application/json',
+			success: function (res) {
+				if (callback && typeof callback === "function") {
+					callback();
+				}
+				$('#course_table').DataTable().ajax.reload();
+			},
+		});
+	}
+</script>

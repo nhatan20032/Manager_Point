@@ -1,0 +1,76 @@
+﻿<!-- Modal Create -->
+<div class="modal fade" id="createModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="createModal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Tạo khóa học mới</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="course_create_form" class="needs-validation" novalidate>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-2">
+                            <label for="dateStart" class="form-label">Ngày bắt đầu</label>
+                        </div>
+                        <div class="col-md-10">
+                            <input id="dateStart" class="form-control" type="date" required />
+                            <div class="invalid-feedback">
+                               Xin hãy nhập ngày bắt đầu
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-2">
+                            <label for="dateEnd" class="form-label">Ngày kết thúc</label>
+                        </div>
+                        <div class="col-md-10">
+                            <input id="dateEnd" class="form-control" type="date" required />
+                            <div class="invalid-feedback">
+                                Xin hãy nhập ngày kết thúc
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-2">
+                            <label for="course_description" class="form-label">Mô tả</label>
+                        </div>
+                        <div class="col-md-10">
+                            <textarea id="course_description" class="form-control" rows="5" required></textarea>
+                            <div class="invalid-feedback">
+                               Mô tả
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-2">
+                            <label for="status_list" class="form-label">Trạng thái</label>
+                        </div>
+                        <div class="col-md-10">
+                            <select id="status_list" class="form-select" multiple>
+                                <option selected value="1">Hoạt động</option>
+                                <option value="2">Không thành công</option>
+                                <option value="3">Đạt</option>
+                                <option value="4">Đã kết thúc</option>
+                                <option value="5">Trong thời gian</option>
+                                <!-- Thêm các tùy chọn khác nếu cần -->
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="save" type="submit" class="btn btn-primary">Lưu</button>
+                    <button id="un_save" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        $('#un_save[data-bs-dismiss="modal"]').on('click', function () {
+            if ($('#role_create_form').hasClass('was-validated')) {
+                $('#role_create_form').removeClass('was-validated');
+            }
+        });
+    });
+</script>
