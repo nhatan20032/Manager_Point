@@ -2,9 +2,7 @@
 	Layout = "~/Views/Shared/_Layout.cshtml";
 	ViewBag.Title = "Quản lý khóa học";
 }
-<style>
 
-</style>
 <div class="card">
 	<div class="card-header">
 		<div class="row">
@@ -31,6 +29,7 @@
 	</div>
 </div>
 <partial name="Create" />
+<partial name="Update" />
 <script src="~/js/Course/Course.js"></script>
 <script>
 	
@@ -42,18 +41,21 @@
 				event.preventDefault();
 				event.stopPropagation();
 			} else {
+				let course_name = $("#course_name").val();
 				let course_dateStart = $("#dateStart").val();
 				let course_endStart = $("#dateEnd").val();
 				let course_description = $("#course_description").val();
 				let status_list = $("#status_list").val();
 				let object = {
+					Name: course_name,
 					StartTime : course_dateStart,
 					EndTime : course_endStart,
 					Description : course_description,
-					Status : status_list,
+					Status : parseInt(status_list),
 				};
 				event.preventDefault();
 				createCourse(object, function () {
+					$("#course_name").val("");
 					$("#dateStart").val("");
 					$("#dateEnd").val("");
 					$("#course_description").val("");
@@ -65,21 +67,34 @@
 			}
 			form.addClass('was-validated');
 		});
-	})
-
-	function createCourse(object, callback) {
-		
-		$.ajax({
-			url: "https://localhost:44335/course/create",
-			method: "POST",
-			data: JSON.stringify(object),
-			contentType: 'application/json',
-			success: function (res) {
-				if (callback && typeof callback === "function") {
-					callback();
-				}
-				$('#course_table').DataTable().ajax.reload();
-			},
+		$('#course_update_form').on('submit', function (event) {
+			var form = $(this);
+			if (!form[0].checkValidity()) {
+				event.preventDefault();
+				event.stopPropagation();
+			} else {
+				let id = $("#course_id").val();
+				let course_name = $("#course_name_md").val();
+				let course_dateStart = $("#dateStart_md").val();
+				let course_endStart = $("#dateEnd_md").val();
+				let course_description = $("#course_description_md").val();
+				let status_list = $("#status_list_md").val();
+				let object = {
+					Name: course_name,
+					StartTime: course_dateStart,
+					EndTime: course_endStart,
+					Description: course_description,
+					Status: parseInt(status_list),
+				};
+				event.preventDefault();
+				updateSub(id, object, function () {
+					toastr.success('Cập nhật khóa học thành công');
+					form.removeClass('was-validated');
+					$('#updateModal').modal('hide');
+				});
+			}
+			form.addClass('was-validated');
 		});
-	}
+	});
+
 </script>

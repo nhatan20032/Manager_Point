@@ -68,7 +68,7 @@ namespace BLL.Services.Implement
 			try
 			{
 				var obj = _mapper.Map<Course>(request);
-				obj.Name = request.StartTime.Value.Year.ToString() + "-" + request.EndTime.Value.Year.ToString();
+			//	obj.Name = request.StartTime.Value.Year.ToString() + "-" + request.EndTime.Value.Year.ToString();
 				_appContext.Courses.Add(obj);
 				await _appContext.SaveChangesAsync();
 				return obj.Id;
@@ -118,7 +118,7 @@ namespace BLL.Services.Implement
 			try
 			{
 
-				var course = await _appContext.GradePoints.ProjectTo<vm_course>(_mapper.ConfigurationProvider).SingleOrDefaultAsync(x => x.Id == id);
+				var course =  _appContext.Courses.ProjectTo<vm_course>(_mapper.ConfigurationProvider).SingleOrDefault(x => x.Id == id);
 				if (course == null) return null!;
 				return course;
 			}
