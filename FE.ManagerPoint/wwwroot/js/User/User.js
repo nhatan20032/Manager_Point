@@ -40,8 +40,8 @@
             { 'data': 'Gender', "orderable": false },
             { 'data': 'Email', "orderable": false },
             { 'data': 'AvatarUrl', "orderable": false },
+            { 'data': 'Address', "orderable": false },
             { 'data': 'Nation', "orderable": false },
-            { 'data': 'Email', "orderable": false },
             {
                 "data": "Status", "orderable": false, render: function (data) {
                     if (data == 1) return "Chờ duyệt";
@@ -109,8 +109,8 @@ function teacherGrid() {
             { 'data': 'Gender', "orderable": false },
             { 'data': 'Email', "orderable": false },
             { 'data': 'AvatarUrl', "orderable": false },
+            { 'data': 'Address', "orderable": false },
             { 'data': 'Nation', "orderable": false },
-            { 'data': 'Email', "orderable": false },
             {
                 "data": "Status", "orderable": false, render: function (data) {
                     if (data == 1) return "Chờ duyệt";
@@ -175,8 +175,8 @@ function userNoRoleGrid() {
             { 'data': 'Gender', "orderable": false },
             { 'data': 'Email', "orderable": false },
             { 'data': 'AvatarUrl', "orderable": false },
+            { 'data': 'Address', "orderable": false },
             { 'data': 'Nation', "orderable": false },
-            { 'data': 'Email', "orderable": false },
             {
                 "data": "Status", "orderable": false, render: function (data) {
                     if (data == 1) return "Chờ duyệt";

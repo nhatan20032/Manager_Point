@@ -225,13 +225,14 @@ namespace BLL.Services.Implement
                 if (objForUpdate == null) return -1;
                 objForUpdate.AvatarUrl = request.AvatarUrl;
                 objForUpdate.PhoneNumber = request.PhoneNumber;
-                objForUpdate.Name = request.Email;
+                objForUpdate.Name = request.Name;
                 objForUpdate.Description = request.Description;
                 objForUpdate.DOB = request.DOB;
                 objForUpdate.Gender = request.Gender;
                 objForUpdate.Address = request.Address;
                 objForUpdate.Nation = request.Nation;
                 objForUpdate.Status = request.Status;
+                objForUpdate.Email = request.Email;
                 // Không cần gọi Attach hoặc Update vì objForUpdate đã được theo dõi trong DbContext neuse có sự thay đổi thì nó sẽ cập nhật vô DB
                 await _appContext.SaveChangesAsync();
                 return objForUpdate.Id;
