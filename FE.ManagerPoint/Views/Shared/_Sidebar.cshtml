@@ -1,6 +1,6 @@
 <div id='sidebar' class="sidebar">
     <ul class="nav-list">
-        <li>
+       @* <li>
             <div class="icon-link">
                 <a id="role" class="role" href="/Role/Index">
                     <i class="fa-solid fa-circle-user"></i>
@@ -15,7 +15,7 @@
                     </a>
                 </li>
             </ul>
-        </li>
+        </li>*@
         <li>
             <div class="icon-link">
                 <a asp-area="MyArea" asp-controller="MyController" asp-action="MyAction">
@@ -121,6 +121,9 @@
             <ul class="sub-menu">
                 <li><a class="link-name">Quản lý người dùng</a></li>
                 <li>
+                    <a id="role" class="role" href="/Role/Index">
+                        Quản lý quyền
+                    </a>
                     <a id="user" class="user" href="/User/Index">
                         Danh sách người dùng
                     </a>
@@ -165,13 +168,16 @@
             <div class="icon-link">
                 <a asp-area="MyArea" asp-controller="MyController" asp-action="MyAction">
                     <i class="fa-solid fa-school"></i>
-                    <span class="link-name">Quản lí khối / lớp</span>
+                    <span class="link-name">Quản lí khóa / khối / lớp</span>
                 </a>
                 <i class="fas fa-caret-down arrow"></i>
             </div>
 
             <ul class="sub-menu">
                 <li><a class="link-name">Quản lí khối / lớp </a></li>
+                <li>
+                    <a id="course" class="course" href="/Course/Index" >Khóa học</a>
+                </li>
                 <li>
                     <a asp-area="MyArea" asp-controller="MyController" asp-action="MyAction">Khối</a>
                 </li>
