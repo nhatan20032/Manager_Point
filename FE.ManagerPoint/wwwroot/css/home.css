@@ -499,7 +499,7 @@ a:hover {
 
 .home-content {
     box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
-    z-index: 9999;
+    z-index: 1;
     width: 100%;
     position: fixed;
     background: white;

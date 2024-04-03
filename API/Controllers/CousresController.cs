@@ -13,11 +13,13 @@ namespace API.Controllers
         {
             _courseService = courseService;
         }
-        [HttpGet("/course/get_all")]
-        public async Task<IActionResult> Get_All_Item(int page_number = 1, int page_size = 10, string search = "")
-        {
-            return Ok(await _courseService.Get_All_Async(page_number, page_size, search));
-        }
+
+		[HttpGet("/course/get_all")]
+		public async Task<IActionResult> Get_All_Item(int start = 0, int length = 10, string search = "")
+		{
+			return Ok(await _courseService.Get_All_Async(start, length, search));
+		}
+
 
         [HttpGet("/course/get_by_id")]
         public async Task<IActionResult> Get_By_Id(int id)
