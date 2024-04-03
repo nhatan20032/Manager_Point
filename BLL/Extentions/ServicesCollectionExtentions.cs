@@ -32,6 +32,8 @@ namespace BLL.Extentions
             services.AddTransient<ICourseServices, CourseServices>();
             services.AddTransient<IMessageServices, MessageServices>();
             services.AddTransient<IGradePointServices, GradePointServices>();
+            services.AddTransient<IStudent_ClassServices, Student_ClassServices>();
+            services.AddTransient<ITeacher_ClassServices, Teacher_ClassServices>();
             services.AddTransient<IExaminationServices, ExaminationServices>();
             services.AddTransient<IAcademicPerformanceServices, AcademicPerformanceServices>();
             #endregion

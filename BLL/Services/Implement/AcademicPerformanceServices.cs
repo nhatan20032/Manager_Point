@@ -3,7 +3,6 @@ using AutoMapper.QueryableExtensions;
 using BLL.Services.Interface;
 using BLL.ViewModels;
 using BLL.ViewModels.AcademicPerformance;
-using BLL.ViewModels.GradePoint;
 using Data.Models;
 using Manager_Point.ApplicationDbContext;
 using Newtonsoft.Json;
@@ -113,10 +112,10 @@ namespace BLL.Services.Implement
         {
             try
             {
-				var academicperformance = await _appContext.GradePoints.ProjectTo<vm_academicperformance>(_mapper.ConfigurationProvider).SingleOrDefaultAsync(x => x.Id == id);
-				if (academicperformance == null) return null!;
-				return academicperformance;
-				
+                var academicperformance = await _appContext.GradePoints.ProjectTo<vm_academicperformance>(_mapper.ConfigurationProvider).SingleOrDefaultAsync(x => x.Id == id);
+                if (academicperformance == null) return null!;
+                return academicperformance;
+
             }
             catch (Exception ex)
             {

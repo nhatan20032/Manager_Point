@@ -2,7 +2,6 @@
 using AutoMapper.QueryableExtensions;
 using BLL.Services.Interface;
 using BLL.ViewModels;
-using BLL.ViewModels.AcademicPerformance;
 using BLL.ViewModels.Class;
 using Manager_Point.ApplicationDbContext;
 using Manager_Point.Models;
@@ -108,14 +107,23 @@ namespace BLL.Services.Implement
             }
         }
 
+        public List<vm_class> Get_List()
+        {
+            var vmClasses = _appContext.Classes
+             .ProjectTo<vm_class>(_mapper.ConfigurationProvider)
+             .ToList();
+
+            return vmClasses;
+        }
+
         public async Task<vm_class> Get_By_Id(int id)
         {
             try
             {
-				var classes = await _appContext.GradePoints.ProjectTo<vm_class>(_mapper.ConfigurationProvider).SingleOrDefaultAsync(x => x.Id == id);
-				if (classes == null) return null!;
-				return classes;
-			}
+                var classes = await _appContext.GradePoints.ProjectTo<vm_class>(_mapper.ConfigurationProvider).SingleOrDefaultAsync(x => x.Id == id);
+                if (classes == null) return null!;
+                return classes;
+            }
             catch (Exception ex)
             {
                 Console.WriteLine($"Error in Get_By_Id: {ex.Message}");

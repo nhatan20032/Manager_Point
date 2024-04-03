@@ -24,7 +24,7 @@
             "data": function (d) {
                 delete d.columns;
                 d.search = d.search.value;
-                d.class = 0;
+                d.classes = $("#search_class").val();
             },
             "dataSrc": "data"
         },
@@ -32,7 +32,7 @@
         "columns": [
             { 'data': 'Id', "orderable": false },
             { 'data': 'Role_User', "orderable": false },
-            { 'data': 'User_Class', "orderable": false },
+            { 'data': 'Student_Class', "orderable": false },
             { 'data': 'User_Code', "orderable": false },
             { 'data': 'Password', "orderable": false },
             { 'data': 'PhoneNumber', "orderable": false },
@@ -93,8 +93,8 @@ function teacherGrid() {
             "data": function (d) {
                 delete d.columns;
                 d.search = d.search.value;
-                d.class = 0;
-                d.subject = 0;
+                d.classes = $("#search_class").val();
+                d.subject = $("#search_subject").val();
             },
             "dataSrc": "data"
         },
@@ -102,13 +102,12 @@ function teacherGrid() {
         "columns": [
             { 'data': 'Id', "orderable": false },
             { 'data': 'Role_User', "orderable": false },
-            { 'data': 'User_Class', "orderable": false },
+            { 'data': 'Teacher_Class', "orderable": false },
             { 'data': 'Subject_User', "orderable": false },
             { 'data': 'User_Code', "orderable": false },
             { 'data': 'Password', "orderable": false },
             { 'data': 'PhoneNumber', "orderable": false },
             { 'data': 'Name', "orderable": false },
-            { 'data': 'Description', "orderable": false },
             { 'data': 'DOB', "orderable": false },
             { 'data': 'Gender', "orderable": false },
             { 'data': 'Email', "orderable": false },
@@ -138,3 +137,37 @@ function teacherGrid() {
         "pageLength": 10,
     });
 }
+
+function getSubject() {
+    $.ajax({
+        url: "https://localhost:44335/subject/get_list",
+        method: "GET",
+        success: function (res) {
+            if (res && res.length > 0) {
+                var select = $("#search_subject");
+                $.each(res, function (index, item) {
+                    select.append($("<option></option>")
+                        .attr("value", item.id)
+                        .text(item.name));
+                });
+            }
+        },
+    });
+}
+function getClass() {
+    $.ajax({
+        url: "https://localhost:44335/class/get_list",
+        method: "GET",
+        success: function (res) {
+            if (res && res.length > 0) {
+                var select = $("#search_class");
+                $.each(res, function (index, item) {
+                    select.append($("<option></option>")
+                        .attr("value", item.id)
+                        .text(item.classCode));
+                });
+            }
+        },
+    });
+}
+

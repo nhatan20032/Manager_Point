@@ -2,7 +2,6 @@
 using AutoMapper.QueryableExtensions;
 using BLL.Services.Interface;
 using BLL.ViewModels;
-using BLL.ViewModels.AcademicPerformance;
 using BLL.ViewModels.Course;
 using BLL.ViewModels.Subject;
 using Manager_Point.ApplicationDbContext;
@@ -85,6 +84,7 @@ namespace BLL.Services.Implement
 		{
             try
             {
+
                 int totalCount = _appContext.Courses
                     .Where(s => string.IsNullOrEmpty(search) || s.Name!.Contains(search))
                     .Count();
@@ -100,6 +100,7 @@ namespace BLL.Services.Implement
                     recordsTotal = totalCount,
                     recordsFiltered = totalCount,
                     data = vm_courses
+
                 };
 
                 var jsonResult = JsonConvert.SerializeObject(paginatedResult, Formatting.Indented);
@@ -177,5 +178,6 @@ namespace BLL.Services.Implement
 			}
 		}
 	}
+
 
 }
