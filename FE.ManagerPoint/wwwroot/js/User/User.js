@@ -52,8 +52,8 @@
             },
             {
                 "data": null, "orderable": false, render: function (row) {
-                    let edit = `<a class="link-warning" style="cursor: pointer; margin-right: 20px; text-decoration: none"><i class="fa-solid fa-wrench"></i>Edit</a>`;
-                    let remove = `<a class="link-danger" style="cursor: pointer; text-decoration: none;"><i class="fa-solid fa-trash"></i>Remove</a>`;
+                    let edit = `<a class="link-warning" onclick="GetById(${row.Id})" style="cursor: pointer; margin-right: 20px; text-decoration: none"><i class="fa-solid fa-wrench"></i>Edit</a>`;
+                    let remove = `<a class="link-danger" onclick="Remove(${row.Id})" style="cursor: pointer; text-decoration: none;"><i class="fa-solid fa-trash"></i>Remove</a>`;
                     return `<div>${edit} ${remove}</div>`;
                 }
             },
@@ -121,8 +121,8 @@ function teacherGrid() {
             },
             {
                 "data": null, "orderable": false, render: function (row) {
-                    let edit = `<a class="link-warning" style="cursor: pointer; margin-right: 20px; text-decoration: none"><i class="fa-solid fa-wrench"></i>Edit</a>`;
-                    let remove = `<a class="link-danger" style="cursor: pointer; text-decoration: none;"><i class="fa-solid fa-trash"></i>Remove</a>`;
+                    let edit = `<a class="link-warning" onclick="GetById(${row.Id})" style="cursor: pointer; margin-right: 20px; text-decoration: none"><i class="fa-solid fa-wrench"></i>Edit</a>`;
+                    let remove = `<a class="link-danger" onclick="Remove(${row.Id})" style="cursor: pointer; text-decoration: none;"><i class="fa-solid fa-trash"></i>Remove</a>`;
                     return `<div>${edit} ${remove}</div>`;
                 }
             },
@@ -188,7 +188,7 @@ function userNoRoleGrid() {
             {
                 "data": null, "orderable": false, render: function (row) {
                     let edit = `<a class="link-warning" onclick="GetById(${row.Id})" style="cursor: pointer; margin-right: 20px; text-decoration: none"><i class="fa-solid fa-wrench"></i>Edit</a>`;
-                    let remove = `<a class="link-danger" style="cursor: pointer; text-decoration: none;"><i class="fa-solid fa-trash"></i>Remove</a>`;
+                    let remove = `<a class="link-danger" onclick="Remove(${row.Id})" style="cursor: pointer; text-decoration: none;"><i class="fa-solid fa-trash"></i>Remove</a>`;
                     return `<div>${edit} ${remove}</div>`;
                 }
             },
@@ -289,5 +289,31 @@ function GetById(id) {
             $("#description_md").val(res.description);
             $("#updateModal").modal("show");
         },
+    });
+}
+
+function Remove(id) {
+    swal({
+        title: "Bạn chắc chắn muốn xóa?",
+        text: "Hành động này không thể hoàn tác!",
+        icon: "warning",
+        buttons: ["Hủy", "Xóa"],
+        dangerMode: true,
+    }).then((willDelete) => {
+        if (willDelete) {
+            $.ajax({
+                url: "https://localhost:44335/user/remove?id=" + id,
+                method: "DELETE",
+                success: function (res) {
+                    toastr.success('Xóa vai trò thành công');
+                    $('#user_table').DataTable().ajax.reload();
+                },
+            });
+        } else {
+            // Người dùng nhấn Hủy
+            swal("Hủy xóa!", {
+                icon: "info",
+            });
+        }
     });
 }
