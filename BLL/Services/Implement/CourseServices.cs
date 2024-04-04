@@ -138,7 +138,7 @@ namespace BLL.Services.Implement
 				objForUpdate.Name = request.Name;
 				objForUpdate.StartTime = request.StartTime;
 				objForUpdate.EndTime = request.EndTime;
-				objForUpdate.Description = request.Name;
+				objForUpdate.Description = request.Description;
 				objForUpdate.Status = request.Status;
 				// Không cần gọi Attach hoặc Update vì objForUpdate đã được
 				// theo dõi trong DbContext neuse có sự thay đổi thì nó sẽ cập nhật vô DB
