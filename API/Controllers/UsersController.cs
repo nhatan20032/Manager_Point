@@ -20,6 +20,11 @@ namespace API.Controllers
         {
             return Ok(await _userServices.Get_All_Async(start, length, search));
         }
+        [HttpGet("/user/get_all_user_no_role")]
+        public async Task<IActionResult> Get_All_Teacher(int start = 0, int length = 10, string search = "")
+        {
+            return Ok(await _userServices.Get_User_No_Role(start, length, search));
+        }
         [HttpGet("/user/get_all_teacher")]
         public async Task<IActionResult> Get_All_Teacher(int start = 0, int length = 10, string search = "", int role = 1, int subject = 0, int classes = 0)
         {

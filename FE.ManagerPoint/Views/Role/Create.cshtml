@@ -42,6 +42,7 @@
 <script>
     $(document).ready(function () {
         $('#un_save[data-bs-dismiss="modal"]').on('click', function () {
+            $('#role_create_form').trigger('reset');
             if ($('#role_create_form').hasClass('was-validated')) {
                 $('#role_create_form').removeClass('was-validated');
             }

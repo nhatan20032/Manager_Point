@@ -53,8 +53,7 @@
                 };
                 event.preventDefault();
                 createSub(object, function () {
-                    $("#subject_name").val("");
-                    $("#description").val("");
+                    $('#subject_create_form').trigger('reset');
                     toastr.success('Tạo môn học thành công');
                     $('#createModal').modal('hide');
                     form.removeClass('was-validated');

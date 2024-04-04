@@ -12,17 +12,23 @@
         text-align: center;
         vertical-align: middle;
     }
+
+    #user_table thead th {
+        text-align: center;
+        vertical-align: middle;
+    }
 </style>
 <nav>
     <div class="nav nav-tabs" id="nav-tab" role="tablist">
-        <button class="nav-link active" id="nav-teacher-tab" data-bs-toggle="tab" data-bs-target="#nav-teacher" type="button" role="tab" aria-controls="nav-teacher" aria-selected="true">Giáo viên</button>
+        <button class="nav-link" id="nav-teacher-tab" data-bs-toggle="tab" data-bs-target="#nav-teacher" type="button" role="tab" aria-controls="nav-teacher" aria-selected="true">Giáo viên</button>
         <button class="nav-link" id="nav-student-tab" data-bs-toggle="tab" data-bs-target="#nav-student" type="button" role="tab" aria-controls="nav-student" aria-selected="false">Học sinh</button>
+        <button class="nav-link active" id="nav-user-tab" data-bs-toggle="tab" data-bs-target="#nav-user" type="button" role="tab" aria-controls="nav-user" aria-selected="false">Người dùng chưa phân quyền</button>
     </div>
 </nav>
 <div class="tab-content" id="nav-tabContent">
-    <div class="tab-pane fade show active" id="nav-teacher" role="tabpanel" aria-labelledby="nav-teacher-tab">
+    <div class="tab-pane fade" id="nav-teacher" role="tabpanel" aria-labelledby="nav-teacher-tab">
         <div class="row mt-3">
-            <div class="col-md-3">
+            <div class="col-md-6">
                 <div class="form-group">
                     <label for="search_subject">Tìm kiếm theo môn học</label>
                     <select id="search_subject" class="form-control">
@@ -30,7 +36,7 @@
                     </select>
                 </div>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-6">
                 <label for="search_class">Tìm kiếm theo lớp học</label>
                 <select id="search_class" class="form-control">
                     <option value="0" selected>---Tất cả---</option>
@@ -41,9 +47,6 @@
             <div class="card-header">
                 <div class="row">
                     <div class="col-md-11">Bảng hiển thị giáo viên</div>
-                    <div class="col-md-1">
-                        <button type="button" class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#createModal">Thêm mới</button>
-                    </div>
                 </div>
             </div>
             <div class="card-body">
@@ -51,13 +54,12 @@
                     <thead>
                         <tr>
                             <th>Id</th>
-                            <th>Vai trò</th>
-                            <th>Lớp học</th>
-                            <th>Môn dậy</th>
+                            <th>Họ và tên</th>
                             <th>Mã giáo viên</th>
+                            <th>Lớp dạy</th>
+                            <th>Môn dạy</th>
                             <th>Mật khẩu</th>
                             <th>Số điện thoại</th>
-                            <th>Họ và tên</th>
                             <th>Ngày sinh</th>
                             <th>Giới tính</th>
                             <th>Email</th>
@@ -77,9 +79,6 @@
             <div class="card-header">
                 <div class="row">
                     <div class="col-md-11">Bảng hiển thị học sinh</div>
-                    <div class="col-md-1">
-                        <button type="button" class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#createModal">Thêm mới</button>
-                    </div>
                 </div>
             </div>
             <div class="card-body">
@@ -87,13 +86,45 @@
                     <thead>
                         <tr>
                             <th>Id</th>
-                            <th>Vai trò</th>
-                            <th>Lớp học</th>
+                            <th>Họ và tên</th>
                             <th>Mã học sinh</th>
+                            <th>Lớp học</th>
                             <th>Mật khẩu</th>
                             <th>Số điện thoại</th>
+                            <th>Ngày sinh</th>
+                            <th>Giới tính</th>
+                            <th>Email</th>
+                            <th>Ảnh</th>
+                            <th>Địa chỉ</th>
+                            <th>Quốc tịch</th>
+                            <th>Trạng thái</th>
+                            <th>Thao tác</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="tab-pane fade show active" id="nav-user" role="tabpanel" aria-labelledby="nav-user-tab">
+        <div class="card mt-5">
+            <div class="card-header">
+                <div class="row">
+                    <div class="col-md-10">Bảng hiển thị người dùng chưa phân quyền</div>
+                    <div class="col-md-2">
+                        <button type="button" class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#excelModal">Excel Import</button>
+                        <button type="button" class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#createModal">Thêm mới</button>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <table id="user_table" class="table table-striped table-hover" style="width: 100%;">
+                    <thead>
+                        <tr>
+                            <th>Id</th>
                             <th>Họ và tên</th>
-                            <th>Mô tả</th>
+                            <th>Mã người dùng</th>
+                            <th>Mật khẩu</th>
+                            <th>Số điện thoại</th>
                             <th>Ngày sinh</th>
                             <th>Giới tính</th>
                             <th>Email</th>
@@ -109,13 +140,17 @@
         </div>
     </div>
 </div>
+<partial name="Create" />
+<partial name="Update" />
+<partial name="ExcelImport" />
 <script src="~/js/User/User.js"></script>
 <script>
     $(document).ready(function () {
         getSubject();
-        $("#search_subject").select2();
+        $("#search_subject").select2({ width: '100%' });
         getClass();
-        $("#search_class").select2();
+        $("#search_class").select2({ width: '100%' });
+        userNoRoleGrid();
         studentGrid();
         teacherGrid();
         $("#search_subject").change(function () {
@@ -123,6 +158,75 @@
         });
         $("#search_class").change(function () {
             $('#teacher_table').DataTable().ajax.reload();
+        });
+        $("#file_excel").change(function () {
+            Import_Excel();
+        })
+        $('#user_create_form').on('submit', function (event) {
+            var form = $(this);
+            if (!form[0].checkValidity()) {
+                event.preventDefault();
+                event.stopPropagation();
+            } else {
+                var formData = {};
+                $('#user_create_form').find('input, select, textarea').each(function (index, element) {
+                    var fieldId = $(element).attr('id');
+                    var fieldValue;
+
+                    if ($(element).is('select') && $(element).attr('id') === 'gender') {
+                        fieldValue = parseInt($(element).val());
+                    } else {
+                        fieldValue = $(element).val();
+                    }
+
+                    formData[fieldId] = fieldValue;
+                });
+                console.log(formData);
+                event.preventDefault();
+                createUser(formData, function () {
+                    $('#user_create_form').trigger('reset');
+                    toastr.success('Tạo môn học thành công');
+                    $('#createModal').modal('hide');
+                    form.removeClass('was-validated');
+                });
+            }
+            form.addClass('was-validated');
+        });
+        $('#user_update_form').on('submit', function (event) {
+            var form = $(this);
+            if (!form[0].checkValidity()) {
+                event.preventDefault();
+                event.stopPropagation();
+            } else {
+                let id = $("#id").val();
+                let user_Code = $("#user_Code_md").val();
+                let name = $("#name_md").val();
+                let gender = parseInt($("#gender_md").val());
+                let nation = $("#nation_md").val();
+                let address = $("#address_md").val();
+                let email = $("#email_md").val();
+                let phoneNumber = $("#phone_md").val();
+                let description = $("#description_md").val();
+                let DOB = $("#DOB_md").val();
+                let object = {
+                    Name: name,
+                    Gender: gender,
+                    DOB: DOB,
+                    Nation: nation,
+                    Address: address,
+                    Email: email,
+                    PhoneNumber: phoneNumber,
+                    Description: description,
+                    Status: 1
+                }
+                event.preventDefault();
+                updateUser(id, object, function () {
+                    toastr.success('Cập nhật người dùng thành công');
+                    let = $('#updateModal').modal('hide');
+                    form.removeClass('was-validated');
+                });
+            }
+            form.addClass('was-validated');
         });
     });
 </script>
