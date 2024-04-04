@@ -3,9 +3,14 @@ using AutoMapper.QueryableExtensions;
 using BLL.Services.Interface;
 using BLL.ViewModels;
 using BLL.ViewModels.Class;
+using BLL.ViewModels.Course;
 using Manager_Point.ApplicationDbContext;
 using Manager_Point.Models;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Primitives;
+using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
+using System.Collections.Generic;
 using System.Data.Entity;
 
 namespace BLL.Services.Implement
@@ -13,9 +18,11 @@ namespace BLL.Services.Implement
     public class ClassServices : IClassServices
     {
         private readonly AppDbContext _appContext;
-        private readonly IMapper _mapper;
-        public ClassServices(IMapper mapper)
+		private readonly IHttpContextAccessor _httpContextAccessor;
+		private readonly IMapper _mapper;
+        public ClassServices( IHttpContextAccessor httpContextAccessor,IMapper mapper)
         {
+            _httpContextAccessor = httpContextAccessor;
             _appContext = new AppDbContext();
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
@@ -73,28 +80,26 @@ namespace BLL.Services.Implement
             }
         }
 
-        public async Task<string> Get_All_Async(int page_number = 1, int page_size = 10, string search = "")
+        public async Task<string> Get_All_Async(int offset = 0, int limit = 10, string search="")
         {
             try
             {
-                int skip = (page_number - 1) * page_size;
-                var query = _appContext.Classes
-                    .Where(t => string.IsNullOrEmpty(search) || t.Name!.Contains(search))
-                    .Skip(skip)
-                    .Take(page_size);
-                var subjects = query.ToList();
+                var s = _appContext.Classes.Where(s => string.IsNullOrEmpty(search) || s.Name!.Contains(search));
+				int totalCount = _appContext.Classes
+					  .Where(s => string.IsNullOrEmpty(search) || s.Name!.Contains(search))
+					  .Count();
 
-                int totalCount = _appContext.Classes
-                    .Where(s => string.IsNullOrEmpty(search) || s.Name!.Contains(search))
-                    .Count();
-
-                var vm_class = _mapper.Map<List<vm_class>>(_mapper.ConfigurationProvider).ToList();
-                var paginatedResult = new PaginatedResult<vm_class>
+				int draw = 1;
+				var httpRequest = _httpContextAccessor.HttpContext!.Request;
+				if (httpRequest.Query.TryGetValue("draw", out StringValues valueDraw)) try { draw = int.Parse(valueDraw!); } catch { }
+               
+				var vm_class =  _appContext.Classes.ProjectTo<vm_class>(_mapper.ConfigurationProvider).Where(t => string.IsNullOrEmpty(search) || t.Name!.Contains(search)).Skip(offset).Take(limit).ToList();
+				var paginatedResult = new Pagination<vm_class>
                 {
-                    TotalCount = totalCount,
-                    PageNumber = page_number,
-                    PageSize = page_size,
-                    Data = vm_class
+					draw = draw,
+					recordsTotal = totalCount,
+					recordsFiltered = totalCount,
+					data = vm_class
                 };
 
                 var jsonResult = JsonConvert.SerializeObject(paginatedResult, Formatting.Indented);

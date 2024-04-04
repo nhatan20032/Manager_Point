@@ -4,7 +4,7 @@ namespace BLL.Services.Interface
 {
     public interface IClassServices
     {
-        public Task<string> Get_All_Async(int page_number = 1, int page_size = 10, string search = "");
+        public Task<string> Get_All_Async(int offset = 0, int limit = 10, string search = "");
         public List<vm_class> Get_List();
         public Task<vm_class> Get_By_Id(int id);
         public Task<int> Create_Item(vm_create_class request);
