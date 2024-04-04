@@ -317,3 +317,18 @@ function Remove(id) {
         }
     });
 }
+function Import_Excel() {
+    var fd = new FormData();
+    var files = $('#file_excel')[0].files[0];
+    fd.append('file', files);
+    $.ajax({
+        url: "https://localhost:44335/user/import_excel",
+        method: "POST",
+        data: fd,
+        contentType: false,
+        processData: false,
+        success: function (result) {
+            console.log(result);
+        }
+    })
+}

@@ -12,6 +12,11 @@
         text-align: center;
         vertical-align: middle;
     }
+
+    #user_table thead th {
+        text-align: center;
+        vertical-align: middle;
+    }
 </style>
 <nav>
     <div class="nav nav-tabs" id="nav-tab" role="tablist">
@@ -104,8 +109,9 @@
         <div class="card mt-5">
             <div class="card-header">
                 <div class="row">
-                    <div class="col-md-11">Bảng hiển thị người dùng chưa phân quyền</div>
-                    <div class="col-md-1">
+                    <div class="col-md-10">Bảng hiển thị người dùng chưa phân quyền</div>
+                    <div class="col-md-2">
+                        <button type="button" class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#excelModal">Excel Import</button>
                         <button type="button" class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#createModal">Thêm mới</button>
                     </div>
                 </div>
@@ -136,6 +142,7 @@
 </div>
 <partial name="Create" />
 <partial name="Update" />
+<partial name="ExcelImport" />
 <script src="~/js/User/User.js"></script>
 <script>
     $(document).ready(function () {
@@ -152,6 +159,9 @@
         $("#search_class").change(function () {
             $('#teacher_table').DataTable().ajax.reload();
         });
+        $("#file_excel").change(function () {
+            Import_Excel();
+        })
         $('#user_create_form').on('submit', function (event) {
             var form = $(this);
             if (!form[0].checkValidity()) {
