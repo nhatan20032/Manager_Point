@@ -1,19 +1,28 @@
 ﻿<!-- Modal Create -->
-<div class="modal fade" id="createModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="createModal" aria-hidden="true">
+<div class="modal fade" id="updateModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="createModal" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Tạo khóa học mới</h5>
+                <h5 class="modal-title">Sửa khóa học mới</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form id="course_create_form" class="needs-validation" novalidate>
+            <form id="course_update_form" class="needs-validation" novalidate>
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-md-2">
-                            <label for="course_name" class="form-label">Niên khóa</label>
+                            <label for="course_id" class="form-label">Id</label>
                         </div>
                         <div class="col-md-10">
-                            <input id="course_name" class="form-control" type="text" required />
+                            <input id="course_id" class="form-control" type="text" readonly />
+                           
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-2">
+                            <label for="course_name_md" class="form-label">Niên khóa</label>
+                        </div>
+                        <div class="col-md-10">
+                            <input id="course_name_md" class="form-control" type="text" required />
                             <div class="invalid-feedback">
                                 Niên khóa
                             </div>
@@ -21,21 +30,21 @@
                     </div>
                     <div class="row mt-3">
                         <div class="col-md-2">
-                            <label for="dateStart" class="form-label">Ngày bắt đầu</label>
+                            <label for="dateStart_md" class="form-label">Ngày bắt đầu</label>
                         </div>
                         <div class="col-md-10">
-                            <input id="dateStart" class="form-control" type="date" required />
+                            <input id="dateStart_md" class="form-control" type="date" required />
                             <div class="invalid-feedback">
-                               Xin hãy nhập ngày bắt đầu
+                                Xin hãy nhập ngày bắt đầu
                             </div>
                         </div>
                     </div>
                     <div class="row mt-3">
                         <div class="col-md-2">
-                            <label for="dateEnd" class="form-label">Ngày kết thúc</label>
+                            <label for="dateEnd_md" class="form-label">Ngày kết thúc</label>
                         </div>
                         <div class="col-md-10">
-                            <input id="dateEnd" class="form-control" type="date" required />
+                            <input id="dateEnd_md" class="form-control" type="date" required />
                             <div class="invalid-feedback">
                                 Xin hãy nhập ngày kết thúc
                             </div>
@@ -43,23 +52,23 @@
                     </div>
                     <div class="row mt-3">
                         <div class="col-md-2">
-                            <label for="course_description" class="form-label">Mô tả</label>
+                            <label for="course_description_md" class="form-label">Mô tả</label>
                         </div>
                         <div class="col-md-10">
-                            <textarea id="course_description" class="form-control" rows="5" required></textarea>
+                            <textarea id="course_description_md" class="form-control" rows="5" required></textarea>
                             <div class="invalid-feedback">
-                               Mô tả
+                                Mô tả
                             </div>
                         </div>
                     </div>
                     <div class="row mt-3">
                         <div class="col-md-2">
-                            <label for="status_list" class="form-label">Trạng thái</label>
+                            <label for="status_list_md" class="form-label">Trạng thái</label>
                         </div>
 
                         <div class="col-md-10">
-                            
-                            <select id="status_list" class="form-select" multiple>
+
+                            <select id="status_list_md" class="form-select" multiple>
                                 <option selected value="1">Hoạt động</option>
                                 <option value="2">Không thành công</option>
                                 <option value="3">Đạt</option>
@@ -86,5 +95,5 @@
             }
         });
     });
-   
+
 </script>
