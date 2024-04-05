@@ -2,7 +2,6 @@
 using AutoMapper.QueryableExtensions;
 using BLL.Author;
 using BLL.Authorization;
-using BLL.Services.Interface;
 using BLL.ViewModels;
 using BLL.ViewModels.User;
 using Manager_Point.ApplicationDbContext;
@@ -16,7 +15,22 @@ using System.Data.Entity;
 
 namespace BLL.Services.Implement
 {
-    public class UserServices : IUserServices
+	public interface IUserServices
+	{
+		public Task<string> Get_All_Async(int offset = 0, int limit = 10, string search = "");
+		public Task<string> Get_User_No_Role(int offset = 0, int limit = 10, string search = "");
+		public Task<string> Get_All_Teacher(int offset = 0, int limit = 10, string search = "", int role = 1, int subject = 0, int classes = 0);
+		public Task<string> Get_All_Student(int offset = 0, int limit = 10, string search = "", int role = 2, int classes = 0);
+		public Task<vm_user> Get_By_Id(int id);
+		public Task<int> Create_Item(vm_create_user request);
+		public Task<List<int>> Batch_Create_Item(List<vm_create_user> requests);
+		public Task<int> Modified_Item(int id, vm_update_user request);
+		public Task<bool> Remove_Item(int id);
+		public Task<bool> Batch_Remove_Item(List<int> ids);
+		public Task<int> AddUsersFromExcel(Stream excelFileStream);
+		public AuthenticateResponse? Authenticate(AuthenticateRequest model);
+	}
+	public class UserServices : IUserServices
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly AppDbContext _appContext;

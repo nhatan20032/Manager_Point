@@ -6,7 +6,15 @@ using Manager_Point.Models;
 
 namespace BLL.Services.Implement
 {
-    public class Subject_TeacherServices : ISubject_TeacherServices
+	public interface ISubject_TeacherServices
+	{
+		public Task<int> Create_Item(vm_subject_teacher request);
+		public Task<List<int>> Batch_Create_Item(List<vm_subject_teacher> requests);
+		public Task<int> Modified_Item(int id, vm_subject_teacher request);
+		public Task<bool> Remove_Item(int id);
+		public Task<bool> Batch_Remove_Item(List<int> ids);
+	}
+	public class Subject_TeacherServices : ISubject_TeacherServices
     {
         private readonly AppDbContext _appContext;
         private readonly IMapper _mapper;
