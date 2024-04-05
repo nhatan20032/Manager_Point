@@ -1,10 +1,10 @@
-﻿using BLL.Services.Interface;
+﻿using BLL.Services.Implement;
 using BLL.ViewModels.Class;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
-    [Route("api/[controller]")]
+	[Route("api/[controller]")]
     [ApiController]
     public class ClassesController : Controller
     {
