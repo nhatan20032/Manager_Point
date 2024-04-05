@@ -1,6 +1,6 @@
 ﻿function setupGrid() {
 
-    this.$table = $('#course_table').DataTable({
+    this.$table = $('#class_table').DataTable({
         "language": {
             "sProcessing": "Đang xử lý...",
             "sLengthMenu": "Xem _MENU_ mục",
@@ -21,11 +21,10 @@
         "processing": true,
         "serverSide": true,
         "ajax": {
-            "url": "https://localhost:44335/course/get_all",
+            "url": "https://localhost:44335/class/get_all",
             "data": function (d) {
                 delete d.columns;
                 d.search = d.search.value;
-
             },
             "dataSrc": "data"
 
@@ -33,27 +32,15 @@
         "rowId": "Id",
         "columns": [
             { "data": "Id", "orderable": false },
+            { "data": "ClassCode", "orderable": false },
             { "data": "Name", "orderable": false },
-            {
-                "data": "StartTime",
-                "orderable": false,
-                "render": function (data) {
-                    return new Date(data).toLocaleDateString('en-GB');
-                }
-            },
-            {
-                "data": "EndTime",
-                "orderable": false,
-                "render": function (data) {
-                    return new Date(data).toLocaleDateString('en-GB');
-                }
-            },
-            { "data": "Description", "orderable": false },
+            { "data": "GradeLevel", "orderable": false },
+            { "data": "CourseName", "orderable": false },
+
             {
                 "data": "Status", "orderable": false, "render": function (data) {
-                    if (data == 1) return "Hoạt động";
-                    if (data == 4) return "Đã kết thúc";
                     if (data == 5) return "Trong thời gian";
+                    if (data == 4) return "Đã kết thúc";
                     return "Unknown";
                 }
             },
@@ -74,10 +61,9 @@
     });
     window.dt = this.$table;
 }
-function createCourse(object, callback) {
-    debugger
+function createClass(object, callback) {
     $.ajax({
-        url: "https://localhost:44335/course/create",
+        url: "https://localhost:44335/class/create",
         method: "POST",
         data: JSON.stringify(object),
         contentType: 'application/json',
@@ -85,14 +71,25 @@ function createCourse(object, callback) {
             if (callback && typeof callback === "function") {
                 callback();
             }
-            $('#course_table').DataTable().ajax.reload();
+
+            $('#class_table').DataTable().ajax.reload();
         },
+        error: function (xhr, status, error) {
+            var errorMessage = "Unexpected error occurred";
+            if (xhr.responseJSON && xhr.responseJSON.message) {
+                errorMessage = xhr.responseJSON.message;
+            }
+            toastr.error(errorMessage);
+        }
     });
 }
 
+
+
+
 function updateSub(id, object, callback) {
     $.ajax({
-        url: `https://localhost:44335/course/modified?id=${id}`,
+        url: `https://localhost:44335/class/modified?id=${id}`,
         method: "PUT",
         data: JSON.stringify(object),
         contentType: 'application/json',
@@ -100,20 +97,20 @@ function updateSub(id, object, callback) {
             if (callback && typeof callback === "function") {
                 callback();
             }
-            $('#course_table').DataTable().ajax.reload();
+            $('#class_table').DataTable().ajax.reload();
         },
     });
 }
 
 function GetById(id) {
     $.ajax({
-        url: `https://localhost:44335/course/get_by_id`,
+        url: `https://localhost:44335/class/get_by_id`,
         method: "GET",
         data: {
             id: id,
         },
         success: function (res) {
-           
+
             if (res == null) {
                 toastr.error('Không tìm thấy vai trò');
                 return;
@@ -139,11 +136,11 @@ function Remove(id) {
     }).then((willDelete) => {
         if (willDelete) {
             $.ajax({
-                url: "https://localhost:44335/course/remove?id=" + id,
+                url: "https://localhost:44335/class/remove?id=" + id,
                 method: "DELETE",
                 success: function (res) {
-                    toastr.success('Xóa khóa học  thành công');
-                    $('#course_table').DataTable().ajax.reload();
+                    toastr.success('remove class success');
+                    $('#class_table').DataTable().ajax.reload();
                 },
             });
         } else {

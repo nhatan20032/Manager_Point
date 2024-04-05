@@ -58,15 +58,15 @@
                         </div>
 
                         <div class="col-md-10">
-                            
-                            <select id="status_list" class="form-select" multiple>
-                                <option selected value="1">Hoạt động</option>
-                                <option value="2">Không thành công</option>
-                                <option value="3">Đạt</option>
+
+							<select id="status_list" class="form-select" multiple required>
+								<option selected value="5">Trong thời gian</option>
                                 <option value="4">Đã kết thúc</option>
-                                <option value="5">Trong thời gian</option>
                                 <!-- Thêm các tùy chọn khác nếu cần -->
                             </select>
+                            <div class="invalid-feedback">
+                                Status not be empty
+                            </div>
                         </div>
                     </div>
                 </div>
