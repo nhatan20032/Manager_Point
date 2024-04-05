@@ -14,9 +14,9 @@ namespace API.Controllers
             _classService = classService;
         }
         [HttpGet("/class/get_all")]
-        public async Task<IActionResult> Get_All_Item(int page_number = 1, int page_size = 10, string search = "")
+        public async Task<IActionResult> Get_All_Item(int offset = 0, int limit = 10, string search = "")
         {
-            return Ok(await _classService.Get_All_Async(page_number, page_size, search));
+            return Ok(await _classService.Get_All_Async(offset, limit, search));
         }
 
         [HttpGet("/class/get_list")]
