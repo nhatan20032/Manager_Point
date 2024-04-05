@@ -84,7 +84,6 @@ namespace BLL.Services.Implement
         {
             try
             {
-                var s = _appContext.Classes.Where(s => string.IsNullOrEmpty(search) || s.Name!.Contains(search));
 				int totalCount = _appContext.Classes
 					  .Where(s => string.IsNullOrEmpty(search) || s.Name!.Contains(search))
 					  .Count();
