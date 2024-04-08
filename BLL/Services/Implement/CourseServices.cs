@@ -9,11 +9,23 @@ using Manager_Point.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Primitives;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System.Data.Entity;
 
 namespace BLL.Services.Implement
 {
-    public class CourseServices : ICourseServices
+	public interface ICourseServices
+	{
+		public Task<string> Get_All_Async(int offset = 0, int limit = 10, string search = "");
+	//	public Task<string> Get_All_Name_course();
+		public Task<vm_course> Get_By_Id(int id);
+		public Task<int> Create_Item(vm_create_course request);
+		public Task<List<int>> Batch_Create_Item(List<vm_create_course> requests);
+		public Task<int> Modified_Item(int id, vm_update_course request);
+		public Task<bool> Remove_Item(int id);
+		public Task<bool> Batch_Remove_Item(List<int> ids);
+	}
+	public class CourseServices : ICourseServices
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly AppDbContext _appContext;
@@ -112,6 +124,34 @@ namespace BLL.Services.Implement
                 throw;
             }
         }
+
+	/*	public async Task<string> Get_All_Name_course()
+		{
+			try
+			{
+				int totalCount = _appContext.Courses.Count();
+				var vm_courses = _appContext.Courses.ProjectTo<vm_course>(_mapper.ConfigurationProvider).ToList();
+				int draw = 1;
+				var httpRequest = _httpContextAccessor.HttpContext!.Request;
+				if (httpRequest.Query.TryGetValue("draw", out StringValues valueDraw)) try { draw = int.Parse(valueDraw!); } catch { }
+				var paginatedResult = new Pagination<vm_course>
+				{
+					draw = draw,
+					recordsTotal = totalCount,
+					recordsFiltered = totalCount,
+					data = vm_courses
+
+				};
+
+				var jsonResult = JsonConvert.SerializeObject(paginatedResult, Formatting.Indented);
+				return jsonResult;
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine($"Error in Get_All_Async: {ex.Message}");
+				throw;
+			}
+		}*/
 
 		public async Task<vm_course> Get_By_Id(int id)
 		{

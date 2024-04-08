@@ -3,19 +3,16 @@ using AutoMapper.QueryableExtensions;
 using BLL.Services.Interface;
 using BLL.ViewModels;
 using BLL.ViewModels.Class;
-using BLL.ViewModels.Course;
 using Manager_Point.ApplicationDbContext;
 using Manager_Point.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Primitives;
-using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
-using System.Collections.Generic;
 using System.Data.Entity;
 
 namespace BLL.Services.Implement
 {
-    public class ClassServices : IClassServices
+	public class ClassServices : IClassServices
     {
         private readonly AppDbContext _appContext;
 		private readonly IHttpContextAccessor _httpContextAccessor;

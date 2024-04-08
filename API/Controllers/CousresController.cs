@@ -1,10 +1,10 @@
-﻿using BLL.Services.Interface;
+﻿using BLL.Services.Implement;
 using BLL.ViewModels.Course;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
-    [Route("api/[controller]")]
+	[Route("api/[controller]")]
     [ApiController]
     public class CousresController : Controller
     {
@@ -19,7 +19,7 @@ namespace API.Controllers
 		{
 			return Ok(await _courseService.Get_All_Async(start, length, search));
 		}
-
+        
 
         [HttpGet("/course/get_by_id")]
         public async Task<IActionResult> Get_By_Id(int id)
