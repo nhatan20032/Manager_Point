@@ -7,6 +7,7 @@ namespace BLL.ViewModels.User
     {
         public int Id { get; set; }
         public List<string>? Role_User { get; set; }
+        public List<string>? Role_Code { get; set; }
         public List<int>? Role_id { get; set; }
         public List<string>? Subject_User { get; set; }
         public List<int>? Subject_id { get; set; }

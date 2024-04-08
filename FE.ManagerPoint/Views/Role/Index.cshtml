@@ -22,6 +22,7 @@
             <thead>
                 <tr>
                     <th>Id</th>
+                    <th>Mã Quyền</th>
                     <th>Quyền</th>
                     <th>Mô tả</th>
                     <th>Trạng thái</th>
@@ -44,10 +45,12 @@
                 event.stopPropagation();
             } else {
                 let role_name = $("#role_name").val();
+                let role_code = $("#role_code").val();
                 let description = $("#description").val();
                 let status = 1;
                 let object = {
                     Name: role_name,
+                    Role_Code: role_code,
                     Description: description,
                     Status: status,
                 };
@@ -70,8 +73,10 @@
                 let id = $("#id_role").val();
                 let role_name = $("#role_name_md").val();
                 let description = $("#description_md").val();
+                let role_code = $("#role_code_md").val();
                 let status = 1;
                 let object = {
+                    Role_Code: role_code,
                     Name: role_name,
                     Description: description,
                     Status: status,

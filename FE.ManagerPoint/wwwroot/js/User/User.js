@@ -26,6 +26,11 @@
                 d.search = d.search.value;
                 d.classes = $("#search_class").val();
             },
+            "data": function (d) {
+                delete d.columns;
+                d.search = d.search.value;
+                d.classes = $("#search_class_student").val();
+            },
             "dataSrc": "data"
         },
         "rowId": "Id",
@@ -223,6 +228,22 @@ function getClass() {
         success: function (res) {
             if (res && res.length > 0) {
                 var select = $("#search_class");
+                $.each(res, function (index, item) {
+                    select.append($("<option></option>")
+                        .attr("value", item.id)
+                        .text(item.classCode));
+                });
+            }
+        },
+    });
+}
+function getStudentClass() {
+    $.ajax({
+        url: "https://localhost:44335/class/get_list",
+        method: "GET",
+        success: function (res) {
+            if (res && res.length > 0) {
+                var select = $("#search_class_student");
                 $.each(res, function (index, item) {
                     select.append($("<option></option>")
                         .attr("value", item.id)

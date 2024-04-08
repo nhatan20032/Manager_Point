@@ -30,6 +30,7 @@
         "rowId": "Id",
         "columns": [
             { 'data': 'Id', "orderable": false },
+            { 'data': 'Role_Code', "orderable": false },
             { 'data': 'Name', "orderable": false },
             { 'data': 'Description', "orderable": false },
             {
@@ -100,6 +101,7 @@ function GetById(id) {
             }
             $("#id_role").val(res.id);
             $("#role_name_md").val(res.name);
+            $("#role_code_md").val(res.role_Code);
             $("#description_md").val(res.description);
             $("#updateModal").modal("show");
         },

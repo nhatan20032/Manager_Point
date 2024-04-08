@@ -75,6 +75,14 @@
         </div>
     </div>
     <div class="tab-pane fade" id="nav-student" role="tabpanel" aria-labelledby="nav-student-tab">
+        <div class="row mt-3">
+            <div class="col-md-6">
+                <label for="search_class">Tìm kiếm theo lớp học</label>
+                <select id="search_class_student" class="form-control">
+                    <option value="0" selected>---Tất cả---</option>
+                </select>
+            </div>
+        </div>
         <div class="card mt-5">
             <div class="card-header">
                 <div class="row">
@@ -150,6 +158,8 @@
         $("#search_subject").select2({ width: '100%' });
         getClass();
         $("#search_class").select2({ width: '100%' });
+        getStudentClass();
+        $("#search_class_student").select2({ width: '100%' });
         userNoRoleGrid();
         studentGrid();
         teacherGrid();
@@ -158,6 +168,9 @@
         });
         $("#search_class").change(function () {
             $('#teacher_table').DataTable().ajax.reload();
+        });
+        $("#search_class_student").change(function () {
+            $('#student_table').DataTable().ajax.reload();
         });
         $("#file_excel").change(function () {
             Import_Excel();
