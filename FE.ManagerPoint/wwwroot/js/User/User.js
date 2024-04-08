@@ -33,6 +33,9 @@
             },
             "dataSrc": "data"
         },
+        "initComplete": function () {
+            teacherGrid();
+        },
         "rowId": "Id",
         "columns": [
             { 'data': 'Id', "orderable": false },
@@ -204,6 +207,9 @@ function userNoRoleGrid() {
                 d.search = d.search.value;
             },
             "dataSrc": "data"
+        },
+        "initComplete": function () {
+            studentGrid();
         },
         "rowId": "Id",
         "columns": [

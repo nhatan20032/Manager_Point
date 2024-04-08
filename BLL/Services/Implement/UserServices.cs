@@ -90,13 +90,13 @@ namespace BLL.Services.Implement
         {
             try
             {
-                int totalCount = _appContext.Users
+                int totalCount = _appContext.Users.AsNoTracking()
                     .Where(s => string.IsNullOrEmpty(search) || s.Name!.Contains(search))
                     .Count();
                 int draw = 1;
                 var httpRequest = _httpContextAccessor.HttpContext!.Request;
                 if (httpRequest.Query.TryGetValue("draw", out StringValues valueDraw)) try { draw = int.Parse(valueDraw!); } catch { }
-                var vm_User = _appContext.Users.ProjectTo<vm_user>(_mapper.ConfigurationProvider);
+                var vm_User = _appContext.Users.AsNoTracking().ProjectTo<vm_user>(_mapper.ConfigurationProvider);
                 var result = vm_User.Where(t => (string.IsNullOrEmpty(search) || t.Name!.Contains(search))).Skip(offset).Take(limit).ToList();
                 var paginatedResult = new Pagination<vm_user>
                 {
@@ -120,11 +120,11 @@ namespace BLL.Services.Implement
         {
             try
             {
-                int totalCount = _appContext.Users.ProjectTo<vm_user>(_mapper.ConfigurationProvider).Where(s => (string.IsNullOrEmpty(search) || s.Name!.Contains(search)) && s.Role_Code!.Contains("gv")).Count();
+                int totalCount = _appContext.Users.AsNoTracking().ProjectTo<vm_user>(_mapper.ConfigurationProvider).Where(s => (string.IsNullOrEmpty(search) || s.Name!.Contains(search)) && s.Role_Code!.Contains("gv")).Count();
                 int draw = 1;
                 var httpRequest = _httpContextAccessor.HttpContext!.Request;
                 if (httpRequest.Query.TryGetValue("draw", out StringValues valueDraw)) try { draw = int.Parse(valueDraw!); } catch { }
-                var vm_User = _appContext.Users.ProjectTo<vm_user>(_mapper.ConfigurationProvider);
+                var vm_User = _appContext.Users.AsNoTracking().ProjectTo<vm_user>(_mapper.ConfigurationProvider);
                 var result = vm_User.Where(t => string.IsNullOrEmpty(search) || t.Name!.Contains(search)).Skip(offset).Take(limit).ToList();
                 result = result.Where(t => t.Role_Code!.Contains("gv")).ToList();
                 if (subject != 0 && classes == 0) result = result.Where(t => t.Subject_id!.Contains(subject)).ToList();
@@ -152,11 +152,11 @@ namespace BLL.Services.Implement
         {
             try
             {
-                int totalCount = _appContext.Users.ProjectTo<vm_user>(_mapper.ConfigurationProvider).Where(s => (string.IsNullOrEmpty(search) || s.Name!.Contains(search)) && s.Role_Code!.Contains("hs")).Count();
+                int totalCount = _appContext.Users.AsNoTracking().ProjectTo<vm_user>(_mapper.ConfigurationProvider).Where(s => (string.IsNullOrEmpty(search) || s.Name!.Contains(search)) && s.Role_Code!.Contains("hs")).Count();
                 int draw = 1;
                 var httpRequest = _httpContextAccessor.HttpContext!.Request;
                 if (httpRequest.Query.TryGetValue("draw", out StringValues valueDraw)) try { draw = int.Parse(valueDraw!); } catch { }
-                var vm_User = _appContext.Users.ProjectTo<vm_user>(_mapper.ConfigurationProvider);
+                var vm_User = _appContext.Users.AsNoTracking().ProjectTo<vm_user>(_mapper.ConfigurationProvider);
                 var result = vm_User.Where(t => string.IsNullOrEmpty(search) || t.Name!.Contains(search)).Skip(offset).Take(limit).ToList();
                 result = result.Where(t => t.Role_Code!.Contains("hs")).ToList();
                 if (classes != 0) result = result.Where(t => t.Student_Class_id!.Contains(classes)).ToList();
@@ -181,11 +181,11 @@ namespace BLL.Services.Implement
         {
             try
             {
-                int totalCount = _appContext.Users.ProjectTo<vm_user>(_mapper.ConfigurationProvider).Where(s => (string.IsNullOrEmpty(search) || s.Name!.Contains(search)) && !s.Role_id!.Any()).Count();
+                int totalCount = _appContext.Users.AsNoTracking().ProjectTo<vm_user>(_mapper.ConfigurationProvider).Where(s => (string.IsNullOrEmpty(search) || s.Name!.Contains(search)) && !s.Role_id!.Any()).Count();
                 int draw = 1;
                 var httpRequest = _httpContextAccessor.HttpContext!.Request;
                 if (httpRequest.Query.TryGetValue("draw", out StringValues valueDraw)) try { draw = int.Parse(valueDraw!); } catch { }
-                var vm_User = _appContext.Users.ProjectTo<vm_user>(_mapper.ConfigurationProvider);
+                var vm_User = _appContext.Users.AsNoTracking().ProjectTo<vm_user>(_mapper.ConfigurationProvider);
                 var result = vm_User.Where(t => (string.IsNullOrEmpty(search) || t.Name!.Contains(search)) && !t.Role_id!.Any()).Skip(offset).Take(limit).ToList();
                 var paginatedResult = new Pagination<vm_user>
                 {
