@@ -248,6 +248,10 @@ namespace Data.Migrations
                         .HasMaxLength(128)
                         .HasColumnType("nvarchar(128)");
 
+                    b.Property<string>("Role_Code")
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
+
                     b.Property<int>("Status")
                         .HasMaxLength(10)
                         .HasColumnType("int");

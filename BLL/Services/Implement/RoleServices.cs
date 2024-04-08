@@ -134,6 +134,7 @@ namespace BLL.Services.Implement
                 objForUpdate.Description = request.Description;
                 objForUpdate.Name = request.Name;
                 objForUpdate.Status = request.Status;
+                objForUpdate.Role_Code = request.Role_Code;
                 // Không cần gọi Attach hoặc Update vì objForUpdate đã được theo dõi trong DbContext neuse có sự thay đổi thì nó sẽ cập nhật vô DB
                 await _appContext.SaveChangesAsync();
                 return objForUpdate.Id;
