@@ -228,7 +228,12 @@ function userNoRoleGrid() {
                 }
             },
             { 'data': 'Email', "orderable": false },
-            { 'data': 'AvatarUrl', "orderable": false },
+            {
+                "data": "AvatarUrl", "className": "img_td", "orderable": false, render: function (data) {
+                    let html = `<img src="${data}" alt="AvatarUrl" style="width: 50%;" />`;
+                    return html;
+                }
+            },
             { 'data': 'Address', "orderable": false },
             {
                 "data": "Nation", "orderable": false, render: function (data) {
@@ -251,7 +256,7 @@ function userNoRoleGrid() {
                 }
             },
             {
-                "data": null, "orderable": false, render: function (row) {
+                "data": null,"orderable": false, render: function (row) {
                     let edit = `<a class="link-warning" onclick="GetById(${row.Id})" style="cursor: pointer; margin-right: 20px; text-decoration: none"><i class="fa-solid fa-wrench"></i>Edit</a>`;
                     let remove = `<a class="link-danger" onclick="Remove(${row.Id})" style="cursor: pointer; text-decoration: none;"><i class="fa-solid fa-trash"></i>Remove</a>`;
                     return `<div>${edit} ${remove}</div>`;
@@ -423,4 +428,25 @@ function downloadExcelFile() {
     link.href = fileUrl;
     link.download = 'sample.xlsx';
     link.click();
+}
+function handleFileUpload(input) {
+    var file = input.files[0];
+    var formData = new FormData();
+    formData.append('file', file);
+
+    $.ajax({
+        url: '/user/upload', // Đường dẫn xử lý tệp tin tải lên (ví dụ: '/upload')
+        type: 'POST',
+        data: formData,
+        contentType: false,
+        processData: false,
+        success: function (response) {
+            console.log(response);
+            $("#avarta").val(response);
+        },
+        error: function (xhr, status, error) {
+            // Xử lý lỗi (nếu có)
+            console.log(error);
+        }
+    });
 }

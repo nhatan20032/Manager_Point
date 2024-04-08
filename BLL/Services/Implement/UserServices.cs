@@ -8,14 +8,13 @@ using BLL.ViewModels.User;
 using Manager_Point.ApplicationDbContext;
 using Manager_Point.Models;
 using Manager_Point.Models.Enum;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Primitives;
 using Newtonsoft.Json;
 using OfficeOpenXml;
-using System;
 using System.Data.Entity;
 using System.Globalization;
-using System.Reflection;
 
 namespace BLL.Services.Implement
 {
@@ -25,12 +24,14 @@ namespace BLL.Services.Implement
         private readonly AppDbContext _appContext;
         private readonly IMapper _mapper;
         private readonly IJwtUtils _jwtUtils;
-        public UserServices(IMapper mapper, IJwtUtils jwtUtils, IHttpContextAccessor httpContextAccessor)
+        private readonly IWebHostEnvironment _hostingEnvironment;
+        public UserServices(IMapper mapper, IJwtUtils jwtUtils, IHttpContextAccessor httpContextAccessor, IWebHostEnvironment webHostEnvironment)
         {
             _appContext = new AppDbContext();
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _jwtUtils = jwtUtils;
             _httpContextAccessor = httpContextAccessor;
+            _hostingEnvironment = webHostEnvironment;
         }
         public async Task<List<int>> Batch_Create_Item(List<vm_create_user> requests)
         {
@@ -411,6 +412,6 @@ namespace BLL.Services.Implement
             var token = _jwtUtils.GenerateJwtToken(vm_User);
 
             return new AuthenticateResponse(vm_User, token);
-        }
+        }       
     }
 }

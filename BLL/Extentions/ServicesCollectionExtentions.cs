@@ -3,9 +3,11 @@ using BLL.Extentions.Automapper;
 using BLL.Services.Implement;
 using BLL.Services.Interface;
 using Manager_Point.ApplicationDbContext;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting.Internal;
 
 namespace BLL.Extentions
 {
@@ -21,7 +23,7 @@ namespace BLL.Extentions
 
 
 
-            #region ================== DI Services ==================
+            #region ================== DI Services ==================           
             services.AddTransient<IJwtUtils, JwtUtils>();
             services.AddTransient<ISubjectServices, SubjectServices>();
             services.AddTransient<IRoleServices, RoleServices>();
