@@ -3,12 +3,21 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Create a new class</h5>
+                <h5 class="modal-title">Update class</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form id="class_create_form" class="needs-validation" novalidate>
+            <form id="class_update_form" class="needs-validation" novalidate>
                 <div class="modal-body">
-                    <div class="row">
+                      <div class="row" >
+                        <div class="col-md-2">
+                            <label for="class_id" class="form-label">Id</label>
+                        </div>
+                        <div class="col-md-10">
+                            <input id="class_id" class="form-control" type="text" readonly />
+
+                        </div>
+                    </div>
+                    <div class="row mt-3">
                         <div class="col-md-3">
                             <label for="class_classcode_md" class="form-label">Class Code</label>
                         </div>
@@ -96,9 +105,9 @@
             method: 'GET',
             dataType: 'json',
             success: function (data) {
-                $('#class_courseName').empty();
+                $('#class_courseName_md').empty();
                 $.each(data.data, function (index, item) {
-                    $('#class_courseName').append('<option value="' + item.Id + '">' + item.Name + '</option>');
+                    $('#class_courseName_md').append('<option value="' + item.Id + '">' + item.Name + '</option>');
                 });
             },
             error: function (xhr, status, error) {

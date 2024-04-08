@@ -32,7 +32,11 @@
         },
         "rowId": "Id",
         "columns": [
-            { "data": "Id", "orderable": false },
+            {
+                "data": null, "orderable": false, "render": function (data, type, row, meta) {
+                    return meta.row + 1;
+                }
+            },
             { "data": "Name", "orderable": false },
             {
                 "data": "StartTime",
@@ -82,8 +86,13 @@ function createCourse(object, callback) {
         data: JSON.stringify(object),
         contentType: 'application/json',
         success: function (res) {
-            if (callback && typeof callback === "function") {
-                callback();
+            if (res.message) {
+                toastr.error(res.message);
+            }
+            else {
+                if (callback && typeof callback === "function") {
+                    callback();
+                }
             }
             $('#course_table').DataTable().ajax.reload();
         },
@@ -97,8 +106,13 @@ function updateSub(id, object, callback) {
         data: JSON.stringify(object),
         contentType: 'application/json',
         success: function (res) {
-            if (callback && typeof callback === "function") {
-                callback();
+            if (res.message) {
+                toastr.error(res.message);
+            }
+            else {
+                if (callback && typeof callback === "function") {
+                    callback();
+                }
             }
             $('#course_table').DataTable().ajax.reload();
         },
