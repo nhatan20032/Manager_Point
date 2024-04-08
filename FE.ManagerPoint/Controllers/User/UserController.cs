@@ -8,6 +8,10 @@ namespace FE.ManagerPoint.Controllers.User
         {
             return View();
         }
+        public IActionResult User_Role()
+        {
+            return View();
+        }
         [HttpPost("/user/upload")]
         public string Upload(IFormFile file)
         {
