@@ -17,10 +17,15 @@
         text-align: center;
         vertical-align: middle;
     }
-    .img_td{
-        width: 300px;
-        text-align: center;
+
+    .img_td {
+        width: 150px;
     }
+
+        .img_td img {
+            width: 100%;
+            height: auto;
+        }
 </style>
 <nav>
     <div class="nav nav-tabs" id="nav-tab" role="tablist">
@@ -237,8 +242,10 @@
                 let email = $("#email_md").val();
                 let phoneNumber = $("#phone_md").val();
                 let description = $("#description_md").val();
+                let imageUrl = $("#avatar_md").val();
                 let DOB = $("#DOB_md").val();
                 let object = {
+                    AvatarUrl: imageUrl,
                     Name: name,
                     Gender: gender,
                     DOB: DOB,

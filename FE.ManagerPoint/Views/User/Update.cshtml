@@ -126,10 +126,11 @@
                     </div>
                     <div class="row mt-3">
                         <div class="col-md-2">
-                            <label for="avarta_md" class="form-label">Avatar</label>
+                            <label for="avatar_md" class="form-label">Avatar</label>
                         </div>
                         <div class="col-md-10">
-                            <input id="avarta_md" type="file" class="form-control" />
+                            <input id="avatar_input_md" type="file" class="form-control" accept="image/*" onchange="handleFileUpload_md(this)" />
+                            <input id="avatar_md" type="text" class="form-control" readonly />
                         </div>
                     </div>
                 </div>
