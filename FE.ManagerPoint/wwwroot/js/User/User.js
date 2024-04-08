@@ -414,6 +414,13 @@ function Import_Excel(callback) {
             }
             $('#user_table').DataTable().ajax.reload();
             console.log(result);
-        }
+        },
     })
+}
+function downloadExcelFile() {
+    var fileUrl = '/excel/sample.xlsx';
+    var link = document.createElement('a');
+    link.href = fileUrl;
+    link.download = 'sample.xlsx';
+    link.click();
 }

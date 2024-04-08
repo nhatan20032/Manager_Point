@@ -26,4 +26,8 @@
     <None Include="Views\User\ExcelImport.cshtml" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\excel\" />
+  </ItemGroup>
+
 </Project>
