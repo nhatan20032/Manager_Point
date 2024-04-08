@@ -132,7 +132,8 @@
                             <label for="avarta" class="form-label">Avatar</label>
                         </div>
                         <div class="col-md-10">
-                            <input id="avarta" type="file" class="form-control" />
+                            <input id="avarta_input" type="file" class="form-control" accept="image/*" onchange="handleFileUpload(this)" />
+                            <input id="avarta" type="text" class="form-control" readonly/>
                         </div>
                     </div>
                 </div>

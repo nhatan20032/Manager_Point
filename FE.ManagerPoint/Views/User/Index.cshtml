@@ -17,6 +17,10 @@
         text-align: center;
         vertical-align: middle;
     }
+    .img_td{
+        width: 300px;
+        text-align: center;
+    }
 </style>
 <nav>
     <div class="nav nav-tabs" id="nav-tab" role="tablist">
@@ -194,8 +198,11 @@
                 var formData = {};
                 $('#user_create_form').find('input, select, textarea').each(function (index, element) {
                     var fieldId = $(element).attr('id');
+                    var fieldType = $(element).attr('type');
                     var fieldValue;
-
+                    if (fieldType === 'file') {
+                        return;
+                    }
                     if ($(element).is('select') && $(element).attr('id') === 'gender') {
                         fieldValue = parseInt($(element).val());
                     } else {
