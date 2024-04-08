@@ -338,7 +338,7 @@ function Remove(id) {
         }
     });
 }
-function Import_Excel() {
+function Import_Excel(callback) {
     var fd = new FormData();
     var files = $('#file_excel')[0].files[0];
     fd.append('file', files);
@@ -349,6 +349,10 @@ function Import_Excel() {
         contentType: false,
         processData: false,
         success: function (result) {
+            if (callback && typeof callback === "function") {
+                callback();
+            }
+            $('#user_table').DataTable().ajax.reload();
             console.log(result);
         }
     })

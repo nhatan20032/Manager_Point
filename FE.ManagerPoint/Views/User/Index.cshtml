@@ -172,8 +172,20 @@
         $("#search_class_student").change(function () {
             $('#student_table').DataTable().ajax.reload();
         });
-        $("#file_excel").change(function () {
-            Import_Excel();
+        $('#user_excel_import').on('submit', function (event) {
+            var form = $(this);
+            if (!form[0].checkValidity()) {
+                event.preventDefault();
+                event.stopPropagation();
+            } else {
+                event.preventDefault();
+                Import_Excel(function () {
+                    toastr.success('Thêm người dùng từ excel thành công');
+                    let = $('#excelModal').modal('hide');
+                    form.removeClass('was-validated');
+                });
+            }
+            form.addClass('was-validated');            
         })
         $('#user_create_form').on('submit', function (event) {
             var form = $(this);
