@@ -10,7 +10,8 @@ using System.Data.Entity;
 
 namespace BLL.Services.Implement
 {
-    public class ExaminationServices : IExaminationServices
+	
+	public class ExaminationServices : IExaminationServices
     {
         private readonly AppDbContext _appContext;
         private readonly IMapper _mapper;

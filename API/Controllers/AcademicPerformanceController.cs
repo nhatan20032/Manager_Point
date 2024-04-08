@@ -1,10 +1,11 @@
-﻿using BLL.Services.Interface;
+﻿using BLL.Services.Implement;
+using BLL.Services.Interface;
 using BLL.ViewModels.AcademicPerformance;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
-    public class AcademicPerformanceController : Controller
+	public class AcademicPerformanceController : Controller
     {
         IAcademicPerformanceServices _academicPerformanceServices;
         public AcademicPerformanceController(IAcademicPerformanceServices academicPerformanceServices)

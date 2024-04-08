@@ -12,8 +12,8 @@ using System.Data.Entity;
 
 namespace BLL.Services.Implement
 {
-
-    public class GradePointServices : IGradePointServices
+	
+	public class GradePointServices : IGradePointServices
     {
         private readonly AppDbContext _appContext;
         private readonly IMapper _mapper;

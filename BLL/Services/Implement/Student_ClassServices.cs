@@ -6,7 +6,8 @@ using Manager_Point.Models;
 
 namespace BLL.Services.Implement
 {
-    public class Student_ClassServices : IStudent_ClassServices
+	
+	public class Student_ClassServices : IStudent_ClassServices
     {
         private readonly AppDbContext _appContext;
         private readonly IMapper _mapper;

@@ -12,7 +12,8 @@ using System.Data.Entity;
 
 namespace BLL.Services.Implement
 {
-    public class RoleServices : IRoleServices
+	
+	public class RoleServices : IRoleServices
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly AppDbContext _appContext;

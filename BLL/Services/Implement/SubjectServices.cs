@@ -12,7 +12,8 @@ using System.Data.Entity;
 
 namespace BLL.Services.Implement
 {
-    public class SubjectServices : ISubjectServices
+
+	public class SubjectServices : ISubjectServices
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly AppDbContext _appContext;

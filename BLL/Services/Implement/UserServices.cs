@@ -17,7 +17,8 @@ using System.Globalization;
 
 namespace BLL.Services.Implement
 {
-    public class UserServices : IUserServices
+
+	public class UserServices : IUserServices
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly AppDbContext _appContext;
