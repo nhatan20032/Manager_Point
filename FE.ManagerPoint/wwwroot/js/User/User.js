@@ -42,11 +42,27 @@
             { 'data': 'Password', "orderable": false },
             { 'data': 'PhoneNumber', "orderable": false },
             { 'data': 'DOB', "orderable": false },
-            { 'data': 'Gender', "orderable": false },
+            {
+                "data": "Gender", "orderable": false, render: function (data) {
+                    if (data == 1) return "Nam";
+                    if (data == 2) return "Nữ";
+                    if (data == 3) return "Khác";
+                    return "Unknown";
+                }
+            },
             { 'data': 'Email', "orderable": false },
             { 'data': 'AvatarUrl', "orderable": false },
             { 'data': 'Address', "orderable": false },
-            { 'data': 'Nation', "orderable": false },
+            {
+                "data": "Nation", "orderable": false, render: function (data) {
+                    if (data === "vi") return "Việt Nam";
+                    if (data === "kr") return "Hàn Quốc";
+                    if (data === "zh") return "Trung Quốc";
+                    if (data === "us") return "Mỹ";
+                    if (data === "uk") return "Anh";
+                    return "Unknown";
+                }
+            },
             {
                 "data": "Status", "orderable": false, render: function (data) {
                     if (data == 1) return "Chờ duyệt";
@@ -111,11 +127,27 @@ function teacherGrid() {
             { 'data': 'Password', "orderable": false },
             { 'data': 'PhoneNumber', "orderable": false },
             { 'data': 'DOB', "orderable": false },
-            { 'data': 'Gender', "orderable": false },
+            {
+                "data": "Gender", "orderable": false, render: function (data) {
+                    if (data == 1) return "Nam";
+                    if (data == 2) return "Nữ";
+                    if (data == 3) return "Khác";
+                    return "Unknown";
+                }
+            },
             { 'data': 'Email', "orderable": false },
             { 'data': 'AvatarUrl', "orderable": false },
             { 'data': 'Address', "orderable": false },
-            { 'data': 'Nation', "orderable": false },
+            {
+                "data": "Nation", "orderable": false, render: function (data) {
+                    if (data === "vi") return "Việt Nam";
+                    if (data === "kr") return "Hàn Quốc";
+                    if (data === "zh") return "Trung Quốc";
+                    if (data === "us") return "Mỹ";
+                    if (data === "uk") return "Anh";
+                    return "Unknown";
+                }
+            },
             {
                 "data": "Status", "orderable": false, render: function (data) {
                     if (data == 1) return "Chờ duyệt";
@@ -177,11 +209,27 @@ function userNoRoleGrid() {
             { 'data': 'Password', "orderable": false },
             { 'data': 'PhoneNumber', "orderable": false },
             { 'data': 'DOB', "orderable": false },
-            { 'data': 'Gender', "orderable": false },
+            {
+                "data": "Gender", "orderable": false, render: function (data) {
+                    if (data == 1) return "Nam";
+                    if (data == 2) return "Nữ";
+                    if (data == 3) return "Khác";
+                    return "Unknown";
+                }
+            },
             { 'data': 'Email', "orderable": false },
             { 'data': 'AvatarUrl', "orderable": false },
             { 'data': 'Address', "orderable": false },
-            { 'data': 'Nation', "orderable": false },
+            {
+                "data": "Nation", "orderable": false, render: function (data) {
+                    if (data === "vi") return "Việt Nam";
+                    if (data === "kr") return "Hàn Quốc";
+                    if (data === "zh") return "Trung Quốc";
+                    if (data === "us") return "Mỹ";
+                    if (data === "uk") return "Anh";
+                    return "Unknown";
+                }
+            },
             {
                 "data": "Status", "orderable": false, render: function (data) {
                     if (data == 1) return "Chờ duyệt";
