@@ -12,8 +12,10 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Primitives;
 using Newtonsoft.Json;
 using OfficeOpenXml;
+using System;
 using System.Data.Entity;
 using System.Globalization;
+using System.Reflection;
 
 namespace BLL.Services.Implement
 {
@@ -287,17 +289,17 @@ namespace BLL.Services.Implement
                     {
                         var user = new vm_create_user
                         {
-                            User_Code = worksheet.Cells[row, 2].Value.ToString() ?? "null",
-                            Name = worksheet.Cells[row, 3].Value.ToString(),
-                            Gender = Enum.Parse<Gender>(worksheet.Cells[row, 4].Value.ToString() ?? "1"),
-                            Nation = worksheet.Cells[row, 5].Value.ToString(),
-                            Address = worksheet.Cells[row, 6].Value.ToString(),
-                            Email = worksheet.Cells[row, 7].Value.ToString(),
-                            PhoneNumber = worksheet.Cells[row, 8].Value.ToString(),
-                            Password = worksheet.Cells[row, 9].Value.ToString() ?? "123456",
-                            DOB = ConvertExcelDateToDateTime(worksheet.Cells[row, 10].Value.ToString()),
-                            Description = worksheet.Cells[row, 11].Value.ToString(),
-                            Status = Enum.Parse<Status>(worksheet.Cells[row, 12].Value.ToString() ?? "1")
+                            User_Code = GenerateStudentCode(worksheet.Cells[row, 2].Value.ToString() ?? "null"),
+                            Name = worksheet.Cells[row, 2].Value.ToString(),
+                            Gender = GenderSelection((worksheet.Cells[row, 3].Value.ToString() ?? "1")),
+                            Nation = NationSelection(worksheet.Cells[row, 4].Value.ToString()),
+                            Address = worksheet.Cells[row, 5].Value.ToString(),
+                            Email = worksheet.Cells[row, 6].Value.ToString(),
+                            PhoneNumber = worksheet.Cells[row, 7].Value.ToString(),
+                            Password = worksheet.Cells[row, 8].Value.ToString() ?? "123456",
+                            DOB = ConvertExcelDateToDateTime(worksheet.Cells[row, 9].Value.ToString()),
+                            Description = worksheet.Cells[row, 10].Value.ToString(),
+                            Status = StatusSelection(worksheet.Cells[row, 11].Value.ToString() ?? "1")
                         };
                         usersToAdd.Add(user);
                     }
@@ -312,6 +314,70 @@ namespace BLL.Services.Implement
                 Console.WriteLine($"Error in AddUsersFromExcel: {ex.Message}");
                 throw;
             }
+        }
+        private string GenerateStudentCode(string? username)
+        {
+            string[] words = username!.Trim().Split(' ');
+            string code = "US_";
+
+            foreach (var word in words)
+            {
+                if (!string.IsNullOrWhiteSpace(word))
+                {
+                    char firstLetter = char.ToUpper(word[0]);
+                    code += firstLetter;
+                }
+            }
+
+            Random random = new Random();
+            int randomNumber = random.Next(100);
+            code += "_" + randomNumber;
+            while (checkCode(code))
+            {
+                randomNumber = random.Next(100);
+                code = code.Substring(0, code.LastIndexOf('_') + 1) + randomNumber;
+            }
+            return code;
+        }
+        private bool checkCode(string code)
+        {
+            var vm_User = _appContext.Users.ProjectTo<vm_user>(_mapper.ConfigurationProvider).SingleOrDefault(x => x.User_Code!.Contains(code));
+            if (vm_User == null) return false;
+            return true;
+        }
+        private Status StatusSelection(string? status)
+        {
+            return status switch
+            {
+                "Hoạt động" => Status.Active,
+                "Thất bại" => Status.Failed,
+                "Ra trường" => Status.Pass,
+                "Kết thúc" => Status.Ended,
+                "Đang xử lý" => Status.During,
+                _ => Status.Active,
+            };
+        }
+        private Gender GenderSelection(string? gender)
+        {
+            return gender switch
+            {
+                "Nam" => Gender.Male,
+                "Nữ" => Gender.Female,
+                "Khác" => Gender.Other,
+                _ => Gender.Other,
+            };
+        }
+        private string NationSelection(string? nation)
+        {
+            return nation switch
+            {
+                "Việt Nam" => "vi",
+                "Trung Quốc" => "zh",
+                "Hàn Quốc" => "kr",
+                "Mỹ" => "us",
+                "Anh" => "uk",
+                _ => "vi",
+            };
         }
         private DateTime ConvertExcelDateToDateTime(string? excelDate)
         {

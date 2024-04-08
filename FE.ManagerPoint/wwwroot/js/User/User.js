@@ -65,9 +65,11 @@
             },
             {
                 "data": "Status", "orderable": false, render: function (data) {
-                    if (data == 1) return "Chờ duyệt";
-                    if (data == 2) return "Đã duyệt";
-                    if (data == 3) return "Từ chối duyệt";
+                    if (data == 1) return "Hoạt động";
+                    if (data == 2) return "Thất bại";
+                    if (data == 3) return "Ra trường";
+                    if (data == 3) return "Kết thúc";
+                    if (data == 3) return "Đang xử lý";
                     return "Unknown";
                 }
             },
@@ -150,9 +152,11 @@ function teacherGrid() {
             },
             {
                 "data": "Status", "orderable": false, render: function (data) {
-                    if (data == 1) return "Chờ duyệt";
-                    if (data == 2) return "Đã duyệt";
-                    if (data == 3) return "Từ chối duyệt";
+                    if (data == 1) return "Hoạt động";
+                    if (data == 2) return "Thất bại";
+                    if (data == 3) return "Ra trường";
+                    if (data == 3) return "Kết thúc";
+                    if (data == 3) return "Đang xử lý";
                     return "Unknown";
                 }
             },
@@ -232,9 +236,11 @@ function userNoRoleGrid() {
             },
             {
                 "data": "Status", "orderable": false, render: function (data) {
-                    if (data == 1) return "Chờ duyệt";
-                    if (data == 2) return "Đã duyệt";
-                    if (data == 3) return "Từ chối duyệt";
+                    if (data == 1) return "Hoạt động";
+                    if (data == 2) return "Thất bại";
+                    if (data == 3) return "Ra trường";
+                    if (data == 3) return "Kết thúc";
+                    if (data == 3) return "Đang xử lý";
                     return "Unknown";
                 }
             },

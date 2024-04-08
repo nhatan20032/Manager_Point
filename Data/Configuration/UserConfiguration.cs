@@ -13,7 +13,7 @@ namespace Manager_Point.Configuration
             builder.HasIndex(t => t.Id).IsUnique();
 
             //User code
-            builder.Property(t => t.User_Code).HasMaxLength(10).IsUnicode(false);
+            builder.Property(t => t.User_Code).HasMaxLength(100).IsUnicode(false);
             builder.HasIndex(t => t.User_Code).IsUnique();
 
             //Property
