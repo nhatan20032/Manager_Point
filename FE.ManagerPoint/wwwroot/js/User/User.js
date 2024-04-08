@@ -230,7 +230,7 @@ function userNoRoleGrid() {
             { 'data': 'Email', "orderable": false },
             {
                 "data": "AvatarUrl", "className": "img_td", "orderable": false, render: function (data) {
-                    let html = `<img src="${data}" alt="AvatarUrl" style="width: 50%;" />`;
+                    let html = `<img src="${data}" alt="AvatarUrl" />`;
                     return html;
                 }
             },
@@ -373,6 +373,7 @@ function GetById(id) {
             $("#DOB_md").val(res.dob);
             $("#phone_md").val(res.phoneNumber);
             $("#description_md").val(res.description);
+            $("#avatar_md").val(res.avatarUrl);
             $("#updateModal").modal("show");
         },
     });
@@ -442,7 +443,28 @@ function handleFileUpload(input) {
         processData: false,
         success: function (response) {
             console.log(response);
-            $("#avarta").val(response);
+            $("#AvatarUrl").val(response);
+        },
+        error: function (xhr, status, error) {
+            // Xử lý lỗi (nếu có)
+            console.log(error);
+        }
+    });
+}
+function handleFileUpload_md(input) {
+    var file = input.files[0];
+    var formData = new FormData();
+    formData.append('file', file);
+
+    $.ajax({
+        url: '/user/upload',
+        type: 'POST',
+        data: formData,
+        contentType: false,
+        processData: false,
+        success: function (response) {
+            console.log(response);
+            $("#avatar_md").val(response);
         },
         error: function (xhr, status, error) {
             // Xử lý lỗi (nếu có)
