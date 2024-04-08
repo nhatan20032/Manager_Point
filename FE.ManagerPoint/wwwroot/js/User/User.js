@@ -54,7 +54,12 @@
                 }
             },
             { 'data': 'Email', "orderable": false },
-            { 'data': 'AvatarUrl', "orderable": false },
+            {
+                "data": "AvatarUrl", "className": "img_td", "orderable": false, render: function (data) {
+                    let html = `<img src="${data}" alt="AvatarUrl" />`;
+                    return html;
+                }
+            },
             { 'data': 'Address', "orderable": false },
             {
                 "data": "Nation", "orderable": false, render: function (data) {
@@ -141,7 +146,12 @@ function teacherGrid() {
                 }
             },
             { 'data': 'Email', "orderable": false },
-            { 'data': 'AvatarUrl', "orderable": false },
+            {
+                "data": "AvatarUrl", "className": "img_td", "orderable": false, render: function (data) {
+                    let html = `<img src="${data}" alt="AvatarUrl" />`;
+                    return html;
+                }
+            },
             { 'data': 'Address', "orderable": false },
             {
                 "data": "Nation", "orderable": false, render: function (data) {
