@@ -1,5 +1,146 @@
 ﻿var selectedIdsRole = [];
 var selectedIdsUser = [];
+function studentGrid() {
+    this.$table = $('#student_role_table').DataTable({
+        "language": {
+            "sProcessing": "Đang xử lý...",
+            "sLengthMenu": "Xem _MENU_ mục",
+            "sZeroRecords": "Không tìm thấy dòng nào phù hợp",
+            "sInfo": "Đang xem _START_ đến _END_ trong tổng số _TOTAL_ mục",
+            "sInfoEmpty": "Đang xem 0 đến 0 trong tổng số 0 mục",
+            "sInfoFiltered": "(được lọc từ _MAX_ mục)",
+            "sInfoPostFix": "",
+            "sUrl": "",
+            "oPaginate": {
+                "sFirst": "Đầu",
+                "sPrevious": "Trước",
+                "sNext": "Tiếp",
+                "sLast": "Cuối"
+            }
+        },
+        "pageLength": 10,
+        "processing": true,
+        "serverSide": true,
+        "ajax": {
+            "url": "https://localhost:44335/user/get_all_student",
+            "data": function (d) {
+                delete d.columns;
+                d.search = d.search.value;
+                d.classes = $("#search_class").val();
+            },
+            "data": function (d) {
+                delete d.columns;
+                d.search = d.search.value;
+                d.classes = $("#search_class_student").val();
+            },
+            "dataSrc": "data"
+        },
+        "rowId": "Id",
+        "columns": [
+            { 'data': 'Id', "orderable": false },
+            { 'data': 'Name', "orderable": false },
+            { 'data': 'User_Code', "orderable": false },
+            {
+                "data": "AvatarUrl", "className": "img_td_student", "orderable": false, render: function (data) {
+                    let html = `<img src="${data}" alt="AvatarUrl" />`;
+                    return html;
+                }
+            },
+            {
+                "data": "Status", "orderable": false, render: function (data) {
+                    if (data == 1) return "Hoạt động";
+                    if (data == 2) return "Thất bại";
+                    if (data == 3) return "Ra trường";
+                    if (data == 3) return "Kết thúc";
+                    if (data == 3) return "Đang xử lý";
+                    return "Unknown";
+                }
+            },
+            {
+                "data": null, "orderable": false, render: function (row) {
+                    let edit = `<a class="link-warning" style="cursor: pointer; margin-right: 20px; text-decoration: none"><i class="fa-solid fa-wrench"></i>Sửa Quyền</a>`;
+                    let remove = `<a class="link-danger" style="cursor: pointer; text-decoration: none;"><i class="fa-solid fa-trash"></i>Xoá Quyền</a>`;
+                    return `<div>${edit} ${remove}</div>`;
+                }
+            },
+        ],
+        "searching": true,
+        "paging": true,
+        "lengthChange": true,
+        "info": true,
+        "pageLength": 10,
+    });
+}
+function teacherGrid() {
+    this.$table = $('#teacher_role_table').DataTable({
+        "language": {
+            "sProcessing": "Đang xử lý...",
+            "sLengthMenu": "Xem _MENU_ mục",
+            "sZeroRecords": "Không tìm thấy dòng nào phù hợp",
+            "sInfo": "Đang xem _START_ đến _END_ trong tổng số _TOTAL_ mục",
+            "sInfoEmpty": "Đang xem 0 đến 0 trong tổng số 0 mục",
+            "sInfoFiltered": "(được lọc từ _MAX_ mục)",
+            "sInfoPostFix": "",
+            "sUrl": "",
+            "oPaginate": {
+                "sFirst": "Đầu",
+                "sPrevious": "Trước",
+                "sNext": "Tiếp",
+                "sLast": "Cuối"
+            }
+        },
+        "pageLength": 10,
+        "processing": true,
+        "serverSide": true,
+        "ajax": {
+            "url": "https://localhost:44335/user/get_all_teacher",
+            "data": function (d) {
+                delete d.columns;
+                d.search = d.search.value;
+                d.classes = $("#search_class").val();
+                d.subject = $("#search_subject").val();
+            },
+            "dataSrc": "data"
+        },
+        "initComplete": function () {
+            studentGrid();
+        },
+        "rowId": "Id",
+        "columns": [
+            { 'data': 'Id', "orderable": false },
+            { 'data': 'Name', "orderable": false },
+            { 'data': 'User_Code', "orderable": false },
+            {
+                "data": "AvatarUrl", "className": "img_td_teacher", "orderable": false, render: function (data) {
+                    let html = `<img src="${data}" alt="AvatarUrl" />`;
+                    return html;
+                }
+            },
+            {
+                "data": "Status", "orderable": false, render: function (data) {
+                    if (data == 1) return "Hoạt động";
+                    if (data == 2) return "Thất bại";
+                    if (data == 3) return "Ra trường";
+                    if (data == 3) return "Kết thúc";
+                    if (data == 3) return "Đang xử lý";
+                    return "Unknown";
+                }
+            },
+            {
+                "data": null, "orderable": false, render: function (row) {
+                    let edit = `<a class="link-warning" onclick="GetById(${row.Id})" style="cursor: pointer; margin-right: 20px; text-decoration: none"><i class="fa-solid fa-wrench"></i>Sửa Quyền</a>`;
+                    let remove = `<a class="link-danger" style="cursor: pointer; text-decoration: none;"><i class="fa-solid fa-trash"></i>Xoá Quyền</a>`;
+                    return `<div>${edit} ${remove}</div>`;
+                }
+            },
+        ],
+        "searching": true,
+        "paging": true,
+        "lengthChange": true,
+        "info": true,
+        "pageLength": 10,
+    });
+}
 function userNoRoleGrid() {
     this.$table = $('#user_role_table').DataTable({
         "language": {
@@ -30,6 +171,7 @@ function userNoRoleGrid() {
             "dataSrc": "data"
         },
         "initComplete": function () {
+            teacherGrid()
             $('#user_role_table').on('change', '.select-checkbox', function () {
                 var id = $(this).data('id');
                 if ($(this).prop('checked')) {
@@ -226,6 +368,25 @@ function CreateRole(callback) {
             }
             $('#user_role_table').DataTable().ajax.reload();
             $('#role_table').DataTable().ajax.reload();
+        },
+    });
+}
+function GetById(id) {
+    $.ajax({
+        url: `https://localhost:44335/user/get_by_id`,
+        method: "GET",
+        data: {
+            id: id,
+        },
+        success: function (res) {
+            if (res == null) {
+                toastr.error('Không tìm thấy người dùng');
+                return;
+            }
+            console.log(res);
+            $("#id").val(res.id);
+            $("#name_md").val(res.name);
+            $("#updateModal").modal("show");
         },
     });
 }

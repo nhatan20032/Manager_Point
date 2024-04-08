@@ -8,12 +8,27 @@
         vertical-align: middle;
     }
 
+    #student_table tbody tr td {
+        text-align: center;
+        vertical-align: middle;
+    }
+
     #teacher_table thead th {
         text-align: center;
         vertical-align: middle;
     }
 
+    #teacher_table tbody tr td {
+        text-align: center;
+        vertical-align: middle;
+    }
+
     #user_table thead th {
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    #user_table tbody tr td {
         text-align: center;
         vertical-align: middle;
     }
@@ -192,7 +207,7 @@
                     form.removeClass('was-validated');
                 });
             }
-            form.addClass('was-validated');            
+            form.addClass('was-validated');
         })
         $('#user_create_form').on('submit', function (event) {
             var form = $(this);

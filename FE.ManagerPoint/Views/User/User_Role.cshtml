@@ -8,7 +8,16 @@
         vertical-align: middle;
     }
 
+    #student_role_table tbody tr td {
+        text-align: center;
+        vertical-align: middle;
+    }
     #teacher_role_table thead th {
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    #teacher_role_table tbody tr td {
         text-align: center;
         vertical-align: middle;
     }
@@ -18,11 +27,44 @@
         vertical-align: middle;
     }
 
+    #user_role_table tbody tr td {
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    #role_table thead th {
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    #role_table tbody tr td {
+        text-align: center;
+        vertical-align: middle;
+    }
+
     .img_td {
         width: 150px;
     }
 
         .img_td img {
+            width: 100%;
+            height: auto;
+        }
+
+    .img_td_teacher {
+        width: 50px;
+    }
+
+        .img_td_teacher img {
+            width: 100%;
+            height: auto;
+        }
+
+    .img_td_student {
+        width: 30px;
+    }
+
+        .img_td_student img {
             width: 100%;
             height: auto;
         }
@@ -148,6 +190,7 @@
         </div>
     </div>
 </div>
+<partial name="UpdateRole"></partial>
 <script src="~/js/User_Role/UserRole.js"></script>
 <script>
     $(document).ready(function () {
