@@ -3,12 +3,12 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Sửa khóa học mới</h5>
+                <h5 class="modal-title">Sửa khóa học :  <label id="course_id" class="form-label"></label> </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <form id="course_update_form" class="needs-validation" novalidate>
                 <div class="modal-body">
-                    <div class="row">
+                    <div class="row" style="display:none">
                         <div class="col-md-2">
                             <label for="course_id" class="form-label">Id</label>
                         </div>
@@ -69,11 +69,8 @@
                         <div class="col-md-10">
 
                             <select id="status_list_md" class="form-select" multiple>
-                                <option selected value="1">Hoạt động</option>
-                                <option value="2">Không thành công</option>
-                                <option value="3">Đạt</option>
                                 <option value="4">Đã kết thúc</option>
-                                <option value="5">Trong thời gian</option>
+								<option selected value="5">Trong thời gian</option>
                                 <!-- Thêm các tùy chọn khác nếu cần -->
                             </select>
                         </div>

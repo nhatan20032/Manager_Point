@@ -13,14 +13,14 @@
 		</div>
 	</div>
 	<div class="card-body">
-		<table id="course_table" class="table table-striped table-hover">
+		<table id="class_table" class="table table-striped table-hover">
 			<thead>
 				<tr>
 					<th>Id</th>
-					<th>Khóa học</th>
-					<th>Ngày bắt đầu</th>
-					<th>Ngày kết thúc ( dự kiến )</th>
-					<th>Mô tả</th>
+					<th>ClassCode</th>
+					<th>Name</th>
+					<th>GradeLevel</th>
+					<th>CourseName</th>
 					<th>Trạng thái</th>
 					<th>Thao tác</th>
 				</tr>
@@ -28,71 +28,43 @@
 		</table>
 	</div>
 </div>
-@*<script src="~/js/Course/Course.js"></script>
+<partial name="Create" />
+<partial name="Update" />
+<script src="~/js/Classes/Classes.js"></script>
 <script>
-
 	$(document).ready(function () {
 		setupGrid()
-		$('#course_create_form').on('submit', function (event) {
+		$('#class_create_form').on('submit', function (event) {
 			var form = $(this);
 			if (!form[0].checkValidity()) {
 				event.preventDefault();
 				event.stopPropagation();
 			} else {
-				let course_name = $("#course_name").val();
-				let course_dateStart = $("#dateStart").val();
-				let course_endStart = $("#dateEnd").val();
-				let course_description = $("#course_description").val();
+				let class_classcode = $("#class_classcode").val();
+				let class_name = $("#class_name").val();
+				let class_gradeLevel = $("#class_gradeLevel").val();
+				let class_courseName = $("#class_courseName").val();
 				let status_list = $("#status_list").val();
 				let object = {
-					Name: course_name,
-					StartTime: course_dateStart,
-					EndTime: course_endStart,
-					Description: course_description,
+					Classcode: class_classcode,
+					CourseId: class_courseName,
+					Name: class_name,
+					GradeLevel: parseInt(class_gradeLevel),
 					Status: parseInt(status_list),
 				};
 				event.preventDefault();
-				createCourse(object, function () {
-					$("#course_name").val("");
-					$("#dateStart").val("");
-					$("#dateEnd").val("");
-					$("#course_description").val("");
+				createClass(object, function () {
+					$("#class_classcode").val("");
+					$("#class_name").val("");
+					$("#class_courseName").val("");
+					$("#class_gradeLevel").val("");
 					$("#status_list").val("");
-					toastr.success('Tạo khóa học thành công');
+					toastr.success('Create class success');
 					$('#createModal').modal('hide');
 					form.removeClass('was-validated');
 				});
 			}
 			form.addClass('was-validated');
 		});
-		$('#course_update_form').on('submit', function (event) {
-			var form = $(this);
-			if (!form[0].checkValidity()) {
-				event.preventDefault();
-				event.stopPropagation();
-			} else {
-				let id = $("#course_id").val();
-				let course_name = $("#course_name_md").val();
-				let course_dateStart = $("#dateStart_md").val();
-				let course_endStart = $("#dateEnd_md").val();
-				let course_description = $("#course_description_md").val();
-				let status_list = $("#status_list_md").val();
-				let object = {
-					Name: course_name,
-					StartTime: course_dateStart,
-					EndTime: course_endStart,
-					Description: course_description,
-					Status: parseInt(status_list),
-				};
-				event.preventDefault();
-				updateSub(id, object, function () {
-					toastr.success('Cập nhật khóa học thành công');
-					form.removeClass('was-validated');
-					$('#updateModal').modal('hide');
-				});
-			}
-			form.addClass('was-validated');
-		});
 	});
-
-</script>*@
+</script>

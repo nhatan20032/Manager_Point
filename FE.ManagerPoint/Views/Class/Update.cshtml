@@ -1,0 +1,110 @@
+﻿<!-- Modal Create -->
+<div class="modal fade" id="updateModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="createModal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Create a new class</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="class_create_form" class="needs-validation" novalidate>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <label for="class_classcode_md" class="form-label">Class Code</label>
+                        </div>
+                        <div class="col-md-9">
+                            <input id="class_classcode_md" class="form-control" type="text" required />
+                            <div class="invalid-feedback">
+                                not be empty
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-3">
+                            <label for="class_name_md" class="form-label">Name</label>
+                        </div>
+                        <div class="col-md-9">
+                            <input id="class_name_md" class="form-control" type="text" required />
+                            <div class="invalid-feedback">
+                                not be empty
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-3">
+                            <label for="class_gradeLevel_md" class="form-label">Grade Level</label>
+                        </div>
+                        <div class="col-md-9">
+
+                            <select id="class_gradeLevel_md" class="form-select" required>
+                                <option selected value="10">10</option>
+                                <option value="11">11</option>
+                                <option value="12">12</option>
+                            </select>
+
+                            <div class="invalid-feedback">
+                                not be empty
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-3">
+                            <label for="class_courseName_md" class="form-label">Course Name</label>
+                        </div>
+                        <div class="col-md-9">
+                            <select id="class_courseName_md" class="form-select" required></select>
+
+                            <div class="invalid-feedback">
+                                not be empty
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mt-3">
+                        <div class="col-md-3">
+                            <label for="status_list_md" class="form-label">Status</label>
+                        </div>
+                        <div class="col-md-9">
+                            <select id="status_list_md" class="form-select" required>
+                                <option selected value="5">Trong thời gian</option>
+                                <option value="4">Đã kết thúc</option>
+                                <!-- Thêm các tùy chọn khác nếu cần -->
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer mt-3">
+                    <button id="save" type="submit" class="btn btn-primary">Lưu</button>
+                    <button id="un_save" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        $('#un_save[data-bs-dismiss="modal"]').on('click', function () {
+            if ($('#role_create_form').hasClass('was-validated')) {
+                $('#role_create_form').removeClass('was-validated');
+            }
+        });
+    });
+
+    $(document).ready(function () {
+        $.ajax({
+            url: 'https://localhost:44335/course/get_all',
+            method: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                $('#class_courseName').empty();
+                $.each(data.data, function (index, item) {
+                    $('#class_courseName').append('<option value="' + item.Id + '">' + item.Name + '</option>');
+                });
+            },
+            error: function (xhr, status, error) {
+                console.error('Error fetching data: ', error);
+            }
+        });
+    });
+
+</script>
