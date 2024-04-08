@@ -13,6 +13,7 @@ using Microsoft.Extensions.Primitives;
 using Newtonsoft.Json;
 using OfficeOpenXml;
 using System.Data.Entity;
+using System.Globalization;
 
 namespace BLL.Services.Implement
 {
@@ -313,22 +314,26 @@ namespace BLL.Services.Implement
         }
         private DateTime ConvertExcelDateToDateTime(string? excelDate)
         {
-            if (string.IsNullOrWhiteSpace(excelDate))
+            double.TryParse(excelDate, out double doubleValue);
+            if (DateTime.TryParseExact(excelDate, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime result))
             {
-                // Nếu đầu vào rỗng, trả về một ngày bất kỳ, ví dụ: 01/01/2000
-                return new DateTime(2000, 1, 1);
+                return result;
             }
-
-            if (DateTime.TryParse(excelDate, out DateTime result))
+            else if (DateTime.TryParseExact(excelDate, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out result))
+            {
+                return result;
+            }
+            else if (DateTime.TryParseExact(excelDate, "dd-MM-yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out result))
             {
                 return result;
             }
             else
             {
-                // Nếu không chuyển đổi được, trả về ngày mặc định
-                return new DateTime(1900, 1, 1);
+                DateTime baseDate = new DateTime(1900, 1, 1);
+                return baseDate.AddDays(doubleValue - 2); // Excel date is 1-based, with 1 being 1900-01-01
             }
         }
+
 
         public AuthenticateResponse? Authenticate(AuthenticateRequest model)
         {
