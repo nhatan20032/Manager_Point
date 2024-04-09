@@ -1,0 +1,56 @@
+﻿<!-- Modal Update -->
+<div class="modal fade" id="updateModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="updateModal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Chỉnh sửa quyền người dùng</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="role_update_form" class="needs-validation" novalidate>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-2">
+                            <label for="id" class="form-label">Id</label>
+                        </div>
+                        <div class="col-md-10">
+                            <input id="id" class="form-control" type="text" required readonly />
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-2">
+                            <label for="name_md" class="form-label">Họ và tên</label>
+                        </div>
+                        <div class="col-md-10">
+                            <input id="name_md" type="text" class="form-control" required />
+                            <div class="invalid-feedback">
+                                Xin hãy nhập họ và tên!
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-2">
+                            <label for="role_selected" class="form-label">Quyền</label>
+                        </div>
+                        <div class="col-md-10">
+                            <select id="role_selected" class="form-control" multiple></select>
+                        </div>
+                    </div>                   
+                </div>
+                <div class="modal-footer">
+                    <button id="save" type="submit" class="btn btn-primary">Lưu</button>
+                    <button id="un_save" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        $('#un_save[data-bs-dismiss="modal"]').on('click', function () {
+            $('#role_update_form').trigger('reset');
+            if ($('#role_update_form').hasClass('was-validated')) {
+                $('#role_update_form').removeClass('was-validated');
+            }
+        });
+    });
+</script>

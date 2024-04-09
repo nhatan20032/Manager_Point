@@ -26,6 +26,11 @@ namespace API.Controllers
         {
             return Ok(await _roleServices.Get_By_Id(id));
         }
+        [HttpGet("/role/get_list")]
+        public IActionResult Get_List()
+        {
+            return Ok(_roleServices.Get_List());
+        }
 
         [HttpPost("/role/create")]
         public async Task<IActionResult> Create_Item([FromBody] vm_create_role request)

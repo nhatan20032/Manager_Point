@@ -8,7 +8,17 @@
         vertical-align: middle;
     }
 
+    #student_role_table tbody tr td {
+        text-align: center;
+        vertical-align: middle;
+    }
+
     #teacher_role_table thead th {
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    #teacher_role_table tbody tr td {
         text-align: center;
         vertical-align: middle;
     }
@@ -18,11 +28,44 @@
         vertical-align: middle;
     }
 
+    #user_role_table tbody tr td {
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    #role_table thead th {
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    #role_table tbody tr td {
+        text-align: center;
+        vertical-align: middle;
+    }
+
     .img_td {
         width: 150px;
     }
 
         .img_td img {
+            width: 100%;
+            height: auto;
+        }
+
+    .img_td_teacher {
+        width: 50px;
+    }
+
+        .img_td_teacher img {
+            width: 100%;
+            height: auto;
+        }
+
+    .img_td_student {
+        width: 30px;
+    }
+
+        .img_td_student img {
             width: 100%;
             height: auto;
         }
@@ -148,15 +191,53 @@
         </div>
     </div>
 </div>
+<partial name="UpdateRole" />
 <script src="~/js/User_Role/UserRole.js"></script>
 <script>
     $(document).ready(function () {
-        roleGrid()
-        userNoRoleGrid()
+        getSubject();
+        $("#search_subject").select2({ width: '100%' });
+        getClass();
+        $("#search_class").select2({ width: '100%' });
+        getStudentClass();
+        $("#search_class_student").select2({ width: '100%' });
+        roleGrid();
+        userNoRoleGrid();
         $("#createRole").click(function () {
             CreateRole(function () {
                 toastr.success('Thêm người dùng từ excel thành công');
             });
         });
+        getRole();
+        $("#role_selected").select2({
+            dropdownParent: $('#updateModal'),
+            width: '100%'
+        });
+        $("#search_subject").change(function () {
+            $('#teacher_role_table').DataTable().ajax.reload();
+        });
+        $("#search_class").change(function () {
+            $('#teacher_role_table').DataTable().ajax.reload();
+        });
+        $("#search_class_student").change(function () {
+            $('#student_role_table').DataTable().ajax.reload();
+        });
+        $('#role_update_form').on('submit', function (event) {
+            let ids = $('#role_selected').val()
+            let id = $('#id').val()
+            var form = $(this);
+            if (!form[0].checkValidity()) {
+                event.preventDefault();
+                event.stopPropagation();
+            } else {
+                event.preventDefault();
+                editRole(id, ids, function () {
+                    toastr.success('Sửa quyền thành công');
+                    let = $('#updateModal').modal('hide');
+                    form.removeClass('was-validated');
+                });
+            }
+            form.addClass('was-validated');
+        })
     });
 </script>

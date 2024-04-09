@@ -2,6 +2,7 @@
 using AutoMapper.QueryableExtensions;
 using BLL.Services.Interface;
 using BLL.ViewModels;
+using BLL.ViewModels.Class;
 using BLL.ViewModels.Role;
 using Manager_Point.ApplicationDbContext;
 using Manager_Point.Models;
@@ -124,6 +125,14 @@ namespace BLL.Services.Implement
                 Console.WriteLine($"Error in Get_By_Id: {ex.Message}");
                 throw;
             }
+        }
+
+        public List<vm_role> Get_List()
+        {
+            var vmRole = _appContext.Roles
+                             .ProjectTo<vm_role>(_mapper.ConfigurationProvider)
+                             .ToList();
+            return vmRole;
         }
 
         public async Task<int> Modified_Item(int id, vm_update_role request)
