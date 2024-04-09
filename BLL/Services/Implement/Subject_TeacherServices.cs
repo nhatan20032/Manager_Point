@@ -54,6 +54,27 @@ namespace BLL.Services.Implement
             }
         }
 
+        public async Task<bool> Batch_Remove_Item_By_UserId(int userIds)
+        {
+            try
+            {
+                var subject_user = _appContext.Subjects_Teachers.Where(t => t.UserId == userIds).ToList();
+
+                if (subject_user.Any())
+                {
+                    _appContext.Subjects_Teachers.RemoveRange(subject_user);
+                    await _appContext.SaveChangesAsync();
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in Batch_Remove_Item: {ex.Message}");
+                throw;
+            }
+        }
+
         public async Task<int> Create_Item(vm_subject_teacher request)
         {
             try
