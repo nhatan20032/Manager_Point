@@ -7,7 +7,7 @@ namespace BLL.Services.Interface
     {
         public Task<string> Get_All_Async(int offset = 0, int limit = 10, string search = "");
         public Task<string> Get_User_No_Role(int offset = 0, int limit = 10, string search = "");
-        public Task<string> Get_All_Teacher(int offset = 0, int limit = 10, string search = "", int subject = 0, int classes = 0);
+        public Task<string> Get_All_Teacher(int offset = 0, int limit = 10, string search = "", int subject = 0, int classes = 0, int check_subject = 0);
         public Task<string> Get_All_Student(int offset = 0, int limit = 10, string search = "", int classes = 0);
         public Task<vm_user> Get_By_Id(int id);
         public Task<int> Create_Item(vm_create_user request);
