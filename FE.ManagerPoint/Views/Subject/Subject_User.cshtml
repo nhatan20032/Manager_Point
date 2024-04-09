@@ -134,16 +134,38 @@
         </div>
     </div>
 </div>
+<partial name="UpdateSubject" />
 <script src="~/js/Teacher_Subject/Teacher_Subject.js"></script>
 <script>
     $(document).ready(function () {
         teacherNoSBGrid(); subjectGrid();
         getSubject();
         $("#search_subject").select2({ width: '100%' });
+        $("#subject_selected").select2({
+            dropdownParent: $('#updateModal'),
+            width: '100%'
+        });
         $("#createSubject").click(function () {
             CreateSubject_Teacher(function () {
                 toastr.success('Gán môn học cho giáo viên thành công');
             });
         });
+        $('#subject_update_form').on('submit', function (event) {
+            let ids = $('#subject_selected').val()
+            let id = $('#id').val()
+            var form = $(this);
+            if (!form[0].checkValidity()) {
+                event.preventDefault();
+                event.stopPropagation();
+            } else {
+                event.preventDefault();
+                editSubject(id, ids, function () {
+                    toastr.success('Sửa môn dạy thành công');
+                    let = $('#updateModal').modal('hide');
+                    form.removeClass('was-validated');
+                });
+            }
+            form.addClass('was-validated');
+        })
     });
 </script>

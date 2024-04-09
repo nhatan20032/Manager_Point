@@ -56,7 +56,7 @@ function teacherGrid() {
             {
                 "data": null, "orderable": false, render: function (row) {
                     let edit = `<a class="link-warning" onclick="GetById(${row.Id})" style="cursor: pointer; margin-right: 20px; text-decoration: none"><i class="fa-solid fa-wrench"></i>Cập nhật</a>`;
-                    let remove = `<a class="link-danger" onclick="deleteRole(${row.Id})" style="cursor: pointer; text-decoration: none;"><i class="fa-solid fa-trash"></i>Xoá</a>`;
+                    let remove = `<a class="link-danger" onclick="deleteSubject(${row.Id})" style="cursor: pointer; text-decoration: none;"><i class="fa-solid fa-trash"></i>Xoá</a>`;
                     return `<div>${edit} ${remove}</div>`;
                 }
             },
@@ -314,5 +314,104 @@ function CreateSubject_Teacher(callback) {
             $('#teacher_table').DataTable().ajax.reload();
             $('#teacher_subject_table').DataTable().ajax.reload();
         },
+    });
+}
+function GetById(id) {
+    $.ajax({
+        url: `https://localhost:44335/user/get_by_id`,
+        method: "GET",
+        data: {
+            id: id,
+        },
+        success: function (res) {
+            if (res == null) {
+                toastr.error('Không tìm thấy người dùng');
+                return;
+            }
+            $("#id").val(res.id);
+            $("#name_md").val(res.name);
+            $("#subject_selected").val(res.subject_id).trigger('change');
+            $("#updateModal").modal("show");
+        },
+    });
+}
+function getSubject() {
+    $.ajax({
+        url: "https://localhost:44335/subject/get_list",
+        method: "GET",
+        success: function (res) {
+            if (res && res.length > 0) {
+                console.log(res);
+                var select = $("#subject_selected");
+                $.each(res, function (index, role) {
+                    select.append(`<option value="${role.id}">${role.name}</option>`);
+                });
+            }
+        },
+    });
+}
+function editSubject(userIds, ids, callback) {
+    var intIds = ids.map(function (item) {
+        return parseInt(item);
+    });
+    var mergedData = [];
+    for (var j = 0; j < intIds.length; j++) {
+        var roleId = intIds[j];
+        var userData = {
+            userId: userIds,
+            subjectId: roleId
+        };
+        mergedData.push(userData);
+    }
+    $.ajax({
+        url: "https://localhost:44335/subject_tecaher/batch_remove_by_userid/" + parseInt(userIds),
+        method: "DELETE",
+        success: function () {
+            $.ajax({
+                url: "https://localhost:44335/subject_tecaher/batch_create",
+                method: "POST",
+                data: JSON.stringify(mergedData),
+                contentType: 'application/json',
+                success: function (res) {
+                    if (callback && typeof callback === "function") {
+                        callback();
+                    }
+                    mergedData = [];
+                    $('#teacher_table').DataTable().ajax.reload();
+                    $('#teacher_subject_table').DataTable().ajax.reload();
+                },
+                error: function (xhr, status, error) {
+                    console.error("Lỗi khi tạo các roles mới:", error);
+                }
+            });
+        },
+        error: function (xhr, status, error) {
+            console.error("Lỗi khi xóa các roles cũ:", error);
+        }
+    });
+}
+function deleteSubject(userIds) {
+    swal({
+        title: "Bạn chắc chắn muốn xóa?",
+        text: "Hành động này không thể hoàn tác!",
+        icon: "warning",
+        buttons: ["Hủy", "Xóa"],
+        dangerMode: true,
+    }).then((willDelete) => {
+        if (willDelete) {
+            $.ajax({
+                url: "https://localhost:44335/subject_tecaher/batch_remove_by_userid/" + parseInt(userIds),
+                method: "DELETE",
+                success: function () {
+                    $('#teacher_table').DataTable().ajax.reload();
+                    $('#teacher_subject_table').DataTable().ajax.reload();
+                }
+            })
+        } else {
+            // Người dùng nhấn Hủy
+            swal("Hủy xóa!", {
+                icon: "info",
+            });
+        }
     });
 }
