@@ -95,7 +95,7 @@ function teacherNoSBGrid() {
                 delete d.columns;
                 d.search = d.search.value;
                 d.subject = $("#search_subject").val();
-                d.check_subject = 0;
+                d.check_subject = 2;
             },
             "dataSrc": "data"
         },
@@ -204,7 +204,7 @@ function subjectGrid() {
             "dataSrc": "data"
         },
         "initComplete": function () {
-            $('#subject_table').on('change', '.select-checkbox-role', function () {
+            $('#subject_table').on('change', '.select-checkbox-subject', function () {
                 var id = $(this).data('id');
                 if ($(this).prop('checked')) {
                     if (!selectedIdsSubject.includes(id)) {
@@ -282,6 +282,37 @@ function getSubject() {
                         .text(item.name));
                 });
             }
+        },
+    });
+}
+function CreateSubject_Teacher(callback) {
+    var mergedData = [];
+
+    for (var i = 0; i < selectedIdsUser.length; i++) {
+        var userId = selectedIdsUser[i];
+        for (var j = 0; j < selectedIdsSubject.length; j++) {
+            var subjectId = selectedIdsSubject[j];
+            var userData = {
+                userId: userId,
+                subjectId: subjectId
+            };
+            mergedData.push(userData);
+        }
+    }
+
+    console.log(mergedData);
+    $.ajax({
+        url: "https://localhost:44335/subject_tecaher/batch_create",
+        method: "POST",
+        data: JSON.stringify(mergedData),
+        contentType: 'application/json',
+        success: function (res) {
+            if (callback && typeof callback === "function") {
+                callback();
+            }
+            $('#subject_table').DataTable().ajax.reload();
+            $('#teacher_table').DataTable().ajax.reload();
+            $('#teacher_subject_table').DataTable().ajax.reload();
         },
     });
 }
