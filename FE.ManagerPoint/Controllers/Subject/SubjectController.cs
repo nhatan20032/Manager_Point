@@ -8,5 +8,9 @@ namespace FE.ManagerPoint.Controllers.Subject
         {
             return View();
         }
+        public IActionResult Subject_User()
+        {
+            return View();
+        }
     }
 }
