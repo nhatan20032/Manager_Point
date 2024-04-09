@@ -27,9 +27,9 @@ namespace API.Controllers
             return Ok(await _userServices.Get_User_No_Role(start, length, search));
         }
         [HttpGet("/user/get_all_teacher")]
-        public async Task<IActionResult> Get_All_Teacher(int start = 0, int length = 10, string search = "", int subject = 0, int classes = 0)
+        public async Task<IActionResult> Get_All_Teacher(int start = 0, int length = 10, string search = "", int subject = 0, int classes = 0, int check_subject = 0)
         {
-            return Ok(await _userServices.Get_All_Teacher(start, length, search, subject, classes));
+            return Ok(await _userServices.Get_All_Teacher(start, length, search, subject, classes, check_subject));
         }
         [HttpGet("/user/get_all_student")]
         public async Task<IActionResult> Get_All_Student(int start = 0, int length = 10, string search = "",  int classes = 0)

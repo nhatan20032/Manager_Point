@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using Microsoft.EntityFrameworkCore;
 using BLL.Author;
 using BLL.Authorization;
 using BLL.Services.Interface;
@@ -11,10 +12,10 @@ using Manager_Point.Models.Enum;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Primitives;
-using Newtonsoft.Json;
 using OfficeOpenXml;
-using System.Data.Entity;
 using System.Globalization;
+using Newtonsoft.Json;
+
 
 namespace BLL.Services.Implement
 {
@@ -92,20 +93,27 @@ namespace BLL.Services.Implement
         {
             try
             {
-                int totalCount = _appContext.Users.AsNoTracking()
-                    .Where(s => string.IsNullOrEmpty(search) || s.Name!.Contains(search))
-                    .Count();
                 int draw = 1;
                 var httpRequest = _httpContextAccessor.HttpContext!.Request;
                 if (httpRequest.Query.TryGetValue("draw", out StringValues valueDraw)) try { draw = int.Parse(valueDraw!); } catch { }
-                var vm_User = _appContext.Users.AsNoTracking().ProjectTo<vm_user>(_mapper.ConfigurationProvider);
-                var result = vm_User.Where(t => (string.IsNullOrEmpty(search) || t.Name!.Contains(search))).Skip(offset).Take(limit).ToList();
+                IQueryable<vm_user> vm_UserQuery = _appContext.Users
+                .Include(u => u.User_Roles!).ThenInclude(ur => ur.Role!)
+                .Include(u => u.Subject_Teachers!).ThenInclude(st => st.Subject)
+                .Include(u => u.Teacher_Classes!).ThenInclude(tc => tc.Class)
+                .Include(u => u.Student_Classes!).ThenInclude(tc => tc.Class)
+                .AsQueryable()
+                .ProjectTo<vm_user>(_mapper.ConfigurationProvider).Where(t => string.IsNullOrEmpty(search) || t.Name!.Contains(search));
+                int totalCount = await vm_UserQuery.CountAsync();
+                var final_result = await vm_UserQuery
+                   .Skip(offset)
+                   .Take(limit)
+                   .ToListAsync();
                 var paginatedResult = new Pagination<vm_user>
                 {
                     draw = draw,
                     recordsTotal = totalCount,
                     recordsFiltered = totalCount,
-                    data = result
+                    data = final_result
                 };
 
                 var jsonResult = JsonConvert.SerializeObject(paginatedResult, Formatting.Indented);
@@ -118,26 +126,59 @@ namespace BLL.Services.Implement
             }
         }
 
-        public async Task<string> Get_All_Teacher(int offset = 0, int limit = 10, string search = "", int subject = 0, int classes = 0)
+        public async Task<string> Get_All_Teacher(int offset = 0, int limit = 10, string search = "", int subject = 0, int classes = 0, int check_subject = 0)
         {
             try
             {
-                int totalCount = _appContext.Users.AsNoTracking().ProjectTo<vm_user>(_mapper.ConfigurationProvider).Where(s => (string.IsNullOrEmpty(search) || s.Name!.Contains(search)) && s.Role_Code!.Contains("gv")).Count();
                 int draw = 1;
                 var httpRequest = _httpContextAccessor.HttpContext!.Request;
                 if (httpRequest.Query.TryGetValue("draw", out StringValues valueDraw)) try { draw = int.Parse(valueDraw!); } catch { }
-                var vm_User = _appContext.Users.AsNoTracking().ProjectTo<vm_user>(_mapper.ConfigurationProvider);
-                var result = vm_User.Where(t => string.IsNullOrEmpty(search) || t.Name!.Contains(search)).Skip(offset).Take(limit).ToList();
-                result = result.Where(t => t.Role_Code!.Contains("gv")).ToList();
-                if (subject != 0 && classes == 0) result = result.Where(t => t.Subject_id!.Contains(subject)).ToList();
-                if (classes != 0 && subject == 0) result = result.Where(t => t.Teacher_Class_id!.Contains(classes)).ToList();
-                if (classes != 0 && subject != 0) result = result.Where(t => t.Teacher_Class_id!.Contains(classes) && t.Subject_id!.Contains(subject)).ToList();
+
+                IQueryable<vm_user> vm_UserQuery = _appContext.Users
+                .Include(u => u.User_Roles!).ThenInclude(ur => ur.Role!)
+                .Include(u => u.Subject_Teachers!).ThenInclude(st => st.Subject)
+                .Include(u => u.Teacher_Classes!).ThenInclude(tc => tc.Class)
+                .AsQueryable()
+                .ProjectTo<vm_user>(_mapper.ConfigurationProvider).Where(t => string.IsNullOrEmpty(search) || t.Name!.Contains(search))
+                    .Where(t => t.Role_Code!.Contains("gv"));
+
+                if (!string.IsNullOrEmpty(search))
+                {
+                    vm_UserQuery = vm_UserQuery.Where(t => t.Name!.Contains(search));
+                }
+
+                if (check_subject == 1)
+                {
+                    vm_UserQuery = vm_UserQuery.Where(t => t.Subject_User!.Any());
+                }
+                else if (check_subject == 2)
+                {
+                    vm_UserQuery = vm_UserQuery.Where(t => !t.Subject_User!.Any());
+                }
+
+                if (subject != 0)
+                {
+                    vm_UserQuery = vm_UserQuery.Where(t => t.Subject_id!.Contains(subject));
+                }
+
+                if (classes != 0)
+                {
+                    vm_UserQuery = vm_UserQuery.Where(t => t.Teacher_Class_id!.Contains(classes));
+                }
+
+                int totalCount = await vm_UserQuery.CountAsync();
+
+                var final_result = await vm_UserQuery
+                    .Skip(offset)
+                    .Take(limit)
+                    .ToListAsync();
+
                 var paginatedResult = new Pagination<vm_user>
                 {
                     draw = draw,
                     recordsTotal = totalCount,
                     recordsFiltered = totalCount,
-                    data = result
+                    data = final_result
                 };
 
                 var jsonResult = JsonConvert.SerializeObject(paginatedResult, Formatting.Indented);
@@ -154,20 +195,27 @@ namespace BLL.Services.Implement
         {
             try
             {
-                int totalCount = _appContext.Users.AsNoTracking().ProjectTo<vm_user>(_mapper.ConfigurationProvider).Where(s => (string.IsNullOrEmpty(search) || s.Name!.Contains(search)) && s.Role_Code!.Contains("hs")).Count();
                 int draw = 1;
                 var httpRequest = _httpContextAccessor.HttpContext!.Request;
                 if (httpRequest.Query.TryGetValue("draw", out StringValues valueDraw)) try { draw = int.Parse(valueDraw!); } catch { }
-                var vm_User = _appContext.Users.AsNoTracking().ProjectTo<vm_user>(_mapper.ConfigurationProvider);
-                var result = vm_User.Where(t => string.IsNullOrEmpty(search) || t.Name!.Contains(search)).Skip(offset).Take(limit).ToList();
-                result = result.Where(t => t.Role_Code!.Contains("hs")).ToList();
-                if (classes != 0) result = result.Where(t => t.Student_Class_id!.Contains(classes)).ToList();
+                IQueryable<vm_user> vm_UserQuery = _appContext.Users
+                .Include(u => u.User_Roles!).ThenInclude(ur => ur.Role!)
+                .Include(u => u.Student_Classes!).ThenInclude(tc => tc.Class)
+                .AsQueryable()
+                .ProjectTo<vm_user>(_mapper.ConfigurationProvider).Where(t => string.IsNullOrEmpty(search) || t.Name!.Contains(search))
+                    .Where(t => t.Role_Code!.Contains("hs"));
+                if (classes != 0) vm_UserQuery = vm_UserQuery.Where(t => t.Student_Class_id!.Contains(classes));
+                int totalCount = await vm_UserQuery.CountAsync();
+                var final_result = await vm_UserQuery
+                    .Skip(offset)
+                    .Take(limit)
+                    .ToListAsync();
                 var paginatedResult = new Pagination<vm_user>
                 {
                     draw = draw,
                     recordsTotal = totalCount,
                     recordsFiltered = totalCount,
-                    data = result
+                    data = final_result
                 };
 
                 var jsonResult = JsonConvert.SerializeObject(paginatedResult, Formatting.Indented);
@@ -183,18 +231,26 @@ namespace BLL.Services.Implement
         {
             try
             {
-                int totalCount = _appContext.Users.AsNoTracking().ProjectTo<vm_user>(_mapper.ConfigurationProvider).Where(s => (string.IsNullOrEmpty(search) || s.Name!.Contains(search)) && !s.Role_id!.Any()).Count();
+                IQueryable<vm_user> vm_UserQuery = _appContext.Users
+                                .Include(u => u.User_Roles!).ThenInclude(ur => ur.Role!)
+                                .Include(u => u.Student_Classes!).ThenInclude(tc => tc.Class)
+                                .AsQueryable()
+                                .ProjectTo<vm_user>(_mapper.ConfigurationProvider).Where(t => string.IsNullOrEmpty(search) || t.Name!.Contains(search))
+                                    .Where(t => t.Role_id!.Any());
                 int draw = 1;
                 var httpRequest = _httpContextAccessor.HttpContext!.Request;
                 if (httpRequest.Query.TryGetValue("draw", out StringValues valueDraw)) try { draw = int.Parse(valueDraw!); } catch { }
-                var vm_User = _appContext.Users.AsNoTracking().ProjectTo<vm_user>(_mapper.ConfigurationProvider);
-                var result = vm_User.Where(t => (string.IsNullOrEmpty(search) || t.Name!.Contains(search)) && !t.Role_id!.Any()).Skip(offset).Take(limit).ToList();
+                int totalCount = await vm_UserQuery.CountAsync();
+                var final_result = await vm_UserQuery
+                    .Skip(offset)
+                    .Take(limit)
+                    .ToListAsync();
                 var paginatedResult = new Pagination<vm_user>
                 {
                     draw = draw,
                     recordsTotal = totalCount,
                     recordsFiltered = totalCount,
-                    data = result
+                    data = final_result
                 };
 
                 var jsonResult = JsonConvert.SerializeObject(paginatedResult, Formatting.Indented);
@@ -413,6 +469,6 @@ namespace BLL.Services.Implement
             var token = _jwtUtils.GenerateJwtToken(vm_User);
 
             return new AuthenticateResponse(vm_User, token);
-        }       
+        }
     }
 }
