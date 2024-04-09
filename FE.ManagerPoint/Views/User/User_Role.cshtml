@@ -195,6 +195,12 @@
 <script src="~/js/User_Role/UserRole.js"></script>
 <script>
     $(document).ready(function () {
+        getSubject();
+        $("#search_subject").select2({ width: '100%' });
+        getClass();
+        $("#search_class").select2({ width: '100%' });
+        getStudentClass();
+        $("#search_class_student").select2({ width: '100%' });
         roleGrid();
         userNoRoleGrid();
         $("#createRole").click(function () {
@@ -206,6 +212,15 @@
         $("#role_selected").select2({
             dropdownParent: $('#updateModal'),
             width: '100%'
+        });
+        $("#search_subject").change(function () {
+            $('#teacher_role_table').DataTable().ajax.reload();
+        });
+        $("#search_class").change(function () {
+            $('#teacher_role_table').DataTable().ajax.reload();
+        });
+        $("#search_class_student").change(function () {
+            $('#student_role_table').DataTable().ajax.reload();
         });
         $('#role_update_form').on('submit', function (event) {
             let ids = $('#role_selected').val()

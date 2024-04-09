@@ -58,7 +58,7 @@ function studentGrid() {
             },
             {
                 "data": null, "orderable": false, render: function (row) {
-                    let edit = `<a class="link-warning" style="cursor: pointer; margin-right: 20px; text-decoration: none"><i class="fa-solid fa-wrench"></i>Sửa Quyền</a>`;
+                    let edit = `<a class="link-warning" onclick="GetById(${row.Id})" style="cursor: pointer; margin-right: 20px; text-decoration: none"><i class="fa-solid fa-wrench"></i>Sửa Quyền</a>`;
                     let remove = `<a class="link-danger" style="cursor: pointer; text-decoration: none;"><i class="fa-solid fa-trash"></i>Xoá Quyền</a>`;
                     return `<div>${edit} ${remove}</div>`;
                 }
@@ -129,7 +129,7 @@ function teacherGrid() {
             {
                 "data": null, "orderable": false, render: function (row) {
                     let edit = `<a class="link-warning" onclick="GetById(${row.Id})" style="cursor: pointer; margin-right: 20px; text-decoration: none"><i class="fa-solid fa-wrench"></i>Sửa Quyền</a>`;
-                    let remove = `<a class="link-danger" style="cursor: pointer; text-decoration: none;"><i class="fa-solid fa-trash"></i>Xoá Quyền</a>`;
+                    let remove = `<a class="link-danger" onclick="deleteRole(${row.Id})" style="cursor: pointer; text-decoration: none;"><i class="fa-solid fa-trash"></i>Xoá Quyền</a>`;
                     return `<div>${edit} ${remove}</div>`;
                 }
             },
@@ -408,10 +408,30 @@ function getRole() {
     });
 }
 function deleteRole(userIds) {
-    $.ajax({
-        url: "https://localhost:44335/role_user/batch_remove_by_userid/" + userIds,
-        method: "DELETE",
-    })
+    swal({
+        title: "Bạn chắc chắn muốn xóa?",
+        text: "Hành động này không thể hoàn tác!",
+        icon: "warning",
+        buttons: ["Hủy", "Xóa"],
+        dangerMode: true,
+    }).then((willDelete) => {
+        if (willDelete) {
+            $.ajax({
+                url: "https://localhost:44335/role_user/batch_remove_by_userid/" + parseInt(userIds),
+                method: "DELETE",
+                success: function () {
+                    $('#user_role_table').DataTable().ajax.reload();
+                    $('#student_role_table').DataTable().ajax.reload();
+                    $('#teacher_role_table').DataTable().ajax.reload();
+                }
+            })
+        } else {
+            // Người dùng nhấn Hủy
+            swal("Hủy xóa!", {
+                icon: "info",
+            });
+        }
+    });    
 }
 function editRole(userIds, ids, callback) {
     var intIds = ids.map(function (item) {
@@ -426,18 +446,79 @@ function editRole(userIds, ids, callback) {
         };
         mergedData.push(userData);
     }
-    deleteRole(parseInt(userIds));
     $.ajax({
-        url: "https://localhost:44335/role_user/batch_create",
-        method: "POST",
-        data: JSON.stringify(mergedData),
-        contentType: 'application/json',
-        success: function (res) {
-            if (callback && typeof callback === "function") {
-                callback();
-            }
-            mergedData = []
-            $('#teacher_role_table').DataTable().ajax.reload();
+        url: "https://localhost:44335/role_user/batch_remove_by_userid/" + parseInt(userIds),
+        method: "DELETE",
+        success: function () {
+            $.ajax({
+                url: "https://localhost:44335/role_user/batch_create",
+                method: "POST",
+                data: JSON.stringify(mergedData),
+                contentType: 'application/json',
+                success: function (res) {
+                    if (callback && typeof callback === "function") {
+                        callback();
+                    }
+                    mergedData = [];
+                    $('#user_role_table').DataTable().ajax.reload();
+                    $('#student_role_table').DataTable().ajax.reload();
+                    $('#teacher_role_table').DataTable().ajax.reload();
+                },
+                error: function (xhr, status, error) {
+                    console.error("Lỗi khi tạo các roles mới:", error);
+                }
+            });
+        },
+        error: function (xhr, status, error) {
+            console.error("Lỗi khi xóa các roles cũ:", error);
         }
-    })
+    });
+}
+function getSubject() {
+    $.ajax({
+        url: "https://localhost:44335/subject/get_list",
+        method: "GET",
+        success: function (res) {
+            if (res && res.length > 0) {
+                var select = $("#search_subject");
+                $.each(res, function (index, item) {
+                    select.append($("<option></option>")
+                        .attr("value", item.id)
+                        .text(item.name));
+                });
+            }
+        },
+    });
+}
+function getClass() {
+    $.ajax({
+        url: "https://localhost:44335/class/get_list",
+        method: "GET",
+        success: function (res) {
+            if (res && res.length > 0) {
+                var select = $("#search_class");
+                $.each(res, function (index, item) {
+                    select.append($("<option></option>")
+                        .attr("value", item.id)
+                        .text(item.classCode));
+                });
+            }
+        },
+    });
+}
+function getStudentClass() {
+    $.ajax({
+        url: "https://localhost:44335/class/get_list",
+        method: "GET",
+        success: function (res) {
+            if (res && res.length > 0) {
+                var select = $("#search_class_student");
+                $.each(res, function (index, item) {
+                    select.append($("<option></option>")
+                        .attr("value", item.id)
+                        .text(item.classCode));
+                });
+            }
+        },
+    });
 }
