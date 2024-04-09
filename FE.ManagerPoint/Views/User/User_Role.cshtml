@@ -12,6 +12,7 @@
         text-align: center;
         vertical-align: middle;
     }
+
     #teacher_role_table thead th {
         text-align: center;
         vertical-align: middle;
@@ -190,16 +191,38 @@
         </div>
     </div>
 </div>
-<partial name="UpdateRole"></partial>
+<partial name="UpdateRole" />
 <script src="~/js/User_Role/UserRole.js"></script>
 <script>
     $(document).ready(function () {
-        roleGrid()
-        userNoRoleGrid()
+        roleGrid();
+        userNoRoleGrid();
         $("#createRole").click(function () {
             CreateRole(function () {
                 toastr.success('Thêm người dùng từ excel thành công');
             });
         });
+        getRole();
+        $("#role_selected").select2({
+            dropdownParent: $('#updateModal'),
+            width: '100%'
+        });
+        $('#role_update_form').on('submit', function (event) {
+            let ids = $('#role_selected').val()
+            let id = $('#id').val()
+            var form = $(this);
+            if (!form[0].checkValidity()) {
+                event.preventDefault();
+                event.stopPropagation();
+            } else {
+                event.preventDefault();
+                editRole(id, ids, function () {
+                    toastr.success('Sửa quyền thành công');
+                    let = $('#updateModal').modal('hide');
+                    form.removeClass('was-validated');
+                });
+            }
+            form.addClass('was-validated');
+        })
     });
 </script>

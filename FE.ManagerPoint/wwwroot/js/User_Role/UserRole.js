@@ -368,6 +368,8 @@ function CreateRole(callback) {
             }
             $('#user_role_table').DataTable().ajax.reload();
             $('#role_table').DataTable().ajax.reload();
+            $('#student_role_table').DataTable().ajax.reload();
+            $('#teacher_role_table').DataTable().ajax.reload();
         },
     });
 }
@@ -383,10 +385,59 @@ function GetById(id) {
                 toastr.error('Không tìm thấy người dùng');
                 return;
             }
-            console.log(res);
             $("#id").val(res.id);
             $("#name_md").val(res.name);
+            $("#role_selected").val(res.role_id).trigger('change');
             $("#updateModal").modal("show");
         },
     });
+}
+function getRole() {
+    $.ajax({
+        url: "https://localhost:44335/role/get_list",
+        method: "GET",
+        success: function (res) {
+            if (res && res.length > 0) {
+                console.log(res);
+                var select = $("#role_selected");
+                $.each(res, function (index, role) {
+                    select.append(`<option value="${role.id}">${role.name}</option>`);
+                });
+            }
+        },
+    });
+}
+function deleteRole(userIds) {
+    $.ajax({
+        url: "https://localhost:44335/role_user/batch_remove_by_userid/" + userIds,
+        method: "DELETE",
+    })
+}
+function editRole(userIds, ids, callback) {
+    var intIds = ids.map(function (item) {
+        return parseInt(item);
+    });
+    var mergedData = [];
+    for (var j = 0; j < intIds.length; j++) {
+        var roleId = intIds[j];
+        var userData = {
+            userId: userIds,
+            roleId: roleId
+        };
+        mergedData.push(userData);
+    }
+    deleteRole(parseInt(userIds));
+    $.ajax({
+        url: "https://localhost:44335/role_user/batch_create",
+        method: "POST",
+        data: JSON.stringify(mergedData),
+        contentType: 'application/json',
+        success: function (res) {
+            if (callback && typeof callback === "function") {
+                callback();
+            }
+            mergedData = []
+            $('#teacher_role_table').DataTable().ajax.reload();
+        }
+    })
 }

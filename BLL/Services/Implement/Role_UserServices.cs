@@ -53,11 +53,11 @@ namespace BLL.Services.Implement
             }
         }
 
-        public async Task<bool> Batch_Remove_Item_By_UserId(List<int> userIds)
+        public async Task<bool> Batch_Remove_Item_By_UserId(int userIds)
         {
             try
             {
-                var role_user = _appContext.Users_Roles.Where(t => userIds.Contains(t.UserId)).ToList();
+                var role_user = _appContext.Users_Roles.Where(t => t.UserId == userIds).ToList();
 
                 if (role_user.Any())
                 {

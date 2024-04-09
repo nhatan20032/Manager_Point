@@ -46,8 +46,8 @@ namespace API.Controllers
             return Ok(await _role_UserServices.Batch_Remove_Item(ids));
         }
 
-        [HttpDelete("/role_user/batch_remove_by_userid")]
-        public async Task<IActionResult> Batch_Remove_Item_By_UserId(List<int> userIds)
+        [HttpDelete("/role_user/batch_remove_by_userid/{userIds}")]
+        public async Task<IActionResult> Batch_Remove_Item_By_UserId([FromRoute] int userIds)
         {
             return Ok(await _role_UserServices.Batch_Remove_Item_By_UserId(userIds));
         }
