@@ -134,12 +134,12 @@ namespace BLL.Services.Implement
                 var httpRequest = _httpContextAccessor.HttpContext!.Request;
                 if (httpRequest.Query.TryGetValue("draw", out StringValues valueDraw)) try { draw = int.Parse(valueDraw!); } catch { }
 
-                IQueryable<vm_user> vm_UserQuery = _appContext.Users
+                IQueryable<vm_teacher> vm_UserQuery = _appContext.Users
                 .Include(u => u.User_Roles!).ThenInclude(ur => ur.Role!)
                 .Include(u => u.Subject_Teachers!).ThenInclude(st => st.Subject)
                 .Include(u => u.Teacher_Classes!).ThenInclude(tc => tc.Class)
                 .AsQueryable()
-                .ProjectTo<vm_user>(_mapper.ConfigurationProvider).Where(t => string.IsNullOrEmpty(search) || t.Name!.Contains(search))
+                .ProjectTo<vm_teacher>(_mapper.ConfigurationProvider).Where(t => string.IsNullOrEmpty(search) || t.Name!.Contains(search))
                     .Where(t => t.Role_Code!.Contains("gv"));
 
                 if (!string.IsNullOrEmpty(search))
@@ -173,7 +173,7 @@ namespace BLL.Services.Implement
                     .Take(limit)
                     .ToListAsync();
 
-                var paginatedResult = new Pagination<vm_user>
+                var paginatedResult = new Pagination<vm_teacher>
                 {
                     draw = draw,
                     recordsTotal = totalCount,
@@ -243,7 +243,7 @@ namespace BLL.Services.Implement
                     .Include(u => u.Subject_Teachers!).ThenInclude(st => st.Subject)
                     .Include(u => u.Teacher_Classes!).ThenInclude(tc => tc.Class)
                     .AsQueryable()
-                    .ProjectTo<vm_user>(_mapper.ConfigurationProvider)
+                    .ProjectTo<vm_teacher>(_mapper.ConfigurationProvider)
                     .Where(u => u.Role_Code!.Contains("gv") && u.Subject_id!.Contains(subject.Id))
                     .CountAsync();
 
@@ -277,11 +277,11 @@ namespace BLL.Services.Implement
                 int draw = 1;
                 var httpRequest = _httpContextAccessor.HttpContext!.Request;
                 if (httpRequest.Query.TryGetValue("draw", out StringValues valueDraw)) try { draw = int.Parse(valueDraw!); } catch { }
-                IQueryable<vm_user> vm_UserQuery = _appContext.Users
+                IQueryable<vm_student> vm_UserQuery = _appContext.Users
                 .Include(u => u.User_Roles!).ThenInclude(ur => ur.Role!)
                 .Include(u => u.Student_Classes!).ThenInclude(tc => tc.Class)
                 .AsQueryable()
-                .ProjectTo<vm_user>(_mapper.ConfigurationProvider).Where(t => string.IsNullOrEmpty(search) || t.Name!.Contains(search))
+                .ProjectTo<vm_student>(_mapper.ConfigurationProvider).Where(t => string.IsNullOrEmpty(search) || t.Name!.Contains(search))
                     .Where(t => t.Role_Code!.Contains("hs"));
                 if (classes != 0) vm_UserQuery = vm_UserQuery.Where(t => t.Student_Class_id!.Contains(classes));
                 int totalCount = await vm_UserQuery.CountAsync();
@@ -289,7 +289,7 @@ namespace BLL.Services.Implement
                     .Skip(offset)
                     .Take(limit)
                     .ToListAsync();
-                var paginatedResult = new Pagination<vm_user>
+                var paginatedResult = new Pagination<vm_student>
                 {
                     draw = draw,
                     recordsTotal = totalCount,
