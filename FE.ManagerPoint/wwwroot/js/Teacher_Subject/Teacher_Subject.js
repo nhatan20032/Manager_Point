@@ -269,7 +269,7 @@ function subjectGrid() {
     });
     window.dt = this.$table;
 }
-function getSubject() {
+function getSubject_user() {
     $.ajax({
         url: "https://localhost:44335/subject/get_list",
         method: "GET",

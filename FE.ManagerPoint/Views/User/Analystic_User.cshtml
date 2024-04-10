@@ -1,0 +1,31 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Thống kê giáo viên";
+}
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Tổng số lượng giáo viên và học sinh</h5>
+                <div id="chart_teacher_student"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row mt-3">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Tổng số lượng giáo viên theo từng môn</h5>
+                <div id="chart_teacher_subject"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="~/js/User/Analystic_User.js"></script>
+<script>
+    $(document).ready(function () {
+        count_teacher_subject();
+        count_student_teacher();
+    });
+</script>

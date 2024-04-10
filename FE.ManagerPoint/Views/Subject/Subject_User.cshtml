@@ -141,7 +141,7 @@
 <script>
     $(document).ready(function () {
         teacherNoSBGrid(); subjectGrid();
-        getSubject();
+        getSubject_user();
         $("#search_subject").select2({ width: '100%' });
         $("#subject_selected").select2({
             dropdownParent: $('#updateModal'),
@@ -151,6 +151,9 @@
             CreateSubject_Teacher(function () {
                 toastr.success('Gán môn học cho giáo viên thành công');
             });
+        });
+        $("#search_subject").change(function () {
+            $('#teacher_subject_table').DataTable().ajax.reload();
         });
         $('#subject_update_form').on('submit', function (event) {
             let ids = $('#subject_selected').val()
