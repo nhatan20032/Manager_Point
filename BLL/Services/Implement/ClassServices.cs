@@ -121,7 +121,7 @@ namespace BLL.Services.Implement
         {
             try
             {
-                var classes = await _appContext.GradePoints.ProjectTo<vm_class>(_mapper.ConfigurationProvider).SingleOrDefaultAsync(x => x.Id == id);
+                var classes =  _appContext.Classes.ProjectTo<vm_class>(_mapper.ConfigurationProvider).SingleOrDefault(x => x.Id == id);
                 if (classes == null) return null!;
                 return classes;
             }

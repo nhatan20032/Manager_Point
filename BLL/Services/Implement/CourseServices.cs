@@ -6,6 +6,7 @@ using BLL.ViewModels.Course;
 using BLL.ViewModels.Subject;
 using Manager_Point.ApplicationDbContext;
 using Manager_Point.Models;
+using Manager_Point.Models.Enum;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Primitives;
 using Newtonsoft.Json;
@@ -71,6 +72,7 @@ namespace BLL.Services.Implement
 			{
 				var obj = _mapper.Map<Course>(request);
 			//	obj.Name = request.StartTime.Value.Year.ToString() + "-" + request.EndTime.Value.Year.ToString();
+			
 				_appContext.Courses.Add(obj);
 				await _appContext.SaveChangesAsync();
 				return obj.Id;
@@ -96,6 +98,15 @@ namespace BLL.Services.Implement
                 if (httpRequest.Query.TryGetValue("draw", out StringValues valueDraw)) try { draw = int.Parse(valueDraw!); } catch { }
 
                 var vm_courses = _appContext.Courses.ProjectTo<vm_course>(_mapper.ConfigurationProvider).Where(t => string.IsNullOrEmpty(search) || t.Name!.Contains(search)).Skip(offset).Take(limit).ToList();
+
+				var checkEndtime = vm_courses.Where(c => c.EndTime.Value < DateTime.Now);
+				foreach (var item in checkEndtime)
+				{
+					var id = item.Id;
+					var objForUpdate = await _appContext.Courses.FindAsync(id);
+					objForUpdate.Status = (Status)Enum.ToObject(typeof(Status), 4);
+					await _appContext.SaveChangesAsync();
+				}
                 var paginatedResult = new Pagination<vm_course>
                 {
                     draw = draw,

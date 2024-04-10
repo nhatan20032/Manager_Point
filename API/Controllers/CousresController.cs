@@ -1,6 +1,7 @@
 ﻿using BLL.Services.Implement;
 using BLL.Services.Interface;
 using BLL.ViewModels.Course;
+using Manager_Point.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
@@ -17,7 +18,8 @@ namespace API.Controllers
 
 		[HttpGet("/course/get_all")]
 		public async Task<IActionResult> Get_All_Item(int start = 0, int length = 10, string search = "")
-		{
+		{  
+           
 			return Ok(await _courseService.Get_All_Async(start, length, search));
 		}
         
@@ -31,6 +33,11 @@ namespace API.Controllers
         [HttpPost("/course/create")]
         public async Task<IActionResult> Create_Item([FromBody] vm_create_course request)
         {
+			int totalDays = (request.EndTime.Value - request.StartTime.Value).Days;
+			if (totalDays < 0)
+            {
+                return Json(new { message = "The start date cannot be less than the end date" });
+            }
             if (request == null) { return BadRequest("request null check object again, make sure request have a value"); }
             return Ok(await _courseService.Create_Item(request));
         }
@@ -45,7 +52,12 @@ namespace API.Controllers
         [HttpPut("/course/modified")]
         public async Task<IActionResult> Modified_Item(int id, [FromBody] vm_update_course request)
         {
-            if (request == null) { return BadRequest("request null check object again, make sure request have a value"); }
+			int totalDays = (request.EndTime.Value - request.StartTime.Value).Days;
+			if (totalDays < 0)
+			{
+				return Json(new { message = "The start date cannot be less than the end date" });
+			}
+			if (request == null) { return BadRequest("request null check object again, make sure request have a value"); }
             return Ok(await _courseService.Modified_Item(id, request));
         }
 

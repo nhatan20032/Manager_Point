@@ -31,14 +31,19 @@
         },
         "rowId": "Id",
         "columns": [
-            { "data": "Id", "orderable": false },
+            {
+                "data": null, "orderable": false, "render": function (data, type, row, meta) {
+                    return meta.row + 1;
+                }
+            },
+            //{ "data": "Id", "orderable": false },
             { "data": "ClassCode", "orderable": false },
             { "data": "Name", "orderable": false },
             { "data": "GradeLevel", "orderable": false },
             { "data": "CourseName", "orderable": false },
 
             {
-                "data": "Status", "orderable": false, "render": function (data) {
+                "data": "Status", "orderable": true, "render": function (data) {
                     if (data == 5) return "Trong thời gian";
                     if (data == 4) return "Đã kết thúc";
                     return "Unknown";
@@ -67,11 +72,17 @@ function createClass(object, callback) {
         method: "POST",
         data: JSON.stringify(object),
         contentType: 'application/json',
+      
         success: function (res) {
-            if (callback && typeof callback === "function") {
-                callback();
+         
+            if (res.message) {
+                toastr.error(res.message);
             }
-
+            else {
+                if (callback && typeof callback === "function") {
+                    callback();
+                }
+            }
             $('#class_table').DataTable().ajax.reload();
         },
         error: function (xhr, status, error) {
@@ -94,8 +105,14 @@ function updateSub(id, object, callback) {
         data: JSON.stringify(object),
         contentType: 'application/json',
         success: function (res) {
-            if (callback && typeof callback === "function") {
-                callback();
+
+            if (res.message) {
+                toastr.error(res.message);
+            }
+            else {
+                if (callback && typeof callback === "function") {
+                    callback();
+                }
             }
             $('#class_table').DataTable().ajax.reload();
         },
@@ -110,17 +127,18 @@ function GetById(id) {
             id: id,
         },
         success: function (res) {
-
+            console.log(res);
             if (res == null) {
                 toastr.error('Không tìm thấy vai trò');
                 return;
             }
-            $("#course_id").val(res.id);
-            $("#course_name_md").val(res.name);
-            $("#dateStart_md").val(res.startTime);
-            $("#dateEnd_md").val(res.endTime);
-            $("#course_description_md").val(res.description);
-            $("#status_list_md").val(res.status);
+          
+            $("#class_id").val(res.id);
+            $("#class_classcode_md").val(res.classCode);
+            $("#class_name_md").val(res.name);
+            $("#class_gradeLevel_md").val(res.gradeLevel);
+            $("#class_courseName_md").val(res.courseId);
+            $("#status_list_md").val(res.status)
             $("#updateModal").modal("show");
         },
     });
