@@ -174,3 +174,100 @@ function student_No_Class() {
         "pageLength": 10,
     });
 }
+function classGrid() {
+    this.$table = $('#class_table').DataTable({
+        "language": {
+            "sProcessing": "Đang xử lý...",
+            "sLengthMenu": "Xem _MENU_ mục",
+            "sZeroRecords": "Không tìm thấy dòng nào phù hợp",
+            "sInfo": "Đang xem _START_ đến _END_ trong tổng số _TOTAL_ mục",
+            "sInfoEmpty": "Đang xem 0 đến 0 trong tổng số 0 mục",
+            "sInfoFiltered": "(được lọc từ _MAX_ mục)",
+            "sInfoPostFix": "",
+            "sUrl": "",
+            "oPaginate": {
+                "sFirst": "Đầu",
+                "sPrevious": "Trước",
+                "sNext": "Tiếp",
+                "sLast": "Cuối"
+            }
+        },
+        "pageLength": 10,
+        "processing": true,
+        "serverSide": true,
+        "ajax": {
+            "url": "https://localhost:44335/class/get_all",
+            "data": function (d) {
+                delete d.columns;
+                d.search = d.search.value;
+            },
+            "dataSrc": "data"
+        },
+        "initComplete": function () {
+            $('#class_table').on('change', '.select-checkbox', function () {
+                var id = $(this).data('id');
+                if ($(this).prop('checked')) {
+                    if (!selectedIdsClass.includes(id)) {
+                        selectedIdsClass.push(id);
+                    }
+                } else {
+                    var index = selectedIdsClass.indexOf(id);
+                    if (index !== -1) {
+                        selectedIdsClass.splice(index, 1);
+                    }
+                }
+                console.log(selectedIdsClass);
+            });
+            $(document).on('change', '#checkAllCheckboxClass', function () {
+                var checkboxes = $('.select-checkbox-class');
+                checkboxes.prop('checked', $(this).prop('checked'));
+                if ($(this).prop('checked')) {
+                    checkboxes.each(function () {
+                        var id = $(this).data('id');
+                        if (!selectedIdsClass.includes(id)) {
+                            selectedIdsClass.push(id);
+                        }
+                    });
+                } else {
+                    selectedIdsClass = [];
+                }
+                console.log(selectedIdsClass);
+            });
+            this.api().on('draw', function () {
+                selectedIdsUser = [];
+                $('#checkAllCheckboxClass').prop('checked', false);
+                $('.select-checkbox-class').prop('checked', false);
+            });
+        },
+        "rowId": "Id",
+        "columns": [
+            {
+                "data": null,
+                "className": "checkbox-column",
+                "orderable": false,
+                "title": '<input type="checkbox" id="checkAllCheckboxClass">',
+                "render": function (data) {
+                    return `<input type="checkbox" class="select-checkbox-class" data-id="${data.Id}">`;
+                }
+            },
+            { 'data': 'Id', "orderable": false },
+            { 'data': 'Name', "orderable": false },
+            { 'data': 'ClassCode', "orderable": false },
+            {
+                "data": "Status", "orderable": false, render: function (data) {
+                    if (data == 1) return "Hoạt động";
+                    if (data == 2) return "Thất bại";
+                    if (data == 3) return "Ra trường";
+                    if (data == 3) return "Kết thúc";
+                    if (data == 3) return "Đang xử lý";
+                    return "Unknown";
+                }
+            },
+        ],
+        "searching": true,
+        "paging": true,
+        "lengthChange": true,
+        "info": true,
+        "pageLength": 10,
+    });
+}
