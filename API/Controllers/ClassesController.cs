@@ -1,6 +1,7 @@
 ﻿using BLL.Services.Implement;
 using BLL.Services.Interface;
 using BLL.ViewModels.Class;
+using Manager_Point.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
@@ -32,14 +33,25 @@ namespace API.Controllers
             return Ok(await _classService.Get_By_Id(id));
         }
 
-        [HttpPost("/class/create")]
-        public async Task<IActionResult> Create_Item([FromBody] vm_create_class request)
-        {
-            if (request == null) { return BadRequest("request null check object again, make sure request have a value"); }
-            return Ok(await _classService.Create_Item(request));
-        }
+		[HttpPost("/class/create")]
+		public async Task<IActionResult> Create_Item([FromBody] vm_create_class request)
+		{
+			if (request == null)
+			{
+				return BadRequest("request null check object again, make sure request have a value");
+			}
 
-        [HttpPost("/class/batch_create")]
+			var checkcode =  _classService.Get_List().FirstOrDefault(c => c.ClassCode == request.ClassCode);
+			if (checkcode !=  null || checkcode?.ClassCode.Count() > 0)
+			{
+				return Json( new { message = "The class code already exists" });
+			};
+
+			return Ok(await _classService.Create_Item(request));
+		}
+
+
+		[HttpPost("/class/batch_create")]
         public async Task<IActionResult> Batch_Create_Item([FromBody] List<vm_create_class> requests)
         {
             if (requests == null) { return BadRequest("request null check object again, make sure request have a value"); }
@@ -50,7 +62,12 @@ namespace API.Controllers
         public async Task<IActionResult> Modified_Item(int id, [FromBody] vm_update_class request)
         {
             if (request == null) { return BadRequest("request null check object again, make sure request have a value"); }
-            return Ok(await _classService.Modified_Item(id, request));
+			var checkcode = _classService.Get_List().FirstOrDefault(c => c.ClassCode == request.ClassCode);
+			if (checkcode != null || checkcode?.ClassCode.Count() > 0)
+			{
+				return Json(new { message = "The class code already exists" });
+			};
+			return Ok(await _classService.Modified_Item(id, request));
         }
 
         [HttpDelete("/class/remove")]

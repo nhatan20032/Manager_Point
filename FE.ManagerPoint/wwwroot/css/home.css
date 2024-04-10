@@ -471,7 +471,7 @@ a:hover {
     
     display: flex;
     padding: 10px;
-    height: 100vh;
+    height: 100%;
     box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
     /* margin: 80px 40px; */
 }
@@ -531,4 +531,11 @@ a:hover {
 }
 .main-body{
     width:100%;
+}
+.table.dataTable{
+    width:100% !important;
+    
+}
+div.dt-container div.dt-layout-row.dt-layout-table div.dt-layout-cell{
+    overflow:auto;
 }
