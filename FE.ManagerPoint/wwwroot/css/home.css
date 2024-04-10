@@ -543,3 +543,6 @@ a:hover {
 div.dt-container div.dt-layout-row.dt-layout-table div.dt-layout-cell{
     overflow:auto;
 }
+span.dt-column-order {
+    display: none;
+}
