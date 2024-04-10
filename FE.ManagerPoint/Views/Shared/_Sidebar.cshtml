@@ -1,35 +1,21 @@
 <div id='sidebar' class="sidebar">
     <ul class="nav-list">
-       @* <li>
-            <div class="icon-link">
-                <a id="role" class="role" href="/Role/Index">
-                    <i class="fa-solid fa-circle-user"></i>
-                    <span class="link-name">Quản lý quyền</span>
-                </a>
-            </div>
-            <ul class="sub-menu">
-
-                <li>
-                    <a id="role" class="role" href="/Role/Index">
-                        Quản lý quyền
-                    </a>
-                </li>
-            </ul>
-        </li>*@
         <li>
             <div class="icon-link">
                 <a asp-area="MyArea" asp-controller="MyController" asp-action="MyAction">
                     <i class="fa-solid fa-chart-simple"></i>
                     <span class="link-name">Thống kê</span>
                 </a>
+                <i class="fas fa-caret-down arrow"></i>
             </div>
             <ul class="sub-menu">
-
+                <li><a class="link-name">Thống kê</a></li>
                 <li>
-                    <a asp-area="MyArea" asp-controller="MyController"
-                       asp-action="MyController">
-                        Thống
-                        kê
+                    <a id="static_teacher" class="static_teacher" href="">
+                        Thống kê tổng số giáo viên
+                    </a>
+                    <a id="static_student" class="static_teacher" href="">
+                        Thống kê tổng số học sinh
                     </a>
                 </li>
             </ul>
@@ -176,7 +162,7 @@
             <ul class="sub-menu">
                 <li><a class="link-name">Quản lí khối / lớp </a></li>
                 <li>
-                    <a id="course" class="course" href="/Course/Index" >Khóa học</a>
+                    <a id="course" class="course" href="/Course/Index">Khóa học</a>
                 </li>
                 <li>
                     <a asp-area="MyArea" asp-controller="MyController" asp-action="MyAction">Khối</a>
@@ -194,7 +180,7 @@
                 <a id="subject" class="subject" href="/Subject/Index">
                     <i class="fa-solid fa-book-open"></i>
                     <span class="link-name">Quản lý môn học</span>
-                </a>         
+                </a>
                 <i class="fas fa-caret-down arrow"></i>
             </div>
 

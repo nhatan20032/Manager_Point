@@ -236,7 +236,7 @@ namespace BLL.Services.Implement
                                 .Include(u => u.Student_Classes!).ThenInclude(tc => tc.Class)
                                 .AsQueryable()
                                 .ProjectTo<vm_user>(_mapper.ConfigurationProvider).Where(t => string.IsNullOrEmpty(search) || t.Name!.Contains(search))
-                                    .Where(t => t.Role_id!.Any());
+                                    .Where(t => !t.Role_id!.Any());
                 int draw = 1;
                 var httpRequest = _httpContextAccessor.HttpContext!.Request;
                 if (httpRequest.Query.TryGetValue("draw", out StringValues valueDraw)) try { draw = int.Parse(valueDraw!); } catch { }
