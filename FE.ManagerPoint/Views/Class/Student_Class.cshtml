@@ -59,7 +59,7 @@
                 <div class="row">
                     <div class="col-md-10">Bảng hiển thị học sinh chưa phân lớp</div>
                     <div class="col-md-2">
-                        <button id="createSubject" type="button" class="btn btn-dark">Phân lớp đã chọn</button>
+                        <button id="createClass" type="button" class="btn btn-dark">Phân lớp đã chọn</button>
                     </div>
                 </div>
             </div>
@@ -102,5 +102,10 @@
     $(document).ready(function () {
         student_No_Class();
         classGrid();
+        $("#createClass").click(function () {
+            createClass_Student(function () {
+                toastr.success('Gán môn học cho giáo viên thành công');
+            });
+        });
     })
 </script>

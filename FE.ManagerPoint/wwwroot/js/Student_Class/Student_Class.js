@@ -204,7 +204,7 @@ function classGrid() {
             "dataSrc": "data"
         },
         "initComplete": function () {
-            $('#class_table').on('change', '.select-checkbox', function () {
+            $('#class_table').on('change', '.select-checkbox-class', function () {
                 var id = $(this).data('id');
                 if ($(this).prop('checked')) {
                     if (!selectedIdsClass.includes(id)) {
@@ -269,5 +269,37 @@ function classGrid() {
         "lengthChange": true,
         "info": true,
         "pageLength": 10,
+    });
+}
+
+function createClass_Student(callback) {
+    var mergedData = [];
+
+    for (var i = 0; i < selectedIdsUser.length; i++) {
+        var userId = selectedIdsUser[i];
+        for (var j = 0; j < selectedIdsClass.length; j++) {
+            var classId = selectedIdsClass[j];
+            var userData = {
+                userId: userId,
+                classId: classId
+            };
+            mergedData.push(userData);
+        }
+    }
+
+    console.log(mergedData);
+    $.ajax({
+        url: "https://localhost:44335/student_class/batch_create",
+        method: "POST",
+        data: JSON.stringify(mergedData),
+        contentType: 'application/json',
+        success: function (res) {
+            if (callback && typeof callback === "function") {
+                callback();
+            }
+            $('#class_table').DataTable().ajax.reload();
+            $('#student_table').DataTable().ajax.reload();
+            $('#student_class_table').DataTable().ajax.reload();
+        },
     });
 }
