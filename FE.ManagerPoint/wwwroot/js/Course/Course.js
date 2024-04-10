@@ -27,6 +27,9 @@
                 d.search = d.search.value;
 
             },
+           /* "success": function (res) {
+                console.log(res);
+            },*/
             "dataSrc": "data"
 
         },

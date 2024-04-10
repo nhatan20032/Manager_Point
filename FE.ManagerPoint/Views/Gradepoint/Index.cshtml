@@ -1,0 +1,137 @@
+﻿@{
+	Layout = "~/Views/Shared/_Layout.cshtml";
+	ViewBag.Title = "Bảng điểm học sinh";
+}
+
+<style>
+	#gradepoint_year_table thead th {
+		text-align: center;
+		vertical-align: middle;
+	}
+
+	#gradepoint_year_table tbody tr td {
+		text-align: center;
+		vertical-align: middle;
+	}
+
+	#gradepoint_table thead th {
+		text-align: center;
+		vertical-align: middle;
+	}
+
+	#gradepoint_table tbody tr td {
+		text-align: center;
+		vertical-align: middle;
+	}
+
+
+	.img_td {
+		width: 150px;
+	}
+
+		.img_td img {
+			width: 100%;
+			height: auto;
+		}
+
+</style>
+<nav>
+	<div class="nav nav-tabs" id="nav-tab" role="tablist">
+		<button class="nav-link active" id="nav-one-tab" data-bs-toggle="tab" data-bs-target="#nav-one" type="button" role="tab" aria-controls="nav-one" aria-selected="false">By semester</button>
+		<button class="nav-link" id="nav-year-tab" data-bs-toggle="tab" data-bs-target="#nav-year" type="button" role="tab" aria-controls="nav-year" aria-selected="false">By Whole Year</button>
+	</div>
+</nav>
+<div class="tab-content" id="nav-tabContent">
+	<div class="tab-pane fade show active" id="nav-one" role="tabpanel" aria-labelledby="nav-one-tab">
+		<div class="row mt-3">
+			<div class="col-md-6">
+				<div class="form-group">
+					<label for="semester">Tìm kiếm theo môn học</label>
+					<select id="semester" class="form-control">
+						<option value="1" selected>Học kỳ 1</option>
+						<option value="2">Học kỳ 2</option>
+					</select>
+				</div>
+			</div>
+			<div class="card mt-5">
+				<div class="card-header">
+					<table id="gradepoint_table" class="table table-striped table-hover">
+						<thead>
+							<tr>
+
+								<th>Subject</th>
+								<th>Examination Point</th>
+								<th>Midterm Grades</th>
+								<th>Final Grades</th>
+								<th>Average</th>
+							</tr>
+						</thead>
+					</table>
+					<p id="average_output">
+						
+					</p>
+					<div class="row">
+						<div class="col-12 col-md-6">
+							<span style="font-style: italic; color:red">
+								*Kiểm tra miệng - 15 phút ( hệ số 1) <br />
+								*Kiểm tra giữa kỳ ( hệ số 2) <br />
+								*Kiếm tra cuối kỳ ( hệ số 3) <br />
+								Tổng hệ số = 6
+							</span>
+						</div>
+						<div class="col-12 col-md-6">
+							<span style="font-style: italic;color:red;">
+								*Tổng điểm (TBM) = <br />
+								Tổng điểm kiểm tra miệng + 15 phút + giữa kỳ x 2 + cuối kỳ x3 /
+								Tổng hệ số
+							</span>
+
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="tab-pane fade" id="nav-year" role="tabpanel" aria-labelledby="nav-year-tab">
+		<div class="row mt-3">
+			<div class="card mt-5">
+				<div class="card-header">
+					<table id="gradepoint_year_table" class="table table-striped table-hover">
+						<thead>
+							<tr>
+
+								<th>Subject</th>
+								<th>Midterm Grades Whole year</th>
+								<th>Final Grades Whole year</th>
+								<th>Average Whole year</th>
+							</tr>
+						</thead>
+					</table>
+					<p id="average_output">
+						abc
+					</p>
+					
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+
+<script src="~/js/Gradepoint/Gradepoint.js"></script>
+<script>
+
+
+	$(document).ready(function () {
+		setupGrid();
+		GetAllYear();
+
+		$("#semester").select2({ width: '100%' });
+		$("#semester").change(function () {
+			$('#gradepoint_table').DataTable().ajax.reload();
+		});
+
+	});
+
+</script>
