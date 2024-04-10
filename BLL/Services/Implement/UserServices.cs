@@ -265,7 +265,7 @@ namespace BLL.Services.Implement
         }
 
 
-        public async Task<string> Get_All_Student(int offset = 0, int limit = 10, string search = "", int classes = 0)
+        public async Task<string> Get_All_Student(int offset = 0, int limit = 10, string search = "", int classes = 0, int check_class = 0)
         {
             try
             {
@@ -279,6 +279,14 @@ namespace BLL.Services.Implement
                 .ProjectTo<vm_student>(_mapper.ConfigurationProvider).Where(t => string.IsNullOrEmpty(search) || t.Name!.Contains(search))
                     .Where(t => t.Role_Code!.Contains("hs"));
                 if (classes != 0) vm_UserQuery = vm_UserQuery.Where(t => t.Student_Class_id!.Contains(classes));
+                if (check_class == 1)
+                {
+                    vm_UserQuery = vm_UserQuery.Where(t => t.Student_Class_Code!.Any());
+                }
+                else if (check_class == 2)
+                {
+                    vm_UserQuery = vm_UserQuery.Where(t => !t.Student_Class_Code!.Any());
+                }
                 int totalCount = await vm_UserQuery.CountAsync();
                 var final_result = await vm_UserQuery
                     .Skip(offset)

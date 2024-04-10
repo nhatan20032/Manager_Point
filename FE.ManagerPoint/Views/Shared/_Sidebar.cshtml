@@ -129,14 +129,13 @@
             <ul class="sub-menu">
                 <li><a class="link-name">Quản lý giáo viên / học sinh </a></li>
                 <li>
-                    <a asp-area="MyArea" asp-controller="MyController" asp-action="MyAction">
+                    <a href="/Class/Index">
                         Danh sách lớp học
                     </a>
                 </li>
                 <li>
-                    <a asp-area="MyArea" asp-controller="MyController" asp-action="MyAction">
-                        Gán học
-                        sinh cho lớp
+                    <a href="/Class/Student_Class">
+                        Gán lớp cho học sinh
                     </a>
                 </li>
                 <li>
@@ -149,26 +148,17 @@
         </li>
         <li>
             <div class="icon-link">
-                <a asp-area="MyArea" asp-controller="MyController" asp-action="MyAction">
+                <a id="course" class="course" href="/Course/Index">
                     <i class="fa-solid fa-school"></i>
-                    <span class="link-name">Quản lí khóa / khối / lớp</span>
+                    <span class="link-name">Quản lí kỳ học</span>
                 </a>
                 <i class="fas fa-caret-down arrow"></i>
             </div>
 
             <ul class="sub-menu">
-                <li><a class="link-name">Quản lí khối / lớp </a></li>
+                <li><a class="link-name">Quản lí kỳ học</a></li>
                 <li>
-                    <a id="course" class="course" href="/Course/Index">Khóa học</a>
-                </li>
-                <li>
-                    <a asp-area="MyArea" asp-controller="MyController" asp-action="MyAction">Khối</a>
-                </li>
-                <li>
-                    <a id="classes" class="classes" href="/Class/Index">
-                        Lớp
-                        học
-                    </a>
+                    <a id="course" class="course" href="/Course/Index">Danh sách kỳ học</a>
                 </li>
             </ul>
         </li>
