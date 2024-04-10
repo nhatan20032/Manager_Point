@@ -15,6 +15,8 @@ namespace BLL.ViewModels.User
         public List<string>? Student_Class { get; set; }
         public List<int>? Student_Class_id { get; set; }
         public List<int>? Teacher_Class_id { get; set; }
+        public int Course_id{ get; set; }
+        public string? Course_Name{ get; set; }
         public string? User_Code { get; set; }
 
         [JsonIgnore]

@@ -100,7 +100,7 @@ namespace BLL.Services.Implement
                 .Include(u => u.User_Roles!).ThenInclude(ur => ur.Role!)
                 .Include(u => u.Subject_Teachers!).ThenInclude(st => st.Subject)
                 .Include(u => u.Teacher_Classes!).ThenInclude(tc => tc.Class)
-                .Include(u => u.Student_Classes!).ThenInclude(tc => tc.Class)
+                .Include(u => u.Student_Classes!).ThenInclude(tc => tc.Class).ThenInclude(c => c.Course)
                 .AsQueryable()
                 .ProjectTo<vm_user>(_mapper.ConfigurationProvider).Where(t => string.IsNullOrEmpty(search) || t.Name!.Contains(search));
                 int totalCount = await vm_UserQuery.CountAsync();
@@ -190,6 +190,85 @@ namespace BLL.Services.Implement
                 throw;
             }
         }
+
+        public async Task<string> Count_All_Teacher_Student()
+        {
+            try
+            {
+                IQueryable<vm_user> vm_UserQuery = _appContext.Users
+                    .Include(u => u.User_Roles!).ThenInclude(ur => ur.Role!)
+                    .Include(u => u.Subject_Teachers!).ThenInclude(st => st.Subject)
+                    .Include(u => u.Teacher_Classes!).ThenInclude(tc => tc.Class)
+                    .AsQueryable()
+                    .ProjectTo<vm_user>(_mapper.ConfigurationProvider);
+
+                // Đếm số lượng giáo viên
+                int teacherCount = await vm_UserQuery.CountAsync(t => t.Role_Code!.Contains("gv"));
+
+                // Đếm số lượng học sinh
+                int studentCount = await vm_UserQuery.CountAsync(t => t.Role_Code!.Contains("hs"));
+
+                var result = new
+                {
+                    totalTeachers = teacherCount,
+                    totalStudents = studentCount
+                };
+
+                var jsonResult = JsonConvert.SerializeObject(result, Formatting.Indented);
+                return jsonResult;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in Count_All_Teacher_Student: {ex.Message}");
+                throw;
+            }
+        }
+
+
+        public async Task<string> Count_Teachers_By_Subject()
+        {
+            try
+            {
+                // Tạo một danh sách để lưu trữ số lượng giáo viên cho mỗi bộ môn
+                var teacherCountsBySubject = new List<object>();
+
+                // Lấy danh sách tất cả các bộ môn từ DB
+                var subjects = await _appContext.Subjects.ToListAsync();
+
+                // Duyệt qua từng bộ môn để đếm số lượng giáo viên
+                foreach (var subject in subjects)
+                {
+                    int totalCount = await _appContext.Users
+                    .Include(u => u.User_Roles!).ThenInclude(ur => ur.Role!)
+                    .Include(u => u.Subject_Teachers!).ThenInclude(st => st.Subject)
+                    .Include(u => u.Teacher_Classes!).ThenInclude(tc => tc.Class)
+                    .AsQueryable()
+                    .ProjectTo<vm_user>(_mapper.ConfigurationProvider)
+                    .Where(u => u.Role_Code!.Contains("gv") && u.Subject_id!.Contains(subject.Id))
+                    .CountAsync();
+
+                    // Tạo một object chứa thông tin về bộ môn và số lượng giáo viên
+                    var subjectInfo = new
+                    {
+                        SubjectName = subject.Name, // Tên bộ môn
+                        TeacherCount = totalCount // Số lượng giáo viên
+                    };
+
+                    // Thêm object này vào danh sách
+                    teacherCountsBySubject.Add(subjectInfo);
+                }
+
+                // Convert danh sách thành JSON
+                var jsonResult = JsonConvert.SerializeObject(teacherCountsBySubject, Formatting.Indented);
+                return jsonResult;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in Count_Teachers_By_Subject: {ex.Message}");
+                throw;
+            }
+        }
+
 
         public async Task<string> Get_All_Student(int offset = 0, int limit = 10, string search = "", int classes = 0)
         {
