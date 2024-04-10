@@ -41,6 +41,11 @@ namespace API.Controllers
         {
             return Ok(await _userServices.Count_Teachers_By_Subject());
         }
+        [HttpGet("/user/Count_Students_By_Course")]
+        public async Task<IActionResult> Count_Students_By_Course()
+        {
+            return Ok(await _userServices.Count_Students_By_Course());
+        }
         [HttpGet("/user/get_all_student")]
         public async Task<IActionResult> Get_All_Student(int start = 0, int length = 10, string search = "",  int classes = 0)
         {

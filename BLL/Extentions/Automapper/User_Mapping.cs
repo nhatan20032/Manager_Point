@@ -50,7 +50,7 @@ namespace BLL.Extentions.Automapper
                     opt => opt.MapFrom(src => src.Student_Classes!.Select(ur => ur.Class.CourseId).ToList())
                 )
                 .ForMember(
-                    dest => dest.Course_id,
+                    dest => dest.Course_Name,
                     opt => opt.MapFrom(src => src.Student_Classes!.Select(ur => ur.Class.Course.Name).ToList())
                 )
                 .ReverseMap();
@@ -110,7 +110,7 @@ namespace BLL.Extentions.Automapper
                     opt => opt.MapFrom(src => src.Student_Classes!.Select(ur => ur.Class.CourseId).ToList())
                 )
                 .ForMember(
-                    dest => dest.Course_id,
+                    dest => dest.Course_Name,
                     opt => opt.MapFrom(src => src.Student_Classes!.Select(ur => ur.Class.Course.Name).ToList())
                 )
                 .ReverseMap();

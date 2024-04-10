@@ -229,13 +229,10 @@ namespace BLL.Services.Implement
         {
             try
             {
-                // Tạo một danh sách để lưu trữ số lượng giáo viên cho mỗi bộ môn
                 var teacherCountsBySubject = new List<object>();
 
-                // Lấy danh sách tất cả các bộ môn từ DB
                 var subjects = await _appContext.Subjects.ToListAsync();
 
-                // Duyệt qua từng bộ môn để đếm số lượng giáo viên
                 foreach (var subject in subjects)
                 {
                     int totalCount = await _appContext.Users
@@ -247,14 +244,12 @@ namespace BLL.Services.Implement
                     .Where(u => u.Role_Code!.Contains("gv") && u.Subject_id!.Contains(subject.Id))
                     .CountAsync();
 
-                    // Tạo một object chứa thông tin về bộ môn và số lượng giáo viên
                     var subjectInfo = new
                     {
-                        SubjectName = subject.Name, // Tên bộ môn
-                        TeacherCount = totalCount // Số lượng giáo viên
+                        SubjectName = subject.Name,
+                        TeacherCount = totalCount
                     };
 
-                    // Thêm object này vào danh sách
                     teacherCountsBySubject.Add(subjectInfo);
                 }
 
@@ -533,7 +528,7 @@ namespace BLL.Services.Implement
             else
             {
                 DateTime baseDate = new DateTime(1900, 1, 1);
-                return baseDate.AddDays(doubleValue - 2); // Excel date is 1-based, with 1 being 1900-01-01
+                return baseDate.AddDays(doubleValue - 2);
             }
         }
 
@@ -548,6 +543,43 @@ namespace BLL.Services.Implement
             var token = _jwtUtils.GenerateJwtToken(vm_User);
 
             return new AuthenticateResponse(vm_User, token);
+        }
+
+        public async Task<string> Count_Students_By_Course()
+        {
+            try
+            {
+                var studentCourse = new List<object>();
+
+                var courses = await _appContext.Courses.ToListAsync();
+
+                foreach (var course in courses)
+                {
+                    int totalCount = await _appContext.Users
+                    .Include(u => u.User_Roles!).ThenInclude(ur => ur.Role!)
+                    .Include(u => u.Student_Classes!).ThenInclude(tc => tc.Class).ThenInclude(t => t.Course)
+                    .AsQueryable()
+                    .ProjectTo<vm_student>(_mapper.ConfigurationProvider)
+                    .Where(u => u.Role_Code!.Contains("hs") && u.Course_id!.Contains(course.Id))
+                    .CountAsync();
+
+                    var CoursesInfo = new
+                    {
+                        CourseName = course.Name,
+                        Student = totalCount
+                    };
+
+                    studentCourse.Add(CoursesInfo);
+                }
+
+                var jsonResult = JsonConvert.SerializeObject(studentCourse, Formatting.Indented);
+                return jsonResult;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in Count_Teachers_By_Subject: {ex.Message}");
+                throw;
+            }
         }
     }
 }
