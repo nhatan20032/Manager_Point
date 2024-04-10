@@ -45,6 +45,14 @@ namespace BLL.Extentions.Automapper
                     dest => dest.Role_Code,
                     opt => opt.MapFrom(src => src.User_Roles!.Select(ur => ur.Role.Role_Code).ToList())
                 )
+                .ForMember(
+                    dest => dest.Course_id,
+                    opt => opt.MapFrom(src => src.Student_Classes!.Select(ur => ur.Class.CourseId).ToList())
+                )
+                .ForMember(
+                    dest => dest.Course_id,
+                    opt => opt.MapFrom(src => src.Student_Classes!.Select(ur => ur.Class.Course.Name).ToList())
+                )
                 .ReverseMap();
             CreateMap<User, vm_teacher>()
                 .ForMember(
@@ -96,6 +104,14 @@ namespace BLL.Extentions.Automapper
                 .ForMember(
                     dest => dest.Role_Code,
                     opt => opt.MapFrom(src => src.User_Roles!.Select(ur => ur.Role.Role_Code).ToList())
+                )
+                .ForMember(
+                    dest => dest.Course_id,
+                    opt => opt.MapFrom(src => src.Student_Classes!.Select(ur => ur.Class.CourseId).ToList())
+                )
+                .ForMember(
+                    dest => dest.Course_id,
+                    opt => opt.MapFrom(src => src.Student_Classes!.Select(ur => ur.Class.Course.Name).ToList())
                 )
                 .ReverseMap();
             CreateMap<User, vm_create_user>().ReverseMap();
