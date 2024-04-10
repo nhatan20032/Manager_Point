@@ -110,3 +110,51 @@ function count_student_teacher() {
         }
     });
 }
+function count_student_course() {
+    $.ajax({
+        url: 'https://localhost:44335/user/Count_Students_By_Course',
+        type: 'GET',
+        dataType: 'json',
+        success: function (data) {
+            // Chuyển đổi dữ liệu từ API thành mảng ApexCharts yêu cầu
+            var chartData = data.map(function (item) {
+                return {
+                    x: item.CourseName,
+                    y: item.Student
+                };
+            });
+            console.log(chartData);
+            // Cấu hình biểu đồ
+            var options = {
+                series: chartData.map(function (item) {
+                    return item.y;
+                }),
+                chart: {
+                    type: 'pie',
+                    height: 350
+                },
+                labels: chartData.map(function (item) {
+                    return item.x;
+                }),
+                responsive: [{
+                    breakpoint: 480,
+                    options: {
+                        chart: {
+                            width: 200
+                        },
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }]
+            };
+
+            // Render biểu đồ với cấu hình và dữ liệu đã chuyển đổi từ API
+            var chart = new ApexCharts(document.querySelector("#chart_student_course"), options);
+            chart.render();
+        },
+        error: function (xhr, status, error) {
+            console.error('Error calling API:', error);
+        }
+    });
+}
