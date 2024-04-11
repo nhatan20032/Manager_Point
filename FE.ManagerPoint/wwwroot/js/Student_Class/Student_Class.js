@@ -294,6 +294,9 @@ function createClass_Student(callback) {
         data: JSON.stringify(mergedData),
         contentType: 'application/json',
         success: function (res) {
+            if (res && res.length < 0) {
+                toastr.error('Lớp đã đạt tối đa học sinh, vui lòng kiểm tra lại!');
+            }
             if (callback && typeof callback === "function") {
                 callback();
             }

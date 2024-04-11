@@ -59,20 +59,36 @@ namespace BLL.Services.Implement
         public List<vm_create_gradepoint> CreateGradePoints(List<int> userIds, List<int> subjectIds, List<int> classIds)
         {
             var gradePoints = userIds
-            .SelectMany(userId => subjectIds.Select(subjectId => new vm_create_gradepoint
-            {
-                UserId = userId,
-                SubjectId = subjectId,
-                ClassId = classIds.First(),
-                Semester = Semester.First_Semester,
-                Midterm_Grades = 0,
-                Final_Grades = 0,
-                Average = 0
-            }))
-            .ToList();
+                .SelectMany(userId =>
+                    subjectIds.SelectMany(subjectId => new[]
+                    {
+                new vm_create_gradepoint
+                {
+                    UserId = userId,
+                    SubjectId = subjectId,
+                    ClassId = classIds.First(),
+                    Semester = Semester.First_Semester,
+                    Midterm_Grades = 0,
+                    Final_Grades = 0,
+                    Average = 0
+                },
+                new vm_create_gradepoint
+                {
+                    UserId = userId,
+                    SubjectId = subjectId,
+                    ClassId = classIds.First(),
+                    Semester = Semester.Second_Semester,
+                    Midterm_Grades = 0,
+                    Final_Grades = 0,
+                    Average = 0
+                }
+                    }))
+                .ToList();
 
             return gradePoints;
         }
+
+
 
         public async Task<bool> Batch_Remove_Item(List<int> ids)
         {
