@@ -88,6 +88,8 @@ namespace Data.Migrations
                     b.HasIndex("Id")
                         .IsUnique();
 
+                    b.HasIndex("Name");
+
                     b.ToTable("Classes");
                 });
 
@@ -261,6 +263,10 @@ namespace Data.Migrations
                     b.HasIndex("Id")
                         .IsUnique();
 
+                    b.HasIndex("Name");
+
+                    b.HasIndex("Role_Code");
+
                     b.ToTable("Roles");
                 });
 
@@ -314,6 +320,8 @@ namespace Data.Migrations
 
                     b.HasIndex("Id")
                         .IsUnique();
+
+                    b.HasIndex("Name");
 
                     b.ToTable("Subjects");
                 });
@@ -425,9 +433,9 @@ namespace Data.Migrations
 
                     b.Property<string>("User_Code")
                         .IsRequired()
-                        .HasMaxLength(10)
+                        .HasMaxLength(100)
                         .IsUnicode(false)
-                        .HasColumnType("varchar(10)");
+                        .HasColumnType("varchar(100)");
 
                     b.HasKey("Id");
 

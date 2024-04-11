@@ -234,7 +234,7 @@ function classGrid() {
                 console.log(selectedIdsClass);
             });
             this.api().on('draw', function () {
-                selectedIdsUser = [];
+                selectedIdsClass = [];
                 $('#checkAllCheckboxClass').prop('checked', false);
                 $('.select-checkbox-class').prop('checked', false);
             });

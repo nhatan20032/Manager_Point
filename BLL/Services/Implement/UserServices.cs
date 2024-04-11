@@ -273,8 +273,9 @@ namespace BLL.Services.Implement
                 var httpRequest = _httpContextAccessor.HttpContext!.Request;
                 if (httpRequest.Query.TryGetValue("draw", out StringValues valueDraw)) try { draw = int.Parse(valueDraw!); } catch { }
                 IQueryable<vm_student> vm_UserQuery = _appContext.Users
+                .AsNoTracking()
                 .Include(u => u.User_Roles!).ThenInclude(ur => ur.Role!)
-                .Include(u => u.Student_Classes!).ThenInclude(tc => tc.Class)
+                .Include(u => u.Student_Classes!).ThenInclude(tc => tc.Class).ThenInclude(c => c.Course)
                 .AsQueryable()
                 .ProjectTo<vm_student>(_mapper.ConfigurationProvider).Where(t => string.IsNullOrEmpty(search) || t.Name!.Contains(search))
                     .Where(t => t.Role_Code!.Contains("hs"));

@@ -19,6 +19,7 @@ namespace Manager_Point.Configuration
             builder.HasIndex(t => t.ClassCode).IsUnique();
             //Property
             builder.Property(t => t.Name).HasMaxLength(100);
+            builder.HasIndex(t => t.Name);
 
             //Set Relationship
             builder.HasOne<Course>(t => t.Course).WithMany(t => t.Classes).HasForeignKey(t => t.CourseId);

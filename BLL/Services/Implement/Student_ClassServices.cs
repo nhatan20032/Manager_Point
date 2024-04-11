@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
 using BLL.Services.Interface;
+using BLL.ViewModels.GradePoint;
 using BLL.ViewModels.Student_Class;
 using Manager_Point.ApplicationDbContext;
 using Manager_Point.Models;
+using Manager_Point.Models.Enum;
 using Microsoft.EntityFrameworkCore;
 
 namespace BLL.Services.Implement
@@ -37,6 +39,14 @@ namespace BLL.Services.Implement
                 _appContext.Students_Classes.AddRange(obj);
                 await _appContext.SaveChangesAsync();
 
+                var userId = obj.Select(sc => sc.UserId).Distinct().ToList();
+                var subjectIds = await _appContext.Subjects.Select(t => t.Id).ToListAsync();
+
+                var gradePoints = CreateGradePoints(userId, subjectIds, classIds);
+                var mappedGradePoints = _mapper.Map<List<GradePoint>>(gradePoints);
+                _appContext.GradePoints.AddRange(mappedGradePoints);
+                await _appContext.SaveChangesAsync();
+
                 var ids = obj.Select(t => t.Id).ToList();
                 return ids;
             }
@@ -45,6 +55,23 @@ namespace BLL.Services.Implement
                 Console.WriteLine($"Error in Batch_Create_Item: {ex.Message}");
                 throw;
             }
+        }
+        public List<vm_create_gradepoint> CreateGradePoints(List<int> userIds, List<int> subjectIds, List<int> classIds)
+        {
+            var gradePoints = userIds
+            .SelectMany(userId => subjectIds.Select(subjectId => new vm_create_gradepoint
+            {
+                UserId = userId,
+                SubjectId = subjectId,
+                ClassId = classIds.First(),
+                Semester = Semester.First_Semester,
+                Midterm_Grades = 0,
+                Final_Grades = 0,
+                Average = 0
+            }))
+            .ToList();
+
+            return gradePoints;
         }
 
         public async Task<bool> Batch_Remove_Item(List<int> ids)
