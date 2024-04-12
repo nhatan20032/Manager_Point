@@ -265,7 +265,7 @@ namespace BLL.Services.Implement
         }
 
 
-        public async Task<string> Get_All_Student(int offset = 0, int limit = 10, string search = "", int classes = 0)
+        public async Task<string> Get_All_Student(int offset = 0, int limit = 10, string search = "", int classes = 0, int check_class = 0)
         {
             try
             {
@@ -273,12 +273,21 @@ namespace BLL.Services.Implement
                 var httpRequest = _httpContextAccessor.HttpContext!.Request;
                 if (httpRequest.Query.TryGetValue("draw", out StringValues valueDraw)) try { draw = int.Parse(valueDraw!); } catch { }
                 IQueryable<vm_student> vm_UserQuery = _appContext.Users
+                .AsNoTracking()
                 .Include(u => u.User_Roles!).ThenInclude(ur => ur.Role!)
-                .Include(u => u.Student_Classes!).ThenInclude(tc => tc.Class)
+                .Include(u => u.Student_Classes!).ThenInclude(tc => tc.Class).ThenInclude(c => c.Course)
                 .AsQueryable()
                 .ProjectTo<vm_student>(_mapper.ConfigurationProvider).Where(t => string.IsNullOrEmpty(search) || t.Name!.Contains(search))
                     .Where(t => t.Role_Code!.Contains("hs"));
                 if (classes != 0) vm_UserQuery = vm_UserQuery.Where(t => t.Student_Class_id!.Contains(classes));
+                if (check_class == 1)
+                {
+                    vm_UserQuery = vm_UserQuery.Where(t => t.Student_Class_Code!.Any());
+                }
+                else if (check_class == 2)
+                {
+                    vm_UserQuery = vm_UserQuery.Where(t => !t.Student_Class_Code!.Any());
+                }
                 int totalCount = await vm_UserQuery.CountAsync();
                 var final_result = await vm_UserQuery
                     .Skip(offset)
@@ -420,24 +429,38 @@ namespace BLL.Services.Implement
                     {
                         var user = new vm_create_user
                         {
-                            User_Code = GenerateStudentCode(worksheet.Cells[row, 2].Value.ToString() ?? "null"),
-                            Name = worksheet.Cells[row, 2].Value.ToString(),
-                            Gender = GenderSelection((worksheet.Cells[row, 3].Value.ToString() ?? "1")),
-                            Nation = NationSelection(worksheet.Cells[row, 4].Value.ToString()),
-                            Address = worksheet.Cells[row, 5].Value.ToString(),
-                            Email = worksheet.Cells[row, 6].Value.ToString(),
-                            PhoneNumber = worksheet.Cells[row, 7].Value.ToString(),
-                            Password = worksheet.Cells[row, 8].Value.ToString() ?? "123456",
-                            DOB = ConvertExcelDateToDateTime(worksheet.Cells[row, 9].Value.ToString()),
-                            Description = worksheet.Cells[row, 10].Value.ToString(),
-                            Status = StatusSelection(worksheet.Cells[row, 11].Value.ToString() ?? "1")
+                            User_Code = GenerateStudentCode(worksheet.Cells[row, 2].Value?.ToString(), usersToAdd),
+                            Name = worksheet.Cells[row, 2].Value?.ToString(),
+                            Gender = GenderSelection(worksheet.Cells[row, 3].Value?.ToString()),
+                            Nation = NationSelection(worksheet.Cells[row, 4].Value?.ToString()),
+                            Address = worksheet.Cells[row, 5].Value?.ToString(),
+                            Email = worksheet.Cells[row, 6].Value?.ToString(),
+                            PhoneNumber = worksheet.Cells[row, 7].Value?.ToString(),
+                            Password = worksheet.Cells[row, 8].Value?.ToString() ?? "123456",
+                            DOB = ConvertExcelDateToDateTime(worksheet.Cells[row, 9].Value?.ToString()),
+                            Description = worksheet.Cells[row, 10].Value?.ToString(),
+                            Status = StatusSelection(worksheet.Cells[row, 11].Value?.ToString())
                         };
                         usersToAdd.Add(user);
                     }
-                    var obj = _mapper.Map<List<User>>(usersToAdd);
-                    _appContext.Users.AddRange(obj);
+
+                    // Tạo danh sách User từ danh sách vm_create_user
+                    var users = _mapper.Map<List<User>>(usersToAdd);
+
+                    // Kiểm tra mã sinh viên có tồn tại không
+                    var existingCodes = _appContext.Users
+                        .Where(u => users.Select(newUser => newUser.User_Code).Contains(u.User_Code))
+                        .Select(u => u.User_Code)
+                        .ToList();
+
+                    // Loại bỏ các User đã tồn tại trong danh sách mới
+                    var newUsers = users.Where(u => !existingCodes.Contains(u.User_Code)).ToList();
+
+                    // Thêm mới các User không trùng mã sinh viên
+                    _appContext.Users.AddRange(newUsers);
                     await _appContext.SaveChangesAsync();
-                    return usersToAdd.Count;
+
+                    return newUsers.Count;
                 }
             }
             catch (Exception ex)
@@ -446,7 +469,9 @@ namespace BLL.Services.Implement
                 throw;
             }
         }
-        private string GenerateStudentCode(string? username)
+
+
+        private string GenerateStudentCode(string? username, List<vm_create_user> usersToAdd)
         {
             string[] words = username!.Trim().Split(' ');
             string code = "US_";
@@ -463,18 +488,20 @@ namespace BLL.Services.Implement
             Random random = new Random();
             int randomNumber = random.Next(100);
             code += "_" + randomNumber;
-            while (checkCode(code))
+
+            // Kiểm tra xem mã đã tồn tại trong danh sách usersToAdd chưa
+            while (checkCode(code, usersToAdd))
             {
                 randomNumber = random.Next(100);
                 code = code.Substring(0, code.LastIndexOf('_') + 1) + randomNumber;
             }
             return code;
         }
-        private bool checkCode(string code)
+
+        private bool checkCode(string code, List<vm_create_user> usersToAdd)
         {
-            var vm_User = _appContext.Users.ProjectTo<vm_user>(_mapper.ConfigurationProvider).SingleOrDefault(x => x.User_Code!.Contains(code));
-            if (vm_User == null) return false;
-            return true;
+            // Kiểm tra xem code có tồn tại trong danh sách usersToAdd không
+            return usersToAdd.Any(u => u.User_Code == code);
         }
         private Status StatusSelection(string? status)
         {

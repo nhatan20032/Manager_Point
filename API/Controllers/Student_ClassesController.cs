@@ -46,5 +46,10 @@ namespace API.Controllers
         {
             return Ok(await _student_ClassServices.Batch_Remove_Item(ids));
         }
+        [HttpDelete("/student_class/batch_remove_by_userid/{userIds}")]
+        public async Task<IActionResult> Batch_Remove_Item_By_UserId([FromRoute] int userIds)
+        {
+            return Ok(await _student_ClassServices.Batch_Remove_Item_By_UserId(userIds));
+        }
     }
 }

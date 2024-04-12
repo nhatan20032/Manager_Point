@@ -18,11 +18,19 @@ namespace BLL.Extentions.Automapper
                     opt => opt.MapFrom(src => src.Subject_Teachers!.Select(ur => ur.Subject.Name).ToList())
                 )
                 .ForMember(
-                    dest => dest.Student_Class,
+                    dest => dest.Student_Class_Name,
+                    opt => opt.MapFrom(src => src.Student_Classes!.Select(ur => ur.Class.Name).ToList())
+                )
+                .ForMember(
+                    dest => dest.Teacher_Class_Name,
+                    opt => opt.MapFrom(src => src.Teacher_Classes!.Select(ur => ur.Class.Name).ToList())
+                )                
+                .ForMember(
+                    dest => dest.Student_Class_Code,
                     opt => opt.MapFrom(src => src.Student_Classes!.Select(ur => ur.Class.ClassCode).ToList())
                 )
                 .ForMember(
-                    dest => dest.Teacher_Class,
+                    dest => dest.Teacher_Class_Code,
                     opt => opt.MapFrom(src => src.Teacher_Classes!.Select(ur => ur.Class.ClassCode).ToList())
                 )
                 .ForMember(
@@ -64,7 +72,11 @@ namespace BLL.Extentions.Automapper
                     opt => opt.MapFrom(src => src.Subject_Teachers!.Select(ur => ur.Subject.Name).ToList())
                 )
                 .ForMember(
-                    dest => dest.Teacher_Class,
+                    dest => dest.Teacher_Class_Name,
+                    opt => opt.MapFrom(src => src.Teacher_Classes!.Select(ur => ur.Class.Name).ToList())
+                )                
+                .ForMember(
+                    dest => dest.Teacher_Class_Code,
                     opt => opt.MapFrom(src => src.Teacher_Classes!.Select(ur => ur.Class.ClassCode).ToList())
                 )
                 .ForMember(
@@ -90,7 +102,11 @@ namespace BLL.Extentions.Automapper
                     opt => opt.MapFrom(src => src.User_Roles!.Select(ur => ur.Role.Name).ToList())
                 )
                 .ForMember(
-                    dest => dest.Student_Class,
+                    dest => dest.Student_Class_Name,
+                    opt => opt.MapFrom(src => src.Student_Classes!.Select(ur => ur.Class.Name).ToList())
+                )                
+                .ForMember(
+                    dest => dest.Student_Class_Code,
                     opt => opt.MapFrom(src => src.Student_Classes!.Select(ur => ur.Class.ClassCode).ToList())
                 )
                 .ForMember(

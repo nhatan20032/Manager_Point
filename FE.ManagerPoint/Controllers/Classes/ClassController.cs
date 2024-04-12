@@ -8,5 +8,9 @@ namespace FE.ManagerPoint.Controllers.Classes
 		{
 			return View();
 		}
-	}
+        public IActionResult Student_Class()
+        {
+            return View();
+        }
+    }
 }
