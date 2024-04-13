@@ -1,5 +1,6 @@
 ﻿var selectedIdsClass = [];
 var selectedIdsUser = [];
+var selectedRowIdClass = null;
 function studentGrid() {
     this.$table = $('#student_class_table').DataTable({
         "language": {
@@ -207,34 +208,18 @@ function classGrid() {
             $('#class_table').on('change', '.select-checkbox-class', function () {
                 var id = $(this).data('id');
                 if ($(this).prop('checked')) {
-                    if (!selectedIdsClass.includes(id)) {
-                        selectedIdsClass.push(id);
+                    if (selectedRowIdClass !== null && selectedRowIdClass !== id) {
+                        // Uncheck previous row if another row is checked
+                        $('#class_table').find(`[data-id="${selectedRowIdClass}"]`).prop('checked', false);
                     }
+                    selectedRowIdClass = id;
                 } else {
-                    var index = selectedIdsClass.indexOf(id);
-                    if (index !== -1) {
-                        selectedIdsClass.splice(index, 1);
-                    }
+                    selectedRowIdClass = null;
                 }
-                console.log(selectedIdsClass);
-            });
-            $(document).on('change', '#checkAllCheckboxClass', function () {
-                var checkboxes = $('.select-checkbox-class');
-                checkboxes.prop('checked', $(this).prop('checked'));
-                if ($(this).prop('checked')) {
-                    checkboxes.each(function () {
-                        var id = $(this).data('id');
-                        if (!selectedIdsClass.includes(id)) {
-                            selectedIdsClass.push(id);
-                        }
-                    });
-                } else {
-                    selectedIdsClass = [];
-                }
-                console.log(selectedIdsClass);
+                console.log(selectedRowIdClass);
             });
             this.api().on('draw', function () {
-                selectedIdsClass = [];
+                selectedRowIdClass = null;
                 $('#checkAllCheckboxClass').prop('checked', false);
                 $('.select-checkbox-class').prop('checked', false);
             });
@@ -245,7 +230,6 @@ function classGrid() {
                 "data": null,
                 "className": "checkbox-column",
                 "orderable": false,
-                "title": '<input type="checkbox" id="checkAllCheckboxClass">',
                 "render": function (data) {
                     return `<input type="checkbox" class="select-checkbox-class" data-id="${data.Id}">`;
                 }
@@ -277,14 +261,12 @@ function createClass_Student(callback) {
 
     for (var i = 0; i < selectedIdsUser.length; i++) {
         var userId = selectedIdsUser[i];
-        for (var j = 0; j < selectedIdsClass.length; j++) {
-            var classId = selectedIdsClass[j];
-            var userData = {
-                userId: userId,
-                classId: classId
-            };
-            mergedData.push(userData);
-        }
+        var classId = selectedRowIdClass;
+        var userData = {
+            userId: userId,
+            classId: classId
+        };
+        mergedData.push(userData);
     }
 
     console.log(mergedData);
@@ -304,5 +286,104 @@ function createClass_Student(callback) {
             $('#student_table').DataTable().ajax.reload();
             $('#student_class_table').DataTable().ajax.reload();
         },
+    });
+}
+function GetById(id) {
+    $.ajax({
+        url: `https://localhost:44335/user/get_by_id`,
+        method: "GET",
+        data: {
+            id: id,
+        },
+        success: function (res) {
+            if (res == null) {
+                toastr.error('Không tìm thấy người dùng');
+                return;
+            }
+            $("#id").val(res.id);
+            $("#name_md").val(res.name);
+            $("#student_selected").val(res.student_Class_id).trigger('change');
+            $("#updateModal").modal("show");
+        },
+    });
+}
+function getClass() {
+    $.ajax({
+        url: "https://localhost:44335/class/get_list",
+        method: "GET",
+        success: function (res) {
+            if (res && res.length > 0) {
+                console.log(res);
+                var select = $("#student_selected");
+                $.each(res, function (index, role) {
+                    select.append(`<option value="${role.id}">${role.name} - ${role.classCode}</option>`);
+                });
+            }
+        },
+    });
+}
+function editClass(userIds, ids, callback) {
+    var intIds = ids.map(function (item) {
+        return parseInt(item);
+    });
+    var mergedData = [];
+    for (var j = 0; j < intIds.length; j++) {
+        var classId = intIds[j];
+        var userData = {
+            userId: userIds,
+            classId: classId
+        };
+        mergedData.push(userData);
+    }
+    $.ajax({
+        url: "https://localhost:44335/student_class/batch_remove_by_userid/" + parseInt(userIds),
+        method: "DELETE",
+        success: function () {
+            $.ajax({
+                url: "https://localhost:44335/student_class/batch_create",
+                method: "POST",
+                data: JSON.stringify(mergedData),
+                contentType: 'application/json',
+                success: function (res) {
+                    if (callback && typeof callback === "function") {
+                        callback();
+                    }
+                    mergedData = [];
+                    $('#student_table').DataTable().ajax.reload();
+                    $('#student_class_table').DataTable().ajax.reload();
+                },
+                error: function (xhr, status, error) {
+                    console.error("Lỗi khi tạo các user_class mới:", error);
+                }
+            });
+        },
+        error: function (xhr, status, error) {
+            console.error("Lỗi khi xóa các user_class cũ:", error);
+        }
+    });
+}
+function deleteSubject(userIds) {
+    swal({
+        title: "Bạn chắc chắn muốn xóa?",
+        text: "Hành động này không thể hoàn tác!",
+        icon: "warning",
+        buttons: ["Hủy", "Xóa"],
+        dangerMode: true,
+    }).then((willDelete) => {
+        if (willDelete) {
+            $.ajax({
+                url: "https://localhost:44335/student_class/batch_remove_by_userid/" + parseInt(userIds),
+                method: "DELETE",
+                success: function () {
+                    $('#student_table').DataTable().ajax.reload();
+                    $('#student_class_table').DataTable().ajax.reload();
+                }
+            })
+        } else {
+            // Người dùng nhấn Hủy
+            swal("Hủy xóa!", {
+                icon: "info",
+            });
+        }
     });
 }
