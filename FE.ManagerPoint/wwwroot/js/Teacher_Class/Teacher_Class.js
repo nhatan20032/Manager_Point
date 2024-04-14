@@ -34,18 +34,18 @@
             $('#teacher_table').on('change', '.select-checkbox-teacher', function () {
                 var id = $(this).data('id');
                 if ($(this).prop('checked')) {
-                    if (selectedRowIdClass !== null && selectedRowIdClass !== id) {
+                    if (selectedIdsUser !== null && selectedIdsUser !== id) {
                         // Uncheck previous row if another row is checked
-                        $('#teacher_table').find(`[data-id="${selectedRowIdClass}"]`).prop('checked', false);
+                        $('#teacher_table').find(`[data-id="${selectedIdsUser}"]`).prop('checked', false);
                     }
-                    selectedRowIdClass = id;
+                    selectedIdsUser = id;
                 } else {
-                    selectedRowIdClass = null;
+                    selectedIdsUser = null;
                 }
-                console.log(selectedRowIdClass);
+                console.log(selectedIdsUser);
             });
             this.api().on('draw', function () {
-                selectedRowIdClass = null;
+                selectedIdsUser = null;
                 $('#checkAllCheckboxClass').prop('checked', false);
                 $('.select-checkbox-class').prop('checked', false);
             });
@@ -87,7 +87,7 @@
         "pageLength": 10,
     });
 }
-function createClass() {
+function getClass() {
     // Gọi API để lấy dữ liệu
     $.ajax({
         url: 'https://localhost:44335/class/get_list',
@@ -101,7 +101,7 @@ function createClass() {
                     // Tạo HTML cho mỗi card
                     var cardHtml = `
                                 <div class="card mt-3" style="width: 18rem;">
-                                        <img class="card-img-top" src="https://th.bing.com/th/id/R.887d4cd1bf56ab24260b630f02610e7e?rik=Q20YCivVEVZoYw&pid=ImgRaw&r=0" alt="${item.name}">
+                                    <img class="card-img-top" src="https://th.bing.com/th/id/R.887d4cd1bf56ab24260b630f02610e7e?rik=Q20YCivVEVZoYw&pid=ImgRaw&r=0" alt="${item.name}">
                                     <div class="card-body">
                                         <h3 class="card-title">Tên lớp: ${item.name}</h5>
                                         <h5 class="card-title">Mã Lớp: ${item.classCode}</h5>
@@ -129,26 +129,32 @@ function Get_HomeRoom_Teacher(idClass) {
     $.ajax({
         url: 'https://localhost:44335/user/Get_By_HomeRoom_Id?idClass=' + idClass,
         type: 'GET',
-        success: function (response, textStatus, xhr) {
-            if (response && response.length > 0) {
+        success: function (response) {
+            if (response != null) {
                 // Lặp qua từng đối tượng trong dữ liệu và tạo card
-                response.forEach(function (item) {
-                    var cardHtml = `
+                console.log(response);
+                var cardHtml = `
                         <div class="card mt-3" style="width: 100%">
                             <div class="card-body">
-                                <h3 class="card-title">Tên lớp: ${item.name}</h5>
-                                <h5 class="card-title">Mã Lớp: ${item.classCode}</h5>
-                                <p class="card-text">Khối: ${item.gradeLevel}</p>
-                                <a href="/Class/Add_Teacher_To_Class?id=${item.id}" class="btn btn-primary" ">Vào lớp</a>
+                                <div class="row">
+                                    <div class="col-3">
+                                        <img class="card-img-top" src="${response.avatarUrl}" alt="${response.name}">
+                                    </div>
+                                    <div class="col-9">
+                                        <h3 class="card-title">Tên giáo viên: ${response.name}</h5>
+                                        <h5 class="card-title">Mã Lớp: ${response.teacher_Class_Code}</h5>
+                                        <p class="card-text">Mã người dùng: ${response.user_Code}</p>
+                                        <button id="editHomeRoom" class="btn btn-dark">Đổi giáo viên chủ nhiệm</button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     `;
-                    $('#cardTeacher').append(cardHtml);
-                });
+                $('#cardTeacher').append(cardHtml);
                 $('#create_homeroom').hide();
             } else {
                 $('#create_homeroom').show();
-                $('#cardTeacher').append('<h2>Lớp chưa có giáo viên chủ nhiệm</h2>');
+                $('#cardTeacher').append('<h2 style="text-align: center;">Lớp chưa có giáo viên chủ nhiệm</h2>');
             }
         },
         error: function () {
@@ -156,4 +162,30 @@ function Get_HomeRoom_Teacher(idClass) {
             $('#cardTeacher').append('<p>Error loading data</p>');
         }
     });
+}
+function Add_Teacher_HomeRoom(idClass, callback) {
+    var mergedData = [];
+    var userId = selectedIdsUser;
+    var classId = idClass;
+    var userData = {
+        userId: userId,
+        classId: classId
+    };
+    mergedData.push(userData);
+    console.log(mergedData);
+    $.ajax({
+        url: "https://localhost:44335/teacher_class/batch_create_homeroom",
+        method: "POST",
+        data: JSON.stringify(mergedData),
+        contentType: 'application/json',
+        success: function (res) {
+            if (res && res.length < 0) {
+                toastr.error('Đã xảy ra lỗi xin vui lòng thử lại');
+            }
+            if (callback && typeof callback === "function") {
+                callback();
+            }
+            $('#teacher_table').DataTable().ajax.reload();
+        }
+    })
 }

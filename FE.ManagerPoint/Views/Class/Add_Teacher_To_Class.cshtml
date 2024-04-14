@@ -35,7 +35,7 @@
             </div>
             <div class="row mt-3">
                 <div class="col-md-12">
-                    <div id="cardTeacher" class="cardTeacher" style="text-align: center;"></div>
+                    <div id="cardTeacher" class="cardTeacher"></div>
                 </div>
             </div>
         </div>
@@ -52,14 +52,20 @@
      style="display: none;" />
 <script src="~/js/Teacher_Class/Teacher_Class.js"></script>
 <script>
+    var selectedIdsUser = [];
     $(document).ready(function () {
         var classModelData = $("#classModel");
         var id = classModelData.data("id");
         var name = classModelData.data("name");
         var classCode = classModelData.data("classcode");
         var courseName = classModelData.data("coursename");
-        console.log(id)
         Get_HomeRoom_Teacher(id);
         Get_Teacher_No_HomeRoom();
+        $('#add_homeroom').click(function () {
+            Add_Teacher_HomeRoom(id, function () {
+                toastr.success('Thêm giáo viên chủ nhiệm thành công');
+                let = $('#updateModal').modal('hide');
+            });
+        })
     });
 </script>

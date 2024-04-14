@@ -13,8 +13,13 @@
                 <h5 class="modal-title">Thêm giáo viên chủ nhiệm cho lớp học</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="row">
-                <div class="col-6">
+            <div class="row p-4">
+                <div class="col-md-12 d-flex justify-content-end">
+                    <button id="add_homeroom" class="btn btn-dark">Thêm giáo viên chủ nhiệm</button>
+                </div>
+            </div>
+            <div class="row p-3">
+                <div class="col-12">
                     <table id="teacher_table" class="table table-striped table-hover" style="width: 100%;">
                         <thead>
                             <tr>
@@ -28,20 +33,7 @@
                             </tr>
                         </thead>
                     </table>
-                </div>
-                <div class="col-6">
-                    <table id="class_table" class="table table-striped table-hover" style="width: 100%;">
-                        <thead>
-                            <tr>
-                                <th></th>
-                                <th>Id</th>
-                                <th>Tên lớp</th>
-                                <th>Mã lớp</th>
-                                <th>Trạng thái</th>
-                            </tr>
-                        </thead>
-                    </table>
-                </div>
+                </div>               
             </div>
         </div>
     </div>
