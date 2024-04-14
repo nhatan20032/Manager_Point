@@ -1,0 +1,48 @@
+﻿<style>
+    .custom-modal-size {
+        max-width: 90%;
+        width: 90%;
+    }
+</style>
+<!-- Modal Update -->
+<div class="modal fade" id="updateModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="updateModal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered custom-modal-size">
+        <!-- Thêm custom class -->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Thêm giáo viên chủ nhiệm cho lớp học</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="row">
+                <div class="col-6">
+                    <table id="teacher_table" class="table table-striped table-hover" style="width: 100%;">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>Id</th>
+                                <th>Họ và tên</th>
+                                <th>Mã người dùng</th>
+                                <th>Môn dạy</th>
+                                <th>Ảnh</th>
+                                <th>Trạng thái</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+                <div class="col-6">
+                    <table id="class_table" class="table table-striped table-hover" style="width: 100%;">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>Id</th>
+                                <th>Tên lớp</th>
+                                <th>Mã lớp</th>
+                                <th>Trạng thái</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
