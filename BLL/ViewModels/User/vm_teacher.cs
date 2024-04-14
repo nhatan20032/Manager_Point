@@ -13,6 +13,7 @@ namespace BLL.ViewModels.User
         public List<string>? Teacher_Class_Name { get; set; }
         public List<string>? Teacher_Class_Code { get; set; }
         public List<int>? Teacher_Class_id { get; set; }
+        public List<TypeTeacher>? TypeTeacher { get; set; }
         public string? User_Code { get; set; }
         public string? Password { get; set; }
         public string? PhoneNumber { get; set; }

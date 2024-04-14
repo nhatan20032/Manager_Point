@@ -21,11 +21,18 @@ namespace API.Controllers
             return Ok(await _teacher_ClassServices.Create_Item(request));
         }
 
-        [HttpPost("/teacher_class/batch_create")]
-        public async Task<IActionResult> Batch_Create_Item([FromBody] List<vm_teacher_class> requests)
+        [HttpPost("/teacher_class/batch_create_subject")]
+        public async Task<IActionResult> Batch_Create_Item_Subject([FromBody] List<vm_teacher_class> requests)
         {
             if (requests == null) { return BadRequest("request null check object again, make sure request have a value"); }
-            return Ok(await _teacher_ClassServices.Batch_Create_Item(requests));
+            return Ok(await _teacher_ClassServices.Batch_Create_Item_Subject(requests));
+        }
+
+        [HttpPost("/teacher_class/batch_create_homeroom")]
+        public async Task<IActionResult> Batch_Create_Item_HomeRoom([FromBody] List<vm_teacher_class> requests)
+        {
+            if (requests == null) { return BadRequest("request null check object again, make sure request have a value"); }
+            return Ok(await _teacher_ClassServices.Batch_Create_Item_HomeRoom(requests));
         }
 
         [HttpPut("/teacher_class/modified")]
