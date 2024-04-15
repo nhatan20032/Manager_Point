@@ -15,6 +15,13 @@ namespace BLL.ViewModels.GradePoint
         public Semester Semester { get; set; }
         public float Midterm_Grades { get; set; }
         public float Final_Grades { get; set; }
-        public float Average { get; set; }
+        public float Average
+        {
+            get { return (float)Math.Round(_average, 1); }
+            set { _average = value; }
+        }
+        private float _average;
+
+
     }
 }

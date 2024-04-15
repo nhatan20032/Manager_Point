@@ -19,7 +19,7 @@
         </li>
         <li>
             <div class="icon-link">
-                <a asp-area="MyArea" asp-controller="MyController" asp-action="MyAction">
+                <a id="gradepoint" class="gradepoint" href="/Gradepoint/Index">
                     <i class="fa-solid fa-file-pen"></i>
                     <span class="link-name">Bảng điểm</span>
                 </a>
@@ -29,9 +29,8 @@
             <ul class="sub-menu">
                 <!-- <li><a href="" class="link-name">Quản đơn hàng</a></li> -->
                 <li>
-                    <a asp-area="MyArea" asp-controller="MyController" asp-action="MyAction">
-                        Bảng
-                        điểm
+                    <a id="gradepoint" class="gradepoint" href="/Gradepoint/Index">
+                        Bảng điểm
                     </a>
                 </li>
             </ul>
@@ -150,15 +149,25 @@
             <div class="icon-link">
                 <a id="course" class="course" href="/Course/Index">
                     <i class="fa-solid fa-school"></i>
-                    <span class="link-name">Quản lí kỳ học</span>
+
+                    <span class="link-name">Quản lí khóa  / lớp</span>
+
                 </a>
                 <i class="fas fa-caret-down arrow"></i>
             </div>
 
             <ul class="sub-menu">
-                <li><a class="link-name">Quản lí kỳ học</a></li>
+
+                <li><a class="link-name">Quản lí khóa / lớp </a></li>
                 <li>
-                    <a id="course" class="course" href="/Course/Index">Danh sách kỳ học</a>
+                    <a id="course" class="course" href="/Course/Index">Khóa học</a>
+                </li>
+                <li>
+                    <a id="classes" class="classes" href="/Class/Index">
+                        Lớp
+                        học
+                    </a>
+
                 </li>
             </ul>
         </li>

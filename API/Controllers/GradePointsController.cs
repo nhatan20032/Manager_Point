@@ -2,6 +2,7 @@
 using BLL.Services.Interface;
 using BLL.ViewModels.GradePoint;
 using Microsoft.AspNetCore.Mvc;
+using System.Drawing;
 
 namespace API.Controllers
 {
@@ -15,12 +16,20 @@ namespace API.Controllers
 			_gradePointService = gradePointService;
 		}
 		[HttpGet("/gradepoint/get_all")]
-		public async Task<IActionResult> Get_All_Item(int page_number = 1, int page_size = 10, string search = "")
+		public async Task<IActionResult> Get_All_Item(int id ,int semester, int start = 0, int length = 10, string search = "")
 		{
-			return Ok(await _gradePointService.Get_All_Async(page_number, page_size, search));
+			id = 2;
+			return Ok(await _gradePointService.Get_All_Async(id,start, length, search,semester));
 		}
+        [HttpGet("/gradepoint/get_all_year")]
+        public async Task<IActionResult> GetSumPointWholeyear_Async(int id, int classes,string search ="")
+        {
+            id = 2;
+			classes = 11;
+            return Ok(await _gradePointService.GetSumPointWholeyear_Async(id, classes,search));
+        }
 
-		[HttpGet("/gradepoint/get_by_id")]
+        [HttpGet("/gradepoint/get_by_id")]
 		public async Task<IActionResult> Get_By_Id(int id)
 		{
 			return Ok(await _gradePointService.Get_By_Id(id));
