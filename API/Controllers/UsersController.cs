@@ -34,7 +34,7 @@ namespace API.Controllers
         public async Task<IActionResult> Get_All_Teacher_No_HomeRoom(int start = 0, int length = 10, string search = "", int subject = 0, int classes = 0)
         {
             return Ok(await _userServices.Get_All_Teacher_No_HomeRoom(start, length, search, subject, classes));
-        }
+        }        
         [HttpGet("/user/count_all_teacher_student")]
         public async Task<IActionResult> Count_All_Teacher_Student()
         {
@@ -68,7 +68,21 @@ namespace API.Controllers
 
             if (result != null)
             {
-                return Ok(result); // Trả về Ok (200) nếu có dữ liệu
+                return Ok(result);
+            }
+            else
+            {
+                return NoContent();
+            }
+        }
+        [HttpGet("/user/Get_By_Subject_Teacher_Id")]
+        public async Task<IActionResult> Get_By_Subject_Teacher_Id(int idClass)
+        {
+            var result = await _userServices.Get_By_Subject_Teacher_Id(idClass);
+
+            if (result != null)
+            {
+                return Ok(result);
             }
             else
             {
