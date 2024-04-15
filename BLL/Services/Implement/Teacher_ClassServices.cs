@@ -72,19 +72,12 @@ namespace BLL.Services.Implement
             try
             {
                 var obj = _mapper.Map<List<Teacher_Class>>(requests);
-                var teacherClassesToAdd = new List<Teacher_Class>();
-
-                foreach (var teacherClass in obj)
-                {
-                    bool isSubjectExist = teacherClassesToAdd.Any(tc => tc.SubjectId == teacherClass.SubjectId);
-                    if (!isSubjectExist) { teacherClassesToAdd.Add(teacherClass); }
-                }
 
                 // Thêm danh sách giáo viên không trùng môn học vào context
-                _appContext.Teacher_Classes.AddRange(teacherClassesToAdd);
+                _appContext.Teacher_Classes.AddRange(obj);
                 await _appContext.SaveChangesAsync();
 
-                var ids = teacherClassesToAdd.Select(t => t.Id).ToList() ?? new List<int>();
+                var ids = obj.Select(t => t.Id).ToList() ?? new List<int>();
                 return ids;
             }
             catch (Exception ex)
@@ -94,6 +87,46 @@ namespace BLL.Services.Implement
             }
         }
 
+        public async Task<bool> Batch_Remove_Item_HomeRoom(int idClass)
+        {
+            try
+            {
+                var class_teacher = _appContext.Teacher_Classes.Where(t => t.ClassId == idClass && t.TypeTeacher == TypeTeacher.Homeroom_Teacher).ToList();
+
+                if (class_teacher.Any())
+                {
+                    _appContext.Teacher_Classes.RemoveRange(class_teacher);
+                    await _appContext.SaveChangesAsync();
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in Batch_Remove_Item: {ex.Message}");
+                throw;
+            }
+        }
+        public async Task<bool> Batch_Remove_Item_Subject(int UserId)
+        {
+            try
+            {
+                var class_teacher = _appContext.Teacher_Classes.Where(t => t.UserId == UserId && t.TypeTeacher == TypeTeacher.Subject_Teacher).ToList();
+
+                if (class_teacher.Any())
+                {
+                    _appContext.Teacher_Classes.RemoveRange(class_teacher);
+                    await _appContext.SaveChangesAsync();
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in Batch_Remove_Item: {ex.Message}");
+                throw;
+            }
+        }
 
         public async Task<bool> Batch_Remove_Item(List<int> ids)
         {

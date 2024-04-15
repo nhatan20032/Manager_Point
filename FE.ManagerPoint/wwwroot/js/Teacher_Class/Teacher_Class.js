@@ -144,13 +144,14 @@ function Get_HomeRoom_Teacher(idClass) {
                                         <h3 class="card-title">Tên giáo viên: ${response.name}</h5>
                                         <h5 class="card-title">Mã Lớp: ${response.teacher_Class_Code}</h5>
                                         <p class="card-text">Mã người dùng: ${response.user_Code}</p>
-                                        <button id="editHomeRoom" class="btn btn-dark">Đổi giáo viên chủ nhiệm</button>
+                                        <button id="editHomeRoom" class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#updateModal">Đổi giáo viên chủ nhiệm</button>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     `;
                 $('#cardTeacher').append(cardHtml);
+                idUser = response.id;
                 $('#create_homeroom').hide();
             } else {
                 $('#create_homeroom').show();
@@ -188,4 +189,38 @@ function Add_Teacher_HomeRoom(idClass, callback) {
             $('#teacher_table').DataTable().ajax.reload();
         }
     })
+}
+
+function editSubject(idClass, callback) {
+    var mergedData = [];
+    var userId = selectedIdsUser;
+    var classId = idClass;
+    var userData = {
+        userId: userId,
+        classId: classId
+    };
+    mergedData.push(userData);
+    $.ajax({
+        url: "https://localhost:44335/teacher_class/Batch_Remove_Item_HomeRoom/" + classId,
+        method: "DELETE",
+        success: function () {
+            $.ajax({
+                url: "https://localhost:44335/teacher_class/batch_create_homeroom",
+                method: "POST",
+                data: JSON.stringify(mergedData),
+                contentType: 'application/json',
+                success: function (res) {
+                    if (callback && typeof callback === "function") {
+                        callback();
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("Lỗi khi tạo các roles mới:", error);
+                }
+            });
+        },
+        error: function (xhr, status, error) {
+            console.error("Lỗi khi xóa các roles cũ:", error);
+        }
+    });
 }

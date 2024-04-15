@@ -11,6 +11,16 @@
     #create_homeroom {
         display: none;
     }
+
+    .img_td {
+        width: 150px;
+    }
+
+        .img_td img {
+            width: 100%;
+            height: auto;
+        }
+
 </style>
 <div class="row">
     <div class="card" style="width: 100%;">
@@ -53,6 +63,7 @@
 <script src="~/js/Teacher_Class/Teacher_Class.js"></script>
 <script>
     var selectedIdsUser = [];
+    var idUser = 0;
     $(document).ready(function () {
         var classModelData = $("#classModel");
         var id = classModelData.data("id");
@@ -65,7 +76,19 @@
             Add_Teacher_HomeRoom(id, function () {
                 toastr.success('Thêm giáo viên chủ nhiệm thành công');
                 let = $('#updateModal').modal('hide');
+                window.location.href = '/Class/Add_Teacher_To_Class?id=' + id;
             });
         })
+        $('#change_homeroom').click(function () {
+            editSubject(id, function () {
+                toastr.success('Thêm giáo viên chủ nhiệm thành công');
+                let = $('#updateModal').modal('hide');
+                window.location.href = '/Class/Add_Teacher_To_Class?id=' + id;
+            });
+        })
+        $('#create_homeroom').click(function () {
+            $('#button_addHR').show();
+            $('#button_changeHR').hide();
+        });
     });
 </script>
