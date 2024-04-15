@@ -82,7 +82,6 @@
     window.dt = this.$table;
 }
 function createCourse(object, callback) {
-    debugger
     $.ajax({
         url: "https://localhost:44335/course/create",
         method: "POST",

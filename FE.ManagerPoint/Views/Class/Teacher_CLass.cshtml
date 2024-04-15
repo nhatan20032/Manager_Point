@@ -1,0 +1,19 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Phân lớp cho giáo viên";
+}
+<style>
+    .card {
+        display: inline-block;
+        margin-right: 20px;
+        vertical-align: top;
+    }
+
+</style>
+<div id="cardContainer" class="card-containe"></div>
+<script src="~/js/Teacher_Class/Teacher_Class.js"></script>
+<script>
+    $(document).ready(function () {
+        getClass();
+    });
+</script>

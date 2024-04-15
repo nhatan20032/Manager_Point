@@ -11,11 +11,8 @@
             <ul class="sub-menu">
                 <li><a class="link-name">Thống kê</a></li>
                 <li>
-                    <a id="static_teacher" class="static_teacher" href="">
-                        Thống kê tổng số giáo viên
-                    </a>
-                    <a id="static_student" class="static_teacher" href="">
-                        Thống kê tổng số học sinh
+                    <a id="static_teacher" class="static_teacher" href="/User/Analystic_User">
+                        Thống kê tổng số giáo viên và học sinh
                     </a>
                 </li>
             </ul>
@@ -131,18 +128,17 @@
             <ul class="sub-menu">
                 <li><a class="link-name">Quản lý giáo viên / học sinh </a></li>
                 <li>
-                    <a asp-area="MyArea" asp-controller="MyController" asp-action="MyAction">
+                    <a href="/Class/Index">
                         Danh sách lớp học
                     </a>
                 </li>
                 <li>
-                    <a asp-area="MyArea" asp-controller="MyController" asp-action="MyAction">
-                        Gán học
-                        sinh cho lớp
+                    <a href="/Class/Student_Class">
+                        Gán lớp cho học sinh
                     </a>
                 </li>
                 <li>
-                    <a asp-area="MyArea" asp-controller="MyController" asp-action="MyAction">
+                    <a href="/Class/Teacher_Class">
                         Gán giáo
                         viên cho lớp
                     </a>
@@ -151,14 +147,17 @@
         </li>
         <li>
             <div class="icon-link">
-                <a asp-area="MyArea" asp-controller="MyController" asp-action="MyAction">
+                <a id="course" class="course" href="/Course/Index">
                     <i class="fa-solid fa-school"></i>
+
                     <span class="link-name">Quản lí khóa  / lớp</span>
+
                 </a>
                 <i class="fas fa-caret-down arrow"></i>
             </div>
 
             <ul class="sub-menu">
+
                 <li><a class="link-name">Quản lí khóa / lớp </a></li>
                 <li>
                     <a id="course" class="course" href="/Course/Index">Khóa học</a>
@@ -168,6 +167,7 @@
                         Lớp
                         học
                     </a>
+
                 </li>
             </ul>
         </li>

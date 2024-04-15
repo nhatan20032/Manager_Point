@@ -9,5 +9,6 @@ namespace BLL.Services.Interface
         public Task<int> Modified_Item(int id, vm_student_class request);
         public Task<bool> Remove_Item(int id);
         public Task<bool> Batch_Remove_Item(List<int> ids);
+        public Task<bool> Batch_Remove_Item_By_UserId(int userIds);
     }
 }

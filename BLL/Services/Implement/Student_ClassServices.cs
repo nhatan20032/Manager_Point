@@ -1,13 +1,16 @@
 ﻿using AutoMapper;
 using BLL.Services.Interface;
+using BLL.ViewModels.GradePoint;
 using BLL.ViewModels.Student_Class;
 using Manager_Point.ApplicationDbContext;
 using Manager_Point.Models;
+using Manager_Point.Models.Enum;
+using Microsoft.EntityFrameworkCore;
 
 namespace BLL.Services.Implement
 {
-	
-	public class Student_ClassServices : IStudent_ClassServices
+
+    public class Student_ClassServices : IStudent_ClassServices
     {
         private readonly AppDbContext _appContext;
         private readonly IMapper _mapper;
@@ -21,8 +24,29 @@ namespace BLL.Services.Implement
             try
             {
                 var obj = _mapper.Map<List<Student_Class>>(requests);
+
+                var classIds = obj.Select(sc => sc.ClassId).Distinct().ToList();
+                var classCounts = await _appContext.Students_Classes
+                    .Where(sc => classIds.Contains(sc.ClassId))
+                    .GroupBy(sc => sc.ClassId)
+                    .Select(g => new { ClassId = g.Key, Count = g.Count() })
+                    .ToDictionaryAsync(x => x.ClassId, x => x.Count);
+                var invalidClassIds = classIds.Where(id => classCounts.ContainsKey(id) && classCounts[id] >= 45).ToList();
+                if (invalidClassIds.Any())
+                {
+                    throw new Exception($"ClassIds {string.Join(", ", invalidClassIds)} already have 45 or more records. Cannot add more.");
+                }
                 _appContext.Students_Classes.AddRange(obj);
                 await _appContext.SaveChangesAsync();
+
+                var userId = obj.Select(sc => sc.UserId).Distinct().ToList();
+                var subjectIds = await _appContext.Subjects.Select(t => t.Id).ToListAsync();
+
+                var gradePoints = CreateGradePoints(userId, subjectIds, classIds);
+                var mappedGradePoints = _mapper.Map<List<GradePoint>>(gradePoints);
+                _appContext.GradePoints.AddRange(mappedGradePoints);
+                await _appContext.SaveChangesAsync();
+
                 var ids = obj.Select(t => t.Id).ToList();
                 return ids;
             }
@@ -32,6 +56,39 @@ namespace BLL.Services.Implement
                 throw;
             }
         }
+        public List<vm_create_gradepoint> CreateGradePoints(List<int> userIds, List<int> subjectIds, List<int> classIds)
+        {
+            var gradePoints = userIds
+                .SelectMany(userId =>
+                    subjectIds.SelectMany(subjectId => new[]
+                    {
+                new vm_create_gradepoint
+                {
+                    UserId = userId,
+                    SubjectId = subjectId,
+                    ClassId = classIds.First(),
+                    Semester = Semester.First_Semester,
+                    Midterm_Grades = 0,
+                    Final_Grades = 0,
+                    Average = 0
+                },
+                new vm_create_gradepoint
+                {
+                    UserId = userId,
+                    SubjectId = subjectId,
+                    ClassId = classIds.First(),
+                    Semester = Semester.Second_Semester,
+                    Midterm_Grades = 0,
+                    Final_Grades = 0,
+                    Average = 0
+                }
+                    }))
+                .ToList();
+
+            return gradePoints;
+        }
+
+
 
         public async Task<bool> Batch_Remove_Item(List<int> ids)
         {
@@ -42,6 +99,27 @@ namespace BLL.Services.Implement
                 if (student_Classes.Any())
                 {
                     _appContext.Students_Classes.RemoveRange(student_Classes);
+                    await _appContext.SaveChangesAsync();
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in Batch_Remove_Item: {ex.Message}");
+                throw;
+            }
+        }
+
+        public async Task<bool> Batch_Remove_Item_By_UserId(int userIds)
+        {
+            try
+            {
+                var class_user = _appContext.Students_Classes.Where(t => t.UserId == userIds).ToList();
+
+                if (class_user.Any())
+                {
+                    _appContext.Students_Classes.RemoveRange(class_user);
                     await _appContext.SaveChangesAsync();
                 }
 

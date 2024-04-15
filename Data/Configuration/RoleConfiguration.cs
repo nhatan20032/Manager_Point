@@ -13,7 +13,9 @@ namespace Manager_Point.Configuration
             builder.HasIndex(t => t.Id).IsUnique();
             //Property
             builder.Property(t => t.Name).HasMaxLength(128);
+            builder.HasIndex(t => t.Name);
             builder.Property(t => t.Role_Code).HasMaxLength(10);
+            builder.HasIndex(t => t.Role_Code);
             builder.Property(t => t.Description).HasMaxLength(200);
             builder.Property(t => t.Status).HasMaxLength(10);
         }

@@ -15,12 +15,14 @@ using Microsoft.Extensions.Primitives;
 using OfficeOpenXml;
 using System.Globalization;
 using Newtonsoft.Json;
+using BLL.ViewModels.Teacher_Class;
+using BLL.ViewModels.Class;
 
 
 namespace BLL.Services.Implement
 {
 
-	public class UserServices : IUserServices
+    public class UserServices : IUserServices
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly AppDbContext _appContext;
@@ -100,7 +102,7 @@ namespace BLL.Services.Implement
                 .Include(u => u.User_Roles!).ThenInclude(ur => ur.Role!)
                 .Include(u => u.Subject_Teachers!).ThenInclude(st => st.Subject)
                 .Include(u => u.Teacher_Classes!).ThenInclude(tc => tc.Class)
-                .Include(u => u.Student_Classes!).ThenInclude(tc => tc.Class)
+                .Include(u => u.Student_Classes!).ThenInclude(tc => tc.Class).ThenInclude(c => c.Course)
                 .AsQueryable()
                 .ProjectTo<vm_user>(_mapper.ConfigurationProvider).Where(t => string.IsNullOrEmpty(search) || t.Name!.Contains(search));
                 int totalCount = await vm_UserQuery.CountAsync();
@@ -134,12 +136,12 @@ namespace BLL.Services.Implement
                 var httpRequest = _httpContextAccessor.HttpContext!.Request;
                 if (httpRequest.Query.TryGetValue("draw", out StringValues valueDraw)) try { draw = int.Parse(valueDraw!); } catch { }
 
-                IQueryable<vm_user> vm_UserQuery = _appContext.Users
+                IQueryable<vm_teacher> vm_UserQuery = _appContext.Users
                 .Include(u => u.User_Roles!).ThenInclude(ur => ur.Role!)
                 .Include(u => u.Subject_Teachers!).ThenInclude(st => st.Subject)
                 .Include(u => u.Teacher_Classes!).ThenInclude(tc => tc.Class)
                 .AsQueryable()
-                .ProjectTo<vm_user>(_mapper.ConfigurationProvider).Where(t => string.IsNullOrEmpty(search) || t.Name!.Contains(search))
+                .ProjectTo<vm_teacher>(_mapper.ConfigurationProvider).Where(t => string.IsNullOrEmpty(search) || t.Name!.Contains(search))
                     .Where(t => t.Role_Code!.Contains("gv"));
 
                 if (!string.IsNullOrEmpty(search))
@@ -173,7 +175,7 @@ namespace BLL.Services.Implement
                     .Take(limit)
                     .ToListAsync();
 
-                var paginatedResult = new Pagination<vm_user>
+                var paginatedResult = new Pagination<vm_teacher>
                 {
                     draw = draw,
                     recordsTotal = totalCount,
@@ -191,26 +193,219 @@ namespace BLL.Services.Implement
             }
         }
 
-        public async Task<string> Get_All_Student(int offset = 0, int limit = 10, string search = "", int classes = 0)
+        public async Task<string> Get_All_Teacher_No_HomeRoom(int offset = 0, int limit = 10, string search = "", int subject = 0, int classes = 0)
         {
             try
             {
                 int draw = 1;
                 var httpRequest = _httpContextAccessor.HttpContext!.Request;
                 if (httpRequest.Query.TryGetValue("draw", out StringValues valueDraw)) try { draw = int.Parse(valueDraw!); } catch { }
-                IQueryable<vm_user> vm_UserQuery = _appContext.Users
+
+                IQueryable<vm_teacher> vm_UserQuery = _appContext.Users
                 .Include(u => u.User_Roles!).ThenInclude(ur => ur.Role!)
-                .Include(u => u.Student_Classes!).ThenInclude(tc => tc.Class)
+                .Include(u => u.Subject_Teachers!).ThenInclude(st => st.Subject)
+                .Include(u => u.Teacher_Classes!).ThenInclude(tc => tc.Class)
                 .AsQueryable()
-                .ProjectTo<vm_user>(_mapper.ConfigurationProvider).Where(t => string.IsNullOrEmpty(search) || t.Name!.Contains(search))
+                .ProjectTo<vm_teacher>(_mapper.ConfigurationProvider).Where(t => string.IsNullOrEmpty(search) || t.Name!.Contains(search))
+                    .Where(t => t.Role_Code!.Contains("gv")).Where(t => !t.TypeTeacher!.Any(tt => tt == TypeTeacher.Homeroom_Teacher));
+
+                if (!string.IsNullOrEmpty(search))
+                {
+                    vm_UserQuery = vm_UserQuery.Where(t => t.Name!.Contains(search));
+                }
+
+                if (subject != 0)
+                {
+                    vm_UserQuery = vm_UserQuery.Where(t => t.Subject_id!.Contains(subject));
+                }
+
+                if (classes != 0)
+                {
+                    vm_UserQuery = vm_UserQuery.Where(t => t.Teacher_Class_id!.Contains(classes));
+                }
+
+                int totalCount = await vm_UserQuery.CountAsync();
+
+                var final_result = await vm_UserQuery
+                    .Skip(offset)
+                    .Take(limit)
+                    .ToListAsync();
+
+                var paginatedResult = new Pagination<vm_teacher>
+                {
+                    draw = draw,
+                    recordsTotal = totalCount,
+                    recordsFiltered = totalCount,
+                    data = final_result
+                };
+
+                var jsonResult = JsonConvert.SerializeObject(paginatedResult, Formatting.Indented);
+                return jsonResult;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in Get_All_Async: {ex.Message}");
+                throw;
+            }
+        }
+
+
+        public async Task<vm_teacher> Get_By_HomeRoom_Id(int idClass)
+        {
+            try
+            {
+                var vm_class = await _appContext.Teacher_Classes
+                    .AsQueryable()
+                    .ProjectTo<vm_teacher_class>(_mapper.ConfigurationProvider).SingleOrDefaultAsync(x => x.ClassId == idClass && x.TypeTeacher == TypeTeacher.Homeroom_Teacher);
+                if (vm_class == null) { return null!; }
+                var vm_User = await _appContext.Users
+                    .Include(u => u.User_Roles!).ThenInclude(ur => ur.Role!)
+                    .Include(u => u.Subject_Teachers!).ThenInclude(st => st.Subject)
+                    .Include(u => u.Teacher_Classes!).ThenInclude(tc => tc.Class)
+                    .AsQueryable()
+                    .ProjectTo<vm_teacher>(_mapper.ConfigurationProvider).SingleOrDefaultAsync(x => x.Id == vm_class!.UserId);
+
+                if (vm_User == null) return null!;
+                return vm_User;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in Get_By_Id: {ex.Message}");
+                throw;
+            }
+        }
+        public async Task<string> Get_By_Subject_Teacher_Id(int idClass)
+        {
+            try
+            {
+                var vm_class = await _appContext.Teacher_Classes
+                    .AsQueryable()
+                    .ProjectTo<vm_teacher_class_subject>(_mapper.ConfigurationProvider).Where(x => x.ClassId == idClass && x.TypeTeacher == TypeTeacher.Subject_Teacher).ToListAsync();
+                if (vm_class == null) { return null!; }
+                var resultList = vm_class.Select(classes => new
+                {
+                    data = _appContext.Users
+                    .Include(u => u.User_Roles!).ThenInclude(ur => ur.Role!)
+                    .Include(u => u.Subject_Teachers!).ThenInclude(st => st.Subject)
+                    .Include(u => u.Teacher_Classes!).ThenInclude(tc => tc.Class)
+                    .AsQueryable()
+                    .ProjectTo<vm_teacher>(_mapper.ConfigurationProvider).SingleOrDefault(x => x.Id == classes.UserId),
+                    subjectInClass = _appContext.Subjects.SingleOrDefault(x => x.Id == classes.SubjectId)!.Name,
+                }).ToList();
+
+                var jsonResult = JsonConvert.SerializeObject(resultList, Formatting.Indented);
+                return jsonResult;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in Get_By_Id: {ex.Message}");
+                throw;
+            }
+        }
+
+        public async Task<string> Count_All_Teacher_Student()
+        {
+            try
+            {
+                IQueryable<vm_user> vm_UserQuery = _appContext.Users
+                    .Include(u => u.User_Roles!).ThenInclude(ur => ur.Role!)
+                    .Include(u => u.Subject_Teachers!).ThenInclude(st => st.Subject)
+                    .Include(u => u.Teacher_Classes!).ThenInclude(tc => tc.Class)
+                    .AsQueryable()
+                    .ProjectTo<vm_user>(_mapper.ConfigurationProvider);
+
+                // Đếm số lượng giáo viên
+                int teacherCount = await vm_UserQuery.CountAsync(t => t.Role_Code!.Contains("gv"));
+
+                // Đếm số lượng học sinh
+                int studentCount = await vm_UserQuery.CountAsync(t => t.Role_Code!.Contains("hs"));
+
+                var result = new
+                {
+                    totalTeachers = teacherCount,
+                    totalStudents = studentCount
+                };
+
+                var jsonResult = JsonConvert.SerializeObject(result, Formatting.Indented);
+                return jsonResult;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in Count_All_Teacher_Student: {ex.Message}");
+                throw;
+            }
+        }
+
+
+        public async Task<string> Count_Teachers_By_Subject()
+        {
+            try
+            {
+                var teacherCountsBySubject = new List<object>();
+
+                var subjects = await _appContext.Subjects.ToListAsync();
+
+                foreach (var subject in subjects)
+                {
+                    int totalCount = await _appContext.Users
+                    .Include(u => u.User_Roles!).ThenInclude(ur => ur.Role!)
+                    .Include(u => u.Subject_Teachers!).ThenInclude(st => st.Subject)
+                    .Include(u => u.Teacher_Classes!).ThenInclude(tc => tc.Class)
+                    .AsQueryable()
+                    .ProjectTo<vm_teacher>(_mapper.ConfigurationProvider)
+                    .Where(u => u.Role_Code!.Contains("gv") && u.Subject_id!.Contains(subject.Id))
+                    .CountAsync();
+
+                    var subjectInfo = new
+                    {
+                        SubjectName = subject.Name,
+                        TeacherCount = totalCount
+                    };
+
+                    teacherCountsBySubject.Add(subjectInfo);
+                }
+
+                // Convert danh sách thành JSON
+                var jsonResult = JsonConvert.SerializeObject(teacherCountsBySubject, Formatting.Indented);
+                return jsonResult;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in Count_Teachers_By_Subject: {ex.Message}");
+                throw;
+            }
+        }
+
+
+        public async Task<string> Get_All_Student(int offset = 0, int limit = 10, string search = "", int classes = 0, int check_class = 0)
+        {
+            try
+            {
+                int draw = 1;
+                var httpRequest = _httpContextAccessor.HttpContext!.Request;
+                if (httpRequest.Query.TryGetValue("draw", out StringValues valueDraw)) try { draw = int.Parse(valueDraw!); } catch { }
+                IQueryable<vm_student> vm_UserQuery = _appContext.Users
+                .AsNoTracking()
+                .Include(u => u.User_Roles!).ThenInclude(ur => ur.Role!)
+                .Include(u => u.Student_Classes!).ThenInclude(tc => tc.Class).ThenInclude(c => c.Course)
+                .AsQueryable()
+                .ProjectTo<vm_student>(_mapper.ConfigurationProvider).Where(t => string.IsNullOrEmpty(search) || t.Name!.Contains(search))
                     .Where(t => t.Role_Code!.Contains("hs"));
                 if (classes != 0) vm_UserQuery = vm_UserQuery.Where(t => t.Student_Class_id!.Contains(classes));
+                if (check_class == 1)
+                {
+                    vm_UserQuery = vm_UserQuery.Where(t => t.Student_Class_Code!.Any());
+                }
+                else if (check_class == 2)
+                {
+                    vm_UserQuery = vm_UserQuery.Where(t => !t.Student_Class_Code!.Any());
+                }
                 int totalCount = await vm_UserQuery.CountAsync();
                 var final_result = await vm_UserQuery
                     .Skip(offset)
                     .Take(limit)
                     .ToListAsync();
-                var paginatedResult = new Pagination<vm_user>
+                var paginatedResult = new Pagination<vm_student>
                 {
                     draw = draw,
                     recordsTotal = totalCount,
@@ -346,24 +541,38 @@ namespace BLL.Services.Implement
                     {
                         var user = new vm_create_user
                         {
-                            User_Code = GenerateStudentCode(worksheet.Cells[row, 2].Value.ToString() ?? "null"),
-                            Name = worksheet.Cells[row, 2].Value.ToString(),
-                            Gender = GenderSelection((worksheet.Cells[row, 3].Value.ToString() ?? "1")),
-                            Nation = NationSelection(worksheet.Cells[row, 4].Value.ToString()),
-                            Address = worksheet.Cells[row, 5].Value.ToString(),
-                            Email = worksheet.Cells[row, 6].Value.ToString(),
-                            PhoneNumber = worksheet.Cells[row, 7].Value.ToString(),
-                            Password = worksheet.Cells[row, 8].Value.ToString() ?? "123456",
-                            DOB = ConvertExcelDateToDateTime(worksheet.Cells[row, 9].Value.ToString()),
-                            Description = worksheet.Cells[row, 10].Value.ToString(),
-                            Status = StatusSelection(worksheet.Cells[row, 11].Value.ToString() ?? "1")
+                            User_Code = GenerateStudentCode(worksheet.Cells[row, 2].Value?.ToString(), usersToAdd),
+                            Name = worksheet.Cells[row, 2].Value?.ToString(),
+                            Gender = GenderSelection(worksheet.Cells[row, 3].Value?.ToString()),
+                            Nation = NationSelection(worksheet.Cells[row, 4].Value?.ToString()),
+                            Address = worksheet.Cells[row, 5].Value?.ToString(),
+                            Email = worksheet.Cells[row, 6].Value?.ToString(),
+                            PhoneNumber = worksheet.Cells[row, 7].Value?.ToString(),
+                            Password = worksheet.Cells[row, 8].Value?.ToString() ?? "123456",
+                            DOB = ConvertExcelDateToDateTime(worksheet.Cells[row, 9].Value?.ToString()),
+                            Description = worksheet.Cells[row, 10].Value?.ToString(),
+                            Status = StatusSelection(worksheet.Cells[row, 11].Value?.ToString())
                         };
                         usersToAdd.Add(user);
                     }
-                    var obj = _mapper.Map<List<User>>(usersToAdd);
-                    _appContext.Users.AddRange(obj);
+
+                    // Tạo danh sách User từ danh sách vm_create_user
+                    var users = _mapper.Map<List<User>>(usersToAdd);
+
+                    // Kiểm tra mã sinh viên có tồn tại không
+                    var existingCodes = _appContext.Users
+                        .Where(u => users.Select(newUser => newUser.User_Code).Contains(u.User_Code))
+                        .Select(u => u.User_Code)
+                        .ToList();
+
+                    // Loại bỏ các User đã tồn tại trong danh sách mới
+                    var newUsers = users.Where(u => !existingCodes.Contains(u.User_Code)).ToList();
+
+                    // Thêm mới các User không trùng mã sinh viên
+                    _appContext.Users.AddRange(newUsers);
                     await _appContext.SaveChangesAsync();
-                    return usersToAdd.Count;
+
+                    return newUsers.Count;
                 }
             }
             catch (Exception ex)
@@ -372,7 +581,9 @@ namespace BLL.Services.Implement
                 throw;
             }
         }
-        private string GenerateStudentCode(string? username)
+
+
+        private string GenerateStudentCode(string? username, List<vm_create_user> usersToAdd)
         {
             string[] words = username!.Trim().Split(' ');
             string code = "US_";
@@ -389,18 +600,20 @@ namespace BLL.Services.Implement
             Random random = new Random();
             int randomNumber = random.Next(100);
             code += "_" + randomNumber;
-            while (checkCode(code))
+
+            // Kiểm tra xem mã đã tồn tại trong danh sách usersToAdd chưa
+            while (checkCode(code, usersToAdd))
             {
                 randomNumber = random.Next(100);
                 code = code.Substring(0, code.LastIndexOf('_') + 1) + randomNumber;
             }
             return code;
         }
-        private bool checkCode(string code)
+
+        private bool checkCode(string code, List<vm_create_user> usersToAdd)
         {
-            var vm_User = _appContext.Users.ProjectTo<vm_user>(_mapper.ConfigurationProvider).SingleOrDefault(x => x.User_Code!.Contains(code));
-            if (vm_User == null) return false;
-            return true;
+            // Kiểm tra xem code có tồn tại trong danh sách usersToAdd không
+            return usersToAdd.Any(u => u.User_Code == code);
         }
         private Status StatusSelection(string? status)
         {
@@ -454,7 +667,7 @@ namespace BLL.Services.Implement
             else
             {
                 DateTime baseDate = new DateTime(1900, 1, 1);
-                return baseDate.AddDays(doubleValue - 2); // Excel date is 1-based, with 1 being 1900-01-01
+                return baseDate.AddDays(doubleValue - 2);
             }
         }
 
@@ -470,5 +683,42 @@ namespace BLL.Services.Implement
 
             return new AuthenticateResponse(vm_User, token);
         }
+
+        public async Task<string> Count_Students_By_Course()
+        {
+            try
+            {
+                var studentCourse = new List<object>();
+
+                var courses = await _appContext.Courses.ToListAsync();
+
+                foreach (var course in courses)
+                {
+                    int totalCount = await _appContext.Users
+                    .Include(u => u.User_Roles!).ThenInclude(ur => ur.Role!)
+                    .Include(u => u.Student_Classes!).ThenInclude(tc => tc.Class).ThenInclude(t => t.Course)
+                    .AsQueryable()
+                    .ProjectTo<vm_student>(_mapper.ConfigurationProvider)
+                    .Where(u => u.Role_Code!.Contains("hs") && u.Course_id!.Contains(course.Id))
+                    .CountAsync();
+
+                    var CoursesInfo = new
+                    {
+                        CourseName = course.Name,
+                        Student = totalCount
+                    };
+
+                    studentCourse.Add(CoursesInfo);
+                }
+
+                var jsonResult = JsonConvert.SerializeObject(studentCourse, Formatting.Indented);
+                return jsonResult;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in Count_Teachers_By_Subject: {ex.Message}");
+                throw;
+            }
+        }        
     }
 }

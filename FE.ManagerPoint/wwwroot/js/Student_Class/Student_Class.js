@@ -1,7 +1,8 @@
-﻿var selectedIdsSubject = [];
+﻿var selectedIdsClass = [];
 var selectedIdsUser = [];
-function teacherGrid() {
-    this.$table = $('#teacher_subject_table').DataTable({
+var selectedRowIdClass = null;
+function studentGrid() {
+    this.$table = $('#student_class_table').DataTable({
         "language": {
             "sProcessing": "Đang xử lý...",
             "sLengthMenu": "Xem _MENU_ mục",
@@ -22,12 +23,12 @@ function teacherGrid() {
         "processing": true,
         "serverSide": true,
         "ajax": {
-            "url": "https://localhost:44335/user/get_all_teacher",
+            "url": "https://localhost:44335/user/get_all_student",
             "data": function (d) {
                 delete d.columns;
                 d.search = d.search.value;
-                d.subject = $("#search_subject").val();
-                d.check_subject = 1;
+                d.classes = $("#search_class_student").val();
+                d.check_class = 1;
             },
             "dataSrc": "data"
         },
@@ -36,9 +37,10 @@ function teacherGrid() {
             { 'data': 'Id', "orderable": false },
             { 'data': 'Name', "orderable": false },
             { 'data': 'User_Code', "orderable": false },
-            { 'data': 'Subject_User', "orderable": false },
+            { 'data': 'Student_Class_Code', "orderable": false },
+            { 'data': 'Student_Class_Name', "orderable": false },
             {
-                "data": "AvatarUrl", "className": "img_td_teacher", "orderable": false, render: function (data) {
+                "data": "AvatarUrl", "className": "img_td", "orderable": false, render: function (data) {
                     let html = `<img src="${data}" alt="AvatarUrl" />`;
                     return html;
                 }
@@ -68,8 +70,8 @@ function teacherGrid() {
         "pageLength": 10,
     });
 }
-function teacherNoSBGrid() {
-    this.$table = $('#teacher_table').DataTable({
+function student_No_Class() {
+    this.$table = $('#student_table').DataTable({
         "language": {
             "sProcessing": "Đang xử lý...",
             "sLengthMenu": "Xem _MENU_ mục",
@@ -90,18 +92,17 @@ function teacherNoSBGrid() {
         "processing": true,
         "serverSide": true,
         "ajax": {
-            "url": "https://localhost:44335/user/get_all_teacher",
+            "url": "https://localhost:44335/user/get_all_student",
             "data": function (d) {
                 delete d.columns;
                 d.search = d.search.value;
-                d.subject = $("#search_subject").val();
-                d.check_subject = 2;
+                d.check_class = 2;
             },
             "dataSrc": "data"
         },
         "initComplete": function () {
-            teacherGrid();
-            $('#teacher_table').on('change', '.select-checkbox', function () {
+            studentGrid();
+            $('#student_table').on('change', '.select-checkbox', function () {
                 var id = $(this).data('id');
                 if ($(this).prop('checked')) {
                     if (!selectedIdsUser.includes(id)) {
@@ -174,8 +175,8 @@ function teacherNoSBGrid() {
         "pageLength": 10,
     });
 }
-function subjectGrid() {
-    this.$table = $('#subject_table').DataTable({
+function classGrid() {
+    this.$table = $('#class_table').DataTable({
         "language": {
             "sProcessing": "Đang xử lý...",
             "sLengthMenu": "Xem _MENU_ mục",
@@ -196,7 +197,7 @@ function subjectGrid() {
         "processing": true,
         "serverSide": true,
         "ajax": {
-            "url": "https://localhost:44335/subject/get_all",
+            "url": "https://localhost:44335/class/get_all",
             "data": function (d) {
                 delete d.columns;
                 d.search = d.search.value;
@@ -204,39 +205,23 @@ function subjectGrid() {
             "dataSrc": "data"
         },
         "initComplete": function () {
-            $('#subject_table').on('change', '.select-checkbox-subject', function () {
+            $('#class_table').on('change', '.select-checkbox-class', function () {
                 var id = $(this).data('id');
                 if ($(this).prop('checked')) {
-                    if (!selectedIdsSubject.includes(id)) {
-                        selectedIdsSubject.push(id);
+                    if (selectedRowIdClass !== null && selectedRowIdClass !== id) {
+                        // Uncheck previous row if another row is checked
+                        $('#class_table').find(`[data-id="${selectedRowIdClass}"]`).prop('checked', false);
                     }
+                    selectedRowIdClass = id;
                 } else {
-                    var index = selectedIdsSubject.indexOf(id);
-                    if (index !== -1) {
-                        selectedIdsSubject.splice(index, 1);
-                    }
+                    selectedRowIdClass = null;
                 }
-                console.log(selectedIdsSubject);
-            });
-            $(document).on('change', '#checkAllCheckboxSubject', function () {
-                var checkboxes = $('.select-checkbox-subject');
-                checkboxes.prop('checked', $(this).prop('checked'));
-                if ($(this).prop('checked')) {
-                    checkboxes.each(function () {
-                        var id = $(this).data('id');
-                        if (!selectedIdsSubject.includes(id)) {
-                            selectedIdsSubject.push(id); // Thêm ID vào mảng nếu chưa tồn tại
-                        }
-                    });
-                } else {
-                    selectedIdsSubject = []; // Thiết lập lại mảng selectedIds khi checkbox "Check All" bị bỏ chọn
-                }
-                console.log(selectedIdsSubject);
+                console.log(selectedRowIdClass);
             });
             this.api().on('draw', function () {
-                selectedIdsSubject = [];
-                $('#checkAllCheckboxSubject').prop('checked', false);
-                $('.select-checkbox-subject').prop('checked', false);
+                selectedRowIdClass = null;
+                $('#checkAllCheckboxClass').prop('checked', false);
+                $('.select-checkbox-class').prop('checked', false);
             });
         },
         "rowId": "Id",
@@ -245,18 +230,20 @@ function subjectGrid() {
                 "data": null,
                 "className": "checkbox-column",
                 "orderable": false,
-                "title": '<input type="checkbox" id="checkAllCheckboxSubject">',
                 "render": function (data) {
-                    return `<input type="checkbox" class="select-checkbox-subject" data-id="${data.Id}">`;
+                    return `<input type="checkbox" class="select-checkbox-class" data-id="${data.Id}">`;
                 }
             },
             { 'data': 'Id', "orderable": false },
             { 'data': 'Name', "orderable": false },
+            { 'data': 'ClassCode', "orderable": false },
             {
                 "data": "Status", "orderable": false, render: function (data) {
-                    if (data == 1) return "Chờ duyệt";
-                    if (data == 2) return "Đã duyệt";
-                    if (data == 3) return "Từ chối duyệt";
+                    if (data == 1) return "Hoạt động";
+                    if (data == 2) return "Thất bại";
+                    if (data == 3) return "Ra trường";
+                    if (data == 3) return "Kết thúc";
+                    if (data == 3) return "Đang xử lý";
                     return "Unknown";
                 }
             },
@@ -267,52 +254,37 @@ function subjectGrid() {
         "info": true,
         "pageLength": 10,
     });
-    window.dt = this.$table;
 }
-function getSubject_user() {
-    $.ajax({
-        url: "https://localhost:44335/subject/get_list",
-        method: "GET",
-        success: function (res) {
-            if (res && res.length > 0) {
-                var select = $("#search_subject");
-                $.each(res, function (index, item) {
-                    select.append($("<option></option>")
-                        .attr("value", item.id)
-                        .text(item.name));
-                });
-            }
-        },
-    });
-}
-function CreateSubject_Teacher(callback) {
+
+function createClass_Student(callback) {
     var mergedData = [];
 
     for (var i = 0; i < selectedIdsUser.length; i++) {
         var userId = selectedIdsUser[i];
-        for (var j = 0; j < selectedIdsSubject.length; j++) {
-            var subjectId = selectedIdsSubject[j];
-            var userData = {
-                userId: userId,
-                subjectId: subjectId
-            };
-            mergedData.push(userData);
-        }
+        var classId = selectedRowIdClass;
+        var userData = {
+            userId: userId,
+            classId: classId
+        };
+        mergedData.push(userData);
     }
 
     console.log(mergedData);
     $.ajax({
-        url: "https://localhost:44335/subject_tecaher/batch_create",
+        url: "https://localhost:44335/student_class/batch_create",
         method: "POST",
         data: JSON.stringify(mergedData),
         contentType: 'application/json',
         success: function (res) {
+            if (res && res.length < 0) {
+                toastr.error('Lớp đã đạt tối đa học sinh, vui lòng kiểm tra lại!');
+            }
             if (callback && typeof callback === "function") {
                 callback();
             }
-            $('#subject_table').DataTable().ajax.reload();
-            $('#teacher_table').DataTable().ajax.reload();
-            $('#teacher_subject_table').DataTable().ajax.reload();
+            $('#class_table').DataTable().ajax.reload();
+            $('#student_table').DataTable().ajax.reload();
+            $('#student_class_table').DataTable().ajax.reload();
         },
     });
 }
@@ -330,45 +302,45 @@ function GetById(id) {
             }
             $("#id").val(res.id);
             $("#name_md").val(res.name);
-            $("#subject_selected").val(res.subject_id).trigger('change');
+            $("#student_selected").val(res.student_Class_id).trigger('change');
             $("#updateModal").modal("show");
         },
     });
 }
-function getSubject() {
+function getClass() {
     $.ajax({
-        url: "https://localhost:44335/subject/get_list",
+        url: "https://localhost:44335/class/get_list",
         method: "GET",
         success: function (res) {
             if (res && res.length > 0) {
                 console.log(res);
-                var select = $("#subject_selected");
+                var select = $("#student_selected");
                 $.each(res, function (index, role) {
-                    select.append(`<option value="${role.id}">${role.name}</option>`);
+                    select.append(`<option value="${role.id}">${role.name} - ${role.classCode}</option>`);
                 });
             }
         },
     });
 }
-function editSubject(userIds, ids, callback) {
+function editClass(userIds, ids, callback) {
     var intIds = ids.map(function (item) {
         return parseInt(item);
     });
     var mergedData = [];
     for (var j = 0; j < intIds.length; j++) {
-        var roleId = intIds[j];
+        var classId = intIds[j];
         var userData = {
             userId: userIds,
-            subjectId: roleId
+            classId: classId
         };
         mergedData.push(userData);
     }
     $.ajax({
-        url: "https://localhost:44335/subject_tecaher/batch_remove_by_userid/" + parseInt(userIds),
+        url: "https://localhost:44335/student_class/batch_remove_by_userid/" + parseInt(userIds),
         method: "DELETE",
         success: function () {
             $.ajax({
-                url: "https://localhost:44335/subject_tecaher/batch_create",
+                url: "https://localhost:44335/student_class/batch_create",
                 method: "POST",
                 data: JSON.stringify(mergedData),
                 contentType: 'application/json',
@@ -377,16 +349,16 @@ function editSubject(userIds, ids, callback) {
                         callback();
                     }
                     mergedData = [];
-                    $('#teacher_table').DataTable().ajax.reload();
-                    $('#teacher_subject_table').DataTable().ajax.reload();
+                    $('#student_table').DataTable().ajax.reload();
+                    $('#student_class_table').DataTable().ajax.reload();
                 },
                 error: function (xhr, status, error) {
-                    console.error("Lỗi khi tạo các roles mới:", error);
+                    console.error("Lỗi khi tạo các user_class mới:", error);
                 }
             });
         },
         error: function (xhr, status, error) {
-            console.error("Lỗi khi xóa các roles cũ:", error);
+            console.error("Lỗi khi xóa các user_class cũ:", error);
         }
     });
 }
@@ -400,11 +372,11 @@ function deleteSubject(userIds) {
     }).then((willDelete) => {
         if (willDelete) {
             $.ajax({
-                url: "https://localhost:44335/subject_tecaher/batch_remove_by_userid/" + parseInt(userIds),
+                url: "https://localhost:44335/student_class/batch_remove_by_userid/" + parseInt(userIds),
                 method: "DELETE",
                 success: function () {
-                    $('#teacher_table').DataTable().ajax.reload();
-                    $('#teacher_subject_table').DataTable().ajax.reload();
+                    $('#student_table').DataTable().ajax.reload();
+                    $('#student_class_table').DataTable().ajax.reload();
                 }
             })
         } else {

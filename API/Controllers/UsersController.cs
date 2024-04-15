@@ -1,12 +1,11 @@
 ﻿using BLL.Author;
-using BLL.Services.Implement;
 using BLL.Services.Interface;
 using BLL.ViewModels.User;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
-	[Route("api/[controller]")]
+    [Route("api/[controller]")]
     [ApiController]
     //[Authorize]
     public class UsersController : ControllerBase
@@ -31,10 +30,30 @@ namespace API.Controllers
         {
             return Ok(await _userServices.Get_All_Teacher(start, length, search, subject, classes, check_subject));
         }
-        [HttpGet("/user/get_all_student")]
-        public async Task<IActionResult> Get_All_Student(int start = 0, int length = 10, string search = "",  int classes = 0)
+        [HttpGet("/user/Get_All_Teacher_No_HomeRoom")]
+        public async Task<IActionResult> Get_All_Teacher_No_HomeRoom(int start = 0, int length = 10, string search = "", int subject = 0, int classes = 0)
         {
-            return Ok(await _userServices.Get_All_Student(start, length, search, classes));
+            return Ok(await _userServices.Get_All_Teacher_No_HomeRoom(start, length, search, subject, classes));
+        }        
+        [HttpGet("/user/count_all_teacher_student")]
+        public async Task<IActionResult> Count_All_Teacher_Student()
+        {
+            return Ok(await _userServices.Count_All_Teacher_Student());
+        }
+        [HttpGet("/user/Count_Teachers_By_Subject")]
+        public async Task<IActionResult> Count_Teachers_By_Subject()
+        {
+            return Ok(await _userServices.Count_Teachers_By_Subject());
+        }
+        [HttpGet("/user/Count_Students_By_Course")]
+        public async Task<IActionResult> Count_Students_By_Course()
+        {
+            return Ok(await _userServices.Count_Students_By_Course());
+        }
+        [HttpGet("/user/get_all_student")]
+        public async Task<IActionResult> Get_All_Student(int start = 0, int length = 10, string search = "",  int classes = 0, int check_class = 0)
+        {
+            return Ok(await _userServices.Get_All_Student(start, length, search, classes, check_class));
         }
 
         [HttpGet("/user/get_by_id")]
@@ -42,8 +61,34 @@ namespace API.Controllers
         {
             return Ok(await _userServices.Get_By_Id(id));
         }
+        [HttpGet("/user/Get_By_HomeRoom_Id")]
+        public async Task<IActionResult> Get_By_HomeRoom_Id(int idClass)
+        {
+            var result = await _userServices.Get_By_HomeRoom_Id(idClass);
 
-        //[AllowAnonymous]
+            if (result != null)
+            {
+                return Ok(result);
+            }
+            else
+            {
+                return NoContent();
+            }
+        }
+        [HttpGet("/user/Get_By_Subject_Teacher_Id")]
+        public async Task<IActionResult> Get_By_Subject_Teacher_Id(int idClass)
+        {
+            var result = await _userServices.Get_By_Subject_Teacher_Id(idClass);
+
+            if (result != null)
+            {
+                return Ok(result);
+            }
+            else
+            {
+                return NoContent();
+            }
+        }
         [HttpPost("/user/authenticate")]
         public IActionResult Authenticate(AuthenticateRequest model)
         {

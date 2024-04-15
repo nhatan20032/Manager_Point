@@ -1,0 +1,128 @@
+﻿@model System.Threading.Tasks.Task<BLL.ViewModels.Class.vm_class>
+
+@{
+    var classModel = await Model;
+}
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Giáo viên trong lớp";
+}
+<style>
+    #create_homeroom {
+        display: none;
+    }
+
+    .img_td {
+        width: 150px;
+    }
+
+        .img_td img {
+            width: 100%;
+            height: auto;
+        }
+
+    .card {
+        display: inline-block;
+        margin-right: 50px;
+        vertical-align: top;
+    }
+</style>
+<div class="row">
+    <div class="card" style="width: 100%;">
+        <div class="card-body">
+            <h3 class="card-title">Lớp: @classModel.Name</h3>
+            <h6 class="card-subtitle mb-2 text-muted">Mã lớp: @classModel.ClassCode</h6>
+            <p class="card-text">Tên khóa học: @classModel.CourseName</p>
+        </div>
+    </div>
+</div>
+<div class="row mt-3">
+    <div class="nav nav-tabs" id="nav-tab" role="tablist">
+        <button class="nav-link active" id="nav-homeroom-tab" data-bs-toggle="tab" data-bs-target="#nav-homeroom" type="button" role="tab" aria-controls="nav-homeroom" aria-selected="false">Giáo viên chủ nhiệm</button>
+        <button class="nav-link" id="nav-subject_teacher-tab" data-bs-toggle="tab" data-bs-target="#nav-subject_teacher" type="button" role="tab" aria-controls="nav-subject_teacher" aria-selected="true">Giáo viên bộ môn</button>
+    </div>
+    <div class="tab-content" id="nav-tabContent">
+        <div class="tab-pane fade show active" id="nav-homeroom" role="tabpanel" aria-labelledby="nav-homeroom-tab">
+            <div class="row mt-3">
+                <div class="col-md-12 d-flex justify-content-end mb-3">
+                    <button id="create_homeroom" class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#updateModal">Thêm giáo viên chủ nhiệm</button>
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col-md-12">
+                    <div id="cardTeacher" class="cardTeacher"></div>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane fade" id="nav-subject_teacher" role="tabpanel" aria-labelledby="nav-subject_teacher-tab">
+            <div class="row mt-3">
+                <div class="col-md-12 d-flex justify-content-end mb-3">
+                    <button id="create_subject_teacher" class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#updateSubjectModal">Thêm giáo viên bộ môn</button>
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col-md-12">
+                    <div id="cardTeacherSubject" class="cardTeacherSubject"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<partial name="AddTeacherModal" />
+<partial name="AddSubjectTeacherModal" />
+<div id="classModel"
+     data-id="@classModel.Id"
+     data-name="@classModel.Name"
+     data-classcode="@classModel.ClassCode"
+     data-coursename="@classModel.CourseName"
+     style="display: none;" />
+<script src="~/js/Teacher_Class/Teacher_Class.js"></script>
+<script>
+    var selectedIdsUser = [];
+    var idUser = 0;
+    $(document).ready(function () {
+        var classModelData = $("#classModel");
+        var id = classModelData.data("id");
+        var name = classModelData.data("name");
+        var classCode = classModelData.data("classcode");
+        var courseName = classModelData.data("coursename");
+        Get_HomeRoom_Teacher(id);
+        Get_Teacher_No_HomeRoom();
+        Get_Teacher_No_Subject();
+        Get_Subject_Teacher(id);
+        $('#add_homeroom').click(function () {
+            Add_Teacher_HomeRoom(id, function () {
+                toastr.success('Thêm giáo viên chủ nhiệm thành công');
+                let = $('#updateModal').modal('hide');
+                window.location.href = '/Class/Add_Teacher_To_Class?id=' + id;
+            });
+        })
+        $('#change_homeroom').click(function () {
+            editSubject(id, function () {
+                toastr.success('Thêm giáo viên chủ nhiệm thành công');
+                let = $('#updateModal').modal('hide');
+                window.location.href = '/Class/Add_Teacher_To_Class?id=' + id;
+            });
+        })
+        $('#create_homeroom').click(function () {
+            $('#button_addHR').show();
+            $('#button_changeHR').hide();
+        });
+        getSubject()
+        $("#subject_selected").select2({
+            dropdownParent: $('#updateSubjectModal'),
+            width: '100%'
+        });
+        $("#subject_selected").change(function () {
+            $('#teacher_subject_table').DataTable().ajax.reload();
+        });
+        $('#add_subject_class').click(function () {
+            var idSubject = $('#subject_selected').val();
+            Create_Subject_Class_Teacher(id, idSubject, function () {
+                toastr.success('Thêm giáo viên bộ môn thành công');
+                let = $('#updateSubjectModal').modal('hide');
+                window.location.href = '/Class/Add_Teacher_To_Class?id=' + id;
+            });
+        })
+    });
+</script>

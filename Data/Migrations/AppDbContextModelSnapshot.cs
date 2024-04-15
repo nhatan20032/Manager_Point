@@ -88,6 +88,8 @@ namespace Data.Migrations
                     b.HasIndex("Id")
                         .IsUnique();
 
+                    b.HasIndex("Name");
+
                     b.ToTable("Classes");
                 });
 
@@ -261,6 +263,10 @@ namespace Data.Migrations
                     b.HasIndex("Id")
                         .IsUnique();
 
+                    b.HasIndex("Name");
+
+                    b.HasIndex("Role_Code");
+
                     b.ToTable("Roles");
                 });
 
@@ -315,6 +321,8 @@ namespace Data.Migrations
                     b.HasIndex("Id")
                         .IsUnique();
 
+                    b.HasIndex("Name");
+
                     b.ToTable("Subjects");
                 });
 
@@ -353,6 +361,9 @@ namespace Data.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("ClassId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SubjectId")
                         .HasColumnType("int");
 
                     b.Property<int>("TypeTeacher")
@@ -425,9 +436,9 @@ namespace Data.Migrations
 
                     b.Property<string>("User_Code")
                         .IsRequired()
-                        .HasMaxLength(10)
+                        .HasMaxLength(100)
                         .IsUnicode(false)
-                        .HasColumnType("varchar(10)");
+                        .HasColumnType("varchar(100)");
 
                     b.HasKey("Id");
 

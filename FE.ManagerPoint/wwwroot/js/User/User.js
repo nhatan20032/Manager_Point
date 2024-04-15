@@ -24,11 +24,6 @@
             "data": function (d) {
                 delete d.columns;
                 d.search = d.search.value;
-                d.classes = $("#search_class").val();
-            },
-            "data": function (d) {
-                delete d.columns;
-                d.search = d.search.value;
                 d.classes = $("#search_class_student").val();
             },
             "dataSrc": "data"
@@ -41,7 +36,7 @@
             { 'data': 'Id', "orderable": false },
             { 'data': 'Name', "orderable": false },
             { 'data': 'User_Code', "orderable": false },
-            { 'data': 'Student_Class', "orderable": false },
+            { 'data': 'Student_Class_Name', "orderable": false },
             { 'data': 'Password', "orderable": false },
             { 'data': 'PhoneNumber', "orderable": false },
             { 'data': 'DOB', "orderable": false },
@@ -132,7 +127,7 @@ function teacherGrid() {
             { 'data': 'Id', "orderable": false },
             { 'data': 'Name', "orderable": false },
             { 'data': 'User_Code', "orderable": false },
-            { 'data': 'Teacher_Class', "orderable": false },
+            { 'data': 'Teacher_Class_Name', "orderable": false },
             { 'data': 'Subject_User', "orderable": false },
             { 'data': 'Password', "orderable": false },
             { 'data': 'PhoneNumber', "orderable": false },
