@@ -170,7 +170,8 @@ function Add_Teacher_HomeRoom(idClass, callback) {
     var classId = idClass;
     var userData = {
         userId: userId,
-        classId: classId
+        classId: classId,
+        typeTeacher: 0
     };
     mergedData.push(userData);
     console.log(mergedData);
@@ -197,7 +198,8 @@ function editSubject(idClass, callback) {
     var classId = idClass;
     var userData = {
         userId: userId,
-        classId: classId
+        classId: classId,
+        typeTeacher: 0
     };
     mergedData.push(userData);
     $.ajax({

@@ -73,7 +73,6 @@ namespace BLL.Services.Implement
             {
                 var obj = _mapper.Map<List<Teacher_Class>>(requests);
 
-                // Thêm danh sách giáo viên không trùng môn học vào context
                 _appContext.Teacher_Classes.AddRange(obj);
                 await _appContext.SaveChangesAsync();
 
