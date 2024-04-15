@@ -24,7 +24,7 @@ namespace BLL.Extentions.Automapper
                 .ForMember(
                     dest => dest.Teacher_Class_Name,
                     opt => opt.MapFrom(src => src.Teacher_Classes!.Select(ur => ur.Class.Name).ToList())
-                )                
+                )
                 .ForMember(
                     dest => dest.Student_Class_Code,
                     opt => opt.MapFrom(src => src.Student_Classes!.Select(ur => ur.Class.ClassCode).ToList())
@@ -74,7 +74,7 @@ namespace BLL.Extentions.Automapper
                 .ForMember(
                     dest => dest.Teacher_Class_Name,
                     opt => opt.MapFrom(src => src.Teacher_Classes!.Select(ur => ur.Class.Name).ToList())
-                )                
+                )
                 .ForMember(
                     dest => dest.Teacher_Class_Code,
                     opt => opt.MapFrom(src => src.Teacher_Classes!.Select(ur => ur.Class.ClassCode).ToList())
@@ -95,6 +95,7 @@ namespace BLL.Extentions.Automapper
                     dest => dest.Role_Code,
                     opt => opt.MapFrom(src => src.User_Roles!.Select(ur => ur.Role.Role_Code).ToList())
                 )
+                .ForMember(dest => dest.TypeTeacher, opt => opt.MapFrom(src => src.Teacher_Classes!.Select(t => t.TypeTeacher).ToList()))
                 .ReverseMap();
             CreateMap<User, vm_student>()
                 .ForMember(
@@ -104,7 +105,7 @@ namespace BLL.Extentions.Automapper
                 .ForMember(
                     dest => dest.Student_Class_Name,
                     opt => opt.MapFrom(src => src.Student_Classes!.Select(ur => ur.Class.Name).ToList())
-                )                
+                )
                 .ForMember(
                     dest => dest.Student_Class_Code,
                     opt => opt.MapFrom(src => src.Student_Classes!.Select(ur => ur.Class.ClassCode).ToList())

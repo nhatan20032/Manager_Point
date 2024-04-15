@@ -15,12 +15,13 @@ using Microsoft.Extensions.Primitives;
 using OfficeOpenXml;
 using System.Globalization;
 using Newtonsoft.Json;
+using BLL.ViewModels.Teacher_Class;
 
 
 namespace BLL.Services.Implement
 {
 
-	public class UserServices : IUserServices
+    public class UserServices : IUserServices
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly AppDbContext _appContext;
@@ -187,6 +188,88 @@ namespace BLL.Services.Implement
             catch (Exception ex)
             {
                 Console.WriteLine($"Error in Get_All_Async: {ex.Message}");
+                throw;
+            }
+        }
+
+        public async Task<string> Get_All_Teacher_No_HomeRoom(int offset = 0, int limit = 10, string search = "", int subject = 0, int classes = 0)
+        {
+            try
+            {
+                int draw = 1;
+                var httpRequest = _httpContextAccessor.HttpContext!.Request;
+                if (httpRequest.Query.TryGetValue("draw", out StringValues valueDraw)) try { draw = int.Parse(valueDraw!); } catch { }
+
+                IQueryable<vm_teacher> vm_UserQuery = _appContext.Users
+                .Include(u => u.User_Roles!).ThenInclude(ur => ur.Role!)
+                .Include(u => u.Subject_Teachers!).ThenInclude(st => st.Subject)
+                .Include(u => u.Teacher_Classes!).ThenInclude(tc => tc.Class)
+                .AsQueryable()
+                .ProjectTo<vm_teacher>(_mapper.ConfigurationProvider).Where(t => string.IsNullOrEmpty(search) || t.Name!.Contains(search))
+                    .Where(t => t.Role_Code!.Contains("gv")).Where(t => !t.TypeTeacher!.Any());
+
+                if (!string.IsNullOrEmpty(search))
+                {
+                    vm_UserQuery = vm_UserQuery.Where(t => t.Name!.Contains(search));
+                }
+
+                if (subject != 0)
+                {
+                    vm_UserQuery = vm_UserQuery.Where(t => t.Subject_id!.Contains(subject));
+                }
+
+                if (classes != 0)
+                {
+                    vm_UserQuery = vm_UserQuery.Where(t => t.Teacher_Class_id!.Contains(classes));
+                }
+
+                int totalCount = await vm_UserQuery.CountAsync();
+
+                var final_result = await vm_UserQuery
+                    .Skip(offset)
+                    .Take(limit)
+                    .ToListAsync();
+
+                var paginatedResult = new Pagination<vm_teacher>
+                {
+                    draw = draw,
+                    recordsTotal = totalCount,
+                    recordsFiltered = totalCount,
+                    data = final_result
+                };
+
+                var jsonResult = JsonConvert.SerializeObject(paginatedResult, Formatting.Indented);
+                return jsonResult;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in Get_All_Async: {ex.Message}");
+                throw;
+            }
+        }
+
+
+        public async Task<vm_user> Get_By_HomeRoom_Id(int idClass)
+        {
+            try
+            {
+                var vm_class = await _appContext.Teacher_Classes
+                    .AsQueryable()
+                    .ProjectTo<vm_teacher_class>(_mapper.ConfigurationProvider).SingleOrDefaultAsync(x => x.ClassId == idClass && x.TypeTeacher == TypeTeacher.Homeroom_Teacher);
+                if (vm_class == null) { return null!; }
+                var vm_User = await _appContext.Users
+                    .Include(u => u.User_Roles!).ThenInclude(ur => ur.Role!)
+                    .Include(u => u.Subject_Teachers!).ThenInclude(st => st.Subject)
+                    .Include(u => u.Teacher_Classes!).ThenInclude(tc => tc.Class)
+                    .AsQueryable()
+                    .ProjectTo<vm_user>(_mapper.ConfigurationProvider).SingleOrDefaultAsync(x => x.Id == vm_class!.UserId);
+
+                if (vm_User == null) return null!;
+                return vm_User;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in Get_By_Id: {ex.Message}");
                 throw;
             }
         }

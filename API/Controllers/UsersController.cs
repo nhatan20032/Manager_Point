@@ -1,12 +1,11 @@
 ﻿using BLL.Author;
-using BLL.Services.Implement;
 using BLL.Services.Interface;
 using BLL.ViewModels.User;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
-	[Route("api/[controller]")]
+    [Route("api/[controller]")]
     [ApiController]
     //[Authorize]
     public class UsersController : ControllerBase
@@ -30,6 +29,11 @@ namespace API.Controllers
         public async Task<IActionResult> Get_All_Teacher(int start = 0, int length = 10, string search = "", int subject = 0, int classes = 0, int check_subject = 0)
         {
             return Ok(await _userServices.Get_All_Teacher(start, length, search, subject, classes, check_subject));
+        }
+        [HttpGet("/user/Get_All_Teacher_No_HomeRoom")]
+        public async Task<IActionResult> Get_All_Teacher_No_HomeRoom(int start = 0, int length = 10, string search = "", int subject = 0, int classes = 0)
+        {
+            return Ok(await _userServices.Get_All_Teacher_No_HomeRoom(start, length, search, subject, classes));
         }
         [HttpGet("/user/count_all_teacher_student")]
         public async Task<IActionResult> Count_All_Teacher_Student()
@@ -57,8 +61,20 @@ namespace API.Controllers
         {
             return Ok(await _userServices.Get_By_Id(id));
         }
+        [HttpGet("/user/Get_By_HomeRoom_Id")]
+        public async Task<IActionResult> Get_By_HomeRoom_Id(int idClass)
+        {
+            var result = await _userServices.Get_By_HomeRoom_Id(idClass);
 
-        //[AllowAnonymous]
+            if (result != null)
+            {
+                return Ok(result); // Trả về Ok (200) nếu có dữ liệu
+            }
+            else
+            {
+                return NoContent();
+            }
+        }
         [HttpPost("/user/authenticate")]
         public IActionResult Authenticate(AuthenticateRequest model)
         {

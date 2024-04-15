@@ -1,4 +1,8 @@
-﻿var builder = WebApplication.CreateBuilder(args);
+﻿using BLL.Extentions.Automapper;
+using BLL.Services.Implement;
+using BLL.Services.Interface;
+
+var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -7,6 +11,9 @@ builder.Services.AddRazorPages().AddRazorRuntimeCompilation();
 
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddSession();
+
+builder.Services.AddTransient<IClassServices, ClassServices>();
+builder.Services.AddAutoMapper(typeof(Class_Mapping).Assembly);
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

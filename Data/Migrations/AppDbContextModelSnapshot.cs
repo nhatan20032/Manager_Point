@@ -363,6 +363,9 @@ namespace Data.Migrations
                     b.Property<int>("ClassId")
                         .HasColumnType("int");
 
+                    b.Property<int>("SubjectId")
+                        .HasColumnType("int");
+
                     b.Property<int>("TypeTeacher")
                         .HasColumnType("int");
 

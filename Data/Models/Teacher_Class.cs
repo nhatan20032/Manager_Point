@@ -7,6 +7,7 @@ namespace Manager_Point.Models
         public int Id { get; set; }
         public int UserId { get; set; }
         public int ClassId { get; set; }
+        public int SubjectId { get; set; }
         public TypeTeacher TypeTeacher { get; set; }
 
         public virtual Class Class { get; set; } = null!;
