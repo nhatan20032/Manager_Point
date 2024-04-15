@@ -48,6 +48,8 @@ namespace BLL.Extentions
             services.AddAutoMapper(typeof(GradePoint_Mapping).Assembly);
             services.AddAutoMapper(typeof(Message_Mapping).Assembly);
             services.AddAutoMapper(typeof(User_Mapping).Assembly);
+            services.AddAutoMapper(typeof(Teacher_Class_Mapping).Assembly);
+            services.AddAutoMapper(typeof(Student_Class_Mapping).Assembly);
             services.AddAutoMapper(typeof(Subject_Teacher_Mapping).Assembly);
             services.AddAutoMapper(typeof(Role_User_Mapping).Assembly);
             services.AddAutoMapper(typeof(Examination_Mapping).Assembly);

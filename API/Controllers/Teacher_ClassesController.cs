@@ -22,7 +22,7 @@ namespace API.Controllers
         }
 
         [HttpPost("/teacher_class/batch_create_subject")]
-        public async Task<IActionResult> Batch_Create_Item_Subject([FromBody] List<vm_teacher_class> requests)
+        public async Task<IActionResult> Batch_Create_Item_Subject([FromBody] List<vm_teacher_class_subject> requests)
         {
             if (requests == null) { return BadRequest("request null check object again, make sure request have a value"); }
             return Ok(await _teacher_ClassServices.Batch_Create_Item_Subject(requests));

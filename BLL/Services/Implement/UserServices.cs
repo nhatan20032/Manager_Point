@@ -16,6 +16,7 @@ using OfficeOpenXml;
 using System.Globalization;
 using Newtonsoft.Json;
 using BLL.ViewModels.Teacher_Class;
+using BLL.ViewModels.Class;
 
 
 namespace BLL.Services.Implement
@@ -206,7 +207,7 @@ namespace BLL.Services.Implement
                 .Include(u => u.Teacher_Classes!).ThenInclude(tc => tc.Class)
                 .AsQueryable()
                 .ProjectTo<vm_teacher>(_mapper.ConfigurationProvider).Where(t => string.IsNullOrEmpty(search) || t.Name!.Contains(search))
-                    .Where(t => t.Role_Code!.Contains("gv")).Where(t => !t.TypeTeacher!.Any());
+                    .Where(t => t.Role_Code!.Contains("gv")).Where(t => !t.TypeTeacher!.Any(tt => tt == TypeTeacher.Homeroom_Teacher));
 
                 if (!string.IsNullOrEmpty(search))
                 {
@@ -249,7 +250,7 @@ namespace BLL.Services.Implement
         }
 
 
-        public async Task<vm_user> Get_By_HomeRoom_Id(int idClass)
+        public async Task<vm_teacher> Get_By_HomeRoom_Id(int idClass)
         {
             try
             {
@@ -262,10 +263,38 @@ namespace BLL.Services.Implement
                     .Include(u => u.Subject_Teachers!).ThenInclude(st => st.Subject)
                     .Include(u => u.Teacher_Classes!).ThenInclude(tc => tc.Class)
                     .AsQueryable()
-                    .ProjectTo<vm_user>(_mapper.ConfigurationProvider).SingleOrDefaultAsync(x => x.Id == vm_class!.UserId);
+                    .ProjectTo<vm_teacher>(_mapper.ConfigurationProvider).SingleOrDefaultAsync(x => x.Id == vm_class!.UserId);
 
                 if (vm_User == null) return null!;
                 return vm_User;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in Get_By_Id: {ex.Message}");
+                throw;
+            }
+        }
+        public async Task<string> Get_By_Subject_Teacher_Id(int idClass)
+        {
+            try
+            {
+                var vm_class = await _appContext.Teacher_Classes
+                    .AsQueryable()
+                    .ProjectTo<vm_teacher_class_subject>(_mapper.ConfigurationProvider).Where(x => x.ClassId == idClass && x.TypeTeacher == TypeTeacher.Subject_Teacher).ToListAsync();
+                if (vm_class == null) { return null!; }
+                var resultList = vm_class.Select(classes => new
+                {
+                    data = _appContext.Users
+                    .Include(u => u.User_Roles!).ThenInclude(ur => ur.Role!)
+                    .Include(u => u.Subject_Teachers!).ThenInclude(st => st.Subject)
+                    .Include(u => u.Teacher_Classes!).ThenInclude(tc => tc.Class)
+                    .AsQueryable()
+                    .ProjectTo<vm_teacher>(_mapper.ConfigurationProvider).SingleOrDefault(x => x.Id == classes.UserId),
+                    subjectInClass = _appContext.Subjects.SingleOrDefault(x => x.Id == classes.SubjectId)!.Name,
+                }).ToList();
+
+                var jsonResult = JsonConvert.SerializeObject(resultList, Formatting.Indented);
+                return jsonResult;
             }
             catch (Exception ex)
             {
@@ -690,6 +719,6 @@ namespace BLL.Services.Implement
                 Console.WriteLine($"Error in Count_Teachers_By_Subject: {ex.Message}");
                 throw;
             }
-        }
+        }        
     }
 }
