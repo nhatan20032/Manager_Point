@@ -426,13 +426,17 @@ function Import_Excel(callback) {
             $('#user_table').DataTable().ajax.reload();
             console.log(result);
         },
+        error: function (xhr, status, error) {
+            var errorMessage = xhr.responseJSON.message;
+            toastr.error(errorMessage, "Lỗi vui lòng kiểm tra lại file excel");
+        }
     })
 }
 function downloadExcelFile() {
-    var fileUrl = '/excel/sample.xlsx';
+    var fileUrl = '/excel/sample_v1.xlsx';
     var link = document.createElement('a');
     link.href = fileUrl;
-    link.download = 'sample.xlsx';
+    link.download = 'sample_v1.xlsx';
     link.click();
 }
 function handleFileUpload(input) {
