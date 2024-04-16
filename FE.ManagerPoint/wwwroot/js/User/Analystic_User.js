@@ -19,7 +19,36 @@
                 }),
                 chart: {
                     type: 'pie',
-                    height: 350
+                    height: 350,
+                    toolbar: {
+                        show: true,
+                        tools: {
+                            download: true,
+                            selection: true,
+                            zoom: true,
+                            zoomin: true,
+                            zoomout: true,
+                            pan: true
+                        },
+                        export: {
+                            csv: {
+                                filename: 'Teacher_Subject.csv',
+                                columnDelimiter: ',',
+                                headerCategory: 'Môn học',
+                                headerValue: 'Số lượng giáo viên',
+                                dateFormatter: function (timestamp) {
+                                    return new Date(timestamp).toDateString();
+                                }
+                            },
+                            svg: {
+                                filename: 'Teacher_Subject.svg'
+                            },
+                            png: {
+                                filename: 'Teacher_Subject.png'
+                            }
+                        },
+                        autoSelected: 'zoom'
+                    }
                 },
                 labels: chartData.map(function (item) {
                     return item.x;
@@ -69,7 +98,34 @@ function count_student_teacher() {
                 series: chartData,
                 chart: {
                     type: 'bar',
-                    height: 350
+                    height: 350,
+                    toolbar: {
+                        show: true,
+                        tools: {
+                            download: true,
+                            selection: true,
+                            zoom: true,
+                            zoomin: true,
+                            zoomout: true,
+                            pan: true
+                        },
+                        export: {
+                            csv: {
+                                filename: 'Teacher_Student.csv',
+                                columnDelimiter: ',',
+                                dateFormatter: function (timestamp) {
+                                    return new Date(timestamp).toDateString();
+                                }
+                            },
+                            svg: {
+                                filename: 'Teacher_Student.svg'
+                            },
+                            png: {
+                                filename: 'Teacher_Student.png'
+                            }
+                        },
+                        autoSelected: 'zoom'
+                    }
                 },
                 plotOptions: {
                     bar: {
@@ -131,7 +187,36 @@ function count_student_course() {
                 }),
                 chart: {
                     type: 'pie',
-                    height: 350
+                    height: 350,
+                    toolbar: {
+                        show: true,
+                        tools: {
+                            download: true,
+                            selection: true,
+                            zoom: true,
+                            zoomin: true,
+                            zoomout: true,
+                            pan: true
+                        },
+                        export: {
+                            csv: {
+                                filename: 'Count_Student.csv',
+                                columnDelimiter: ',',
+                                headerCategory: 'Khoá',
+                                headerValue: 'Số lượng học sinh',
+                                dateFormatter: function (timestamp) {
+                                    return new Date(timestamp).toDateString();
+                                }
+                            },
+                            svg: {
+                                filename: 'Count_Student.svg'
+                            },
+                            png: {
+                                filename: 'Count_Student.png'
+                            }
+                        },
+                        autoSelected: 'zoom'
+                    }
                 },
                 labels: chartData.map(function (item) {
                     return item.x;
