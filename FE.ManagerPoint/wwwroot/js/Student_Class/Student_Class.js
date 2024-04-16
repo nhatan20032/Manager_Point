@@ -1,5 +1,4 @@
-﻿var selectedIdsClass = [];
-var selectedIdsUser = [];
+﻿var selectedIdsUser = [];
 var selectedRowIdClass = null;
 function studentGrid() {
     this.$table = $('#student_class_table').DataTable({
@@ -50,8 +49,8 @@ function studentGrid() {
                     if (data == 1) return "Hoạt động";
                     if (data == 2) return "Thất bại";
                     if (data == 3) return "Ra trường";
-                    if (data == 3) return "Kết thúc";
-                    if (data == 3) return "Đang xử lý";
+                    if (data == 4) return "Kết thúc";
+                    if (data == 5) return "Đang hoạt động";
                     return "Unknown";
                 }
             },
@@ -162,8 +161,8 @@ function student_No_Class() {
                     if (data == 1) return "Hoạt động";
                     if (data == 2) return "Thất bại";
                     if (data == 3) return "Ra trường";
-                    if (data == 3) return "Kết thúc";
-                    if (data == 3) return "Đang xử lý";
+                    if (data == 4) return "Kết thúc";
+                    if (data == 5) return "Đang hoạt động";
                     return "Unknown";
                 }
             },
@@ -242,8 +241,8 @@ function classGrid() {
                     if (data == 1) return "Hoạt động";
                     if (data == 2) return "Thất bại";
                     if (data == 3) return "Ra trường";
-                    if (data == 3) return "Kết thúc";
-                    if (data == 3) return "Đang xử lý";
+                    if (data == 4) return "Kết thúc";
+                    if (data == 5) return "Đang hoạt động";
                     return "Unknown";
                 }
             },
