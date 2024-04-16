@@ -104,9 +104,16 @@
         student_No_Class();
         classGrid();
         $("#createClass").click(function () {
-            createClass_Student(function () {
-                toastr.success('Gán môn học cho giáo viên thành công');
-            });
+            if (selectedIdsUser.length == 0) {
+                toastr.warning('Vui lòng chọn học sinh để add vào lớp');
+            } else if (selectedRowIdClass == null) {            
+                toastr.warning('Vui lòng chọn lớp học');
+            }
+            else {
+                createClass_Student(function () {
+                    toastr.success('Gán môn học cho giáo viên thành công');
+                });
+            }
         });
         $('#student_class_update_form').on('submit', function (event) {
             let ids = $('#student_selected').val()
