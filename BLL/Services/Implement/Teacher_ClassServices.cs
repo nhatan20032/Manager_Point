@@ -235,5 +235,23 @@ namespace BLL.Services.Implement
                 throw;
             }
         }
+
+        public async Task<bool> Remove_Item_By_IdUser_and_IdSubject(int userId, int subjectId)
+        {
+            try
+            {
+                var objToRemove = await _appContext.Teacher_Classes.SingleOrDefaultAsync(x => x.UserId == userId && x.SubjectId == subjectId);
+                if (objToRemove == null) return false;
+                var local = _appContext.Teacher_Classes.Local.FirstOrDefault(x => x.UserId == userId && x.SubjectId == subjectId);
+                _appContext.Teacher_Classes.Remove(local != null ? local : objToRemove);
+                await _appContext.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in Remove_Item: {ex.Message}");
+                throw;
+            }
+        }
     }
 }

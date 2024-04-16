@@ -177,7 +177,7 @@ function Get_Subject_Teacher(idClass) {
                 $.each(response, function (index, teacher) {
                     // Tạo một phần tử div để hiển thị thông tin giáo viên
                     var cardHtml = `
-                        <div class="card mt-3" style="width: 28rem;">
+                        <div class="card mt-3" style="width: 28rem;" id="teacherCard">
                             <img class="card-img-top" src="${teacher.data.AvatarUrl}" alt="${teacher.data.Name}">
                             <div class="card-body">
                                 <h3 class="card-title">Tên giáo viên: ${teacher.data.Name}</h3>
@@ -185,6 +185,7 @@ function Get_Subject_Teacher(idClass) {
                                 <h5 class="card-title">Bộ môn dạy tại lớp: ${teacher.subjectInClass}</h5>
                                 <p class="card-text">Mã người dùng: ${teacher.data.User_Code}</p>
                                 <p class="card-text">Số điện thoại: ${teacher.data.PhoneNumber}</p>
+                                <button class="btn btn-danger button_delete" style="display: none;" onclick="Delete_Teacher_Subject(${teacher.data.Id}, ${teacher.idSubject}, ${idClass})">Xoá giáo viên bộ môn</button>
                             </div>
                         </div>
                     `;
@@ -209,6 +210,31 @@ function Get_Subject_Teacher(idClass) {
     });
 }
 
+function Delete_Teacher_Subject(userId, subjectId, idClass) {
+    swal({
+        title: "Bạn chắc chắn muốn xóa?",
+        text: "Hành động này không thể hoàn tác!",
+        icon: "warning",
+        buttons: ["Hủy", "Xóa"],
+        dangerMode: true,
+    }).then((willDelete) => {
+        if (willDelete) {
+            $.ajax({
+                url: `https://localhost:44335/teacher_class/Remove_Item_By_IdUser_and_IdSubject/?userId=${userId}&subjectId=${subjectId}`,
+                method: "DELETE",
+                success: function () {
+                    Get_Subject_Teacher(idClass);
+                    $('#myToggle').removeClass('active');
+                }
+            })
+        } else {
+            // Người dùng nhấn Hủy
+            swal("Hủy xóa!", {
+                icon: "info",
+            });
+        }
+    });
+}
 
 function Add_Teacher_HomeRoom(idClass, callback) {
     var mergedData = [];
