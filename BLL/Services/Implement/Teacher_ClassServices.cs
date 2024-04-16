@@ -85,9 +85,9 @@ namespace BLL.Services.Implement
                         addSubjectTeacher.Add(teacherClass);
                     }
                 }
-                if (addSubjectTeacher == null)
+                if (addSubjectTeacher.Count() == 0)
                 {
-                    return "Đã có giáo viên môn này ở trong lớp";
+                    return "exist";
                 }
                 // Thêm danh sách giáo viên chủ nhiệm vào context
                 _appContext.Teacher_Classes.AddRange(addSubjectTeacher);

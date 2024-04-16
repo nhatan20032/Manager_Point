@@ -23,7 +23,7 @@
 
     .card {
         display: inline-block;
-        margin-right: 50px;
+        margin-right: 30px;
         vertical-align: top;
     }
 </style>
@@ -91,18 +91,26 @@
         Get_Teacher_No_Subject();
         Get_Subject_Teacher(id);
         $('#add_homeroom').click(function () {
-            Add_Teacher_HomeRoom(id, function () {
-                toastr.success('Thêm giáo viên chủ nhiệm thành công');
-                let = $('#updateModal').modal('hide');
-                window.location.href = '/Class/Add_Teacher_To_Class?id=' + id;
-            });
+            if (selectedIdsUser.length == 0) {
+                toastr.warning('Vui lòng chọn giáo viên chủ nhiệm');
+            } else {
+                Add_Teacher_HomeRoom(id, function () {
+                    toastr.success('Thêm giáo viên chủ nhiệm thành công');
+                    $('#updateModal').modal('hide');
+                    Get_HomeRoom_Teacher(id);
+                });
+            }
         })
         $('#change_homeroom').click(function () {
-            editSubject(id, function () {
-                toastr.success('Thêm giáo viên chủ nhiệm thành công');
-                let = $('#updateModal').modal('hide');
-                window.location.href = '/Class/Add_Teacher_To_Class?id=' + id;
-            });
+            if (selectedIdsUser.length == 0) {
+                toastr.warning('Vui lòng chọn giáo viên thay thế');
+            } else {
+                editSubject(id, function () {
+                    toastr.success('Thêm giáo viên chủ nhiệm thành công');
+                    let = $('#updateModal').modal('hide');
+                    Get_HomeRoom_Teacher(id);
+                });
+            }
         })
         $('#create_homeroom').click(function () {
             $('#button_addHR').show();
@@ -118,11 +126,18 @@
         });
         $('#add_subject_class').click(function () {
             var idSubject = $('#subject_selected').val();
-            Create_Subject_Class_Teacher(id, idSubject, function () {
-                toastr.success('Thêm giáo viên bộ môn thành công');
-                let = $('#updateSubjectModal').modal('hide');
-                window.location.href = '/Class/Add_Teacher_To_Class?id=' + id;
-            });
+            if (idSubject == 0) {
+                toastr.warning('Vui lòng chọn môn giảng dạy');
+            } else if (selectedIdsUser.length == 0) {
+                toastr.warning('Vui lòng chọn giáo viên cho bộ môn');
+            }
+            else {
+                Create_Subject_Class_Teacher(id, idSubject, function () {
+                    toastr.success('Thêm giáo viên bộ môn thành công');
+                    let = $('#updateSubjectModal').modal('hide');
+                    Get_Subject_Teacher(id);
+                });
+            }
         })
     });
 </script>
