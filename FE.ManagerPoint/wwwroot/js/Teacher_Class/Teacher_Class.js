@@ -132,6 +132,7 @@ function Get_HomeRoom_Teacher(idClass) {
             if (response != null) {
                 // Lặp qua từng đối tượng trong dữ liệu và tạo card
                 console.log(response);
+                $('#cardTeacher').empty();
                 var cardHtml = `
                         <div class="card mt-3" style="width: 100%">
                             <div class="card-body">
@@ -393,14 +394,16 @@ function Create_Subject_Class_Teacher(idClass, idSubject, callback) {
         data: JSON.stringify(mergedData),
         contentType: 'application/json',
         success: function (res) {
-            if (res && res.length < 0) {
-                toastr.error('Đã xảy ra lỗi xin vui lòng thử lại');
+            if (res === "exist") {
+                console.log(res);
+                toastr.warning('Giáo viên dạy môn này đã tồn tại vui lòng kiểm tra');
+            } else {
+                if (callback && typeof callback === "function") {
+                    callback();
+                }
+                $('#teacher_subject_table').DataTable().ajax.reload();
+                Get_Subject_Teacher(idClass);
             }
-            if (callback && typeof callback === "function") {
-                callback();
-            }
-            $('#teacher_subject_table').DataTable().ajax.reload();
-            Get_Subject_Teacher(idClass);
         }
     })
 }
