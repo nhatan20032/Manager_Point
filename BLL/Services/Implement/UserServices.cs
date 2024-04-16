@@ -16,7 +16,6 @@ using OfficeOpenXml;
 using System.Globalization;
 using Newtonsoft.Json;
 using BLL.ViewModels.Teacher_Class;
-using BLL.ViewModels.Class;
 
 
 namespace BLL.Services.Implement
@@ -291,6 +290,7 @@ namespace BLL.Services.Implement
                     .AsQueryable()
                     .ProjectTo<vm_teacher>(_mapper.ConfigurationProvider).SingleOrDefault(x => x.Id == classes.UserId),
                     subjectInClass = _appContext.Subjects.SingleOrDefault(x => x.Id == classes.SubjectId)!.Name,
+                    idSubject = _appContext.Subjects.SingleOrDefault(x => x.Id == classes.SubjectId)!.Id,
                 }).ToList();
 
                 var jsonResult = JsonConvert.SerializeObject(resultList, Formatting.Indented);

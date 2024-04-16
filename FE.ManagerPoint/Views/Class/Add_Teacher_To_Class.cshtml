@@ -26,6 +26,35 @@
         margin-right: 30px;
         vertical-align: top;
     }
+
+    .toggle-btn {
+        display: inline-block;
+        cursor: pointer;
+        width: 50px;
+        height: 30px;
+        background-color: #ccc;
+        position: relative;
+        border-radius: 15px;
+        padding: 3px;
+    }
+
+        .toggle-btn .handle {
+            width: 24px;
+            height: 24px;
+            background-color: #fff;
+            border-radius: 50%;
+            position: absolute;
+            left: 3px;
+            transition: left 0.3s;
+        }
+
+        .toggle-btn.active {
+            background-color: #2ecc71;
+        }
+
+            .toggle-btn.active .handle {
+                left: 23px;
+            }
 </style>
 <div class="row">
     <div class="card" style="width: 100%;">
@@ -57,6 +86,10 @@
         <div class="tab-pane fade" id="nav-subject_teacher" role="tabpanel" aria-labelledby="nav-subject_teacher-tab">
             <div class="row mt-3">
                 <div class="col-md-12 d-flex justify-content-end mb-3">
+                    <h5 class="mt-1 me-3">Chỉnh sửa</h5>
+                    <div class="toggle-btn me-3" id="myToggle">
+                        <div class="handle"></div>
+                    </div>
                     <button id="create_subject_teacher" class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#updateSubjectModal">Thêm giáo viên bộ môn</button>
                 </div>
             </div>
@@ -90,6 +123,14 @@
         Get_Teacher_No_HomeRoom();
         Get_Teacher_No_Subject();
         Get_Subject_Teacher(id);
+        $('#myToggle').click(function () {
+            $(this).toggleClass('active');
+            if ($(this).hasClass('active')) {
+                $('.button_delete').show()
+            } else {
+                $('.button_delete').hide()
+            }
+        });
         $('#add_homeroom').click(function () {
             if (selectedIdsUser.length == 0) {
                 toastr.warning('Vui lòng chọn giáo viên chủ nhiệm');

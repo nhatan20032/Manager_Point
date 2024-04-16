@@ -46,6 +46,11 @@ namespace API.Controllers
         public async Task<IActionResult> Remove_Item(int id)
         {
             return Ok(await _teacher_ClassServices.Remove_Item(id));
+        }        
+        [HttpDelete("/teacher_class/Remove_Item_By_IdUser_and_IdSubject")]
+        public async Task<IActionResult> Remove_Item_By_IdUser_and_IdSubject(int userId, int subjectId)
+        {
+            return Ok(await _teacher_ClassServices.Remove_Item_By_IdUser_and_IdSubject(userId, subjectId));
         }
 
         [HttpDelete("/teacher_class/batch_remove")]
