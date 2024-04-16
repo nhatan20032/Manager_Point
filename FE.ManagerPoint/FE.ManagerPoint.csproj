@@ -27,7 +27,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\excel\" />
     <Folder Include="wwwroot\uploads\" />
   </ItemGroup>
 
