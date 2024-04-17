@@ -3,21 +3,24 @@ using AutoMapper.QueryableExtensions;
 using BLL.Services.Interface;
 using BLL.ViewModels;
 using BLL.ViewModels.Class;
+using BLL.ViewModels.Teacher_Class;
+using BLL.ViewModels.User;
 using Manager_Point.ApplicationDbContext;
 using Manager_Point.Models;
+using Manager_Point.Models.Enum;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Primitives;
 using Newtonsoft.Json;
-using System.Data.Entity;
 
 namespace BLL.Services.Implement
 {
-	public class ClassServices : IClassServices
+    public class ClassServices : IClassServices
     {
         private readonly AppDbContext _appContext;
-		private readonly IHttpContextAccessor _httpContextAccessor;
-		private readonly IMapper _mapper;
-        public ClassServices( IHttpContextAccessor httpContextAccessor,IMapper mapper)
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IMapper _mapper;
+        public ClassServices(IHttpContextAccessor httpContextAccessor, IMapper mapper)
         {
             _httpContextAccessor = httpContextAccessor;
             _appContext = new AppDbContext();
@@ -77,25 +80,25 @@ namespace BLL.Services.Implement
             }
         }
 
-        public async Task<string> Get_All_Async(int offset = 0, int limit = 10, string search="")
+        public async Task<string> Get_All_Async(int offset = 0, int limit = 10, string search = "")
         {
             try
             {
-				int totalCount = _appContext.Classes
-					  .Where(s => string.IsNullOrEmpty(search) || s.Name!.Contains(search))
-					  .Count();
+                int totalCount = _appContext.Classes
+                      .Where(s => string.IsNullOrEmpty(search) || s.Name!.Contains(search))
+                      .Count();
 
-				int draw = 1;
-				var httpRequest = _httpContextAccessor.HttpContext!.Request;
-				if (httpRequest.Query.TryGetValue("draw", out StringValues valueDraw)) try { draw = int.Parse(valueDraw!); } catch { }
-               
-				var vm_class =  _appContext.Classes.ProjectTo<vm_class>(_mapper.ConfigurationProvider).Where(t => string.IsNullOrEmpty(search) || t.Name!.Contains(search)).Skip(offset).Take(limit).ToList();
-				var paginatedResult = new Pagination<vm_class>
+                int draw = 1;
+                var httpRequest = _httpContextAccessor.HttpContext!.Request;
+                if (httpRequest.Query.TryGetValue("draw", out StringValues valueDraw)) try { draw = int.Parse(valueDraw!); } catch { }
+
+                var vm_class = _appContext.Classes.ProjectTo<vm_class>(_mapper.ConfigurationProvider).Where(t => string.IsNullOrEmpty(search) || t.Name!.Contains(search)).Skip(offset).Take(limit).ToList();
+                var paginatedResult = new Pagination<vm_class>
                 {
-					draw = draw,
-					recordsTotal = totalCount,
-					recordsFiltered = totalCount,
-					data = vm_class
+                    draw = draw,
+                    recordsTotal = totalCount,
+                    recordsFiltered = totalCount,
+                    data = vm_class
                 };
 
                 var jsonResult = JsonConvert.SerializeObject(paginatedResult, Formatting.Indented);
@@ -121,7 +124,7 @@ namespace BLL.Services.Implement
         {
             try
             {
-                var classes =  _appContext.Classes.ProjectTo<vm_class>(_mapper.ConfigurationProvider).SingleOrDefault(x => x.Id == id);
+                var classes = _appContext.Classes.ProjectTo<vm_class>(_mapper.ConfigurationProvider).SingleOrDefault(x => x.Id == id);
                 if (classes == null) return null!;
                 return classes;
             }
@@ -179,6 +182,38 @@ namespace BLL.Services.Implement
                 Console.WriteLine($"Error in Remove_Item: {ex.Message}");
                 throw;
             }
+        }
+
+        public async Task<string> GetClassOnBoard(int idUser)
+        {
+            var vm_class = await _appContext.Teacher_Classes
+                .AsQueryable()
+                .ProjectTo<vm_teacher_class_subject>(_mapper.ConfigurationProvider)
+                .Where(x => x.UserId == idUser && x.TypeTeacher == TypeTeacher.Subject_Teacher)
+                .ToListAsync();
+
+            var user = await _appContext.Users
+                .Include(u => u.User_Roles!).ThenInclude(ur => ur.Role!)
+                .Include(u => u.Subject_Teachers!).ThenInclude(st => st.Subject)
+                .Include(u => u.Teacher_Classes!).ThenInclude(tc => tc.Class)
+                .AsQueryable()
+                .ProjectTo<vm_teacher>(_mapper.ConfigurationProvider)
+                .SingleOrDefaultAsync(x => x.Id == idUser);
+
+            if (vm_class == null) { return null!; }
+            // Group by ClassId and select one object from each group
+            var resultList = vm_class
+                .GroupBy(c => c.ClassId)
+                .Select(group => new
+                {
+                    userData = user,
+                    classData = _appContext.Classes.FirstOrDefault(x => x.Id == group.Key),
+                    subjects = group.Select(g => _appContext.Subjects.FirstOrDefault(s => s.Id == g.SubjectId)).ToList()
+                })
+                .ToList();
+
+            var jsonResult = JsonConvert.SerializeObject(resultList, Formatting.Indented);
+            return jsonResult;
         }
     }
 }

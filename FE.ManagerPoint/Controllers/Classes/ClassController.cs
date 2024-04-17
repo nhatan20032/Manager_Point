@@ -27,5 +27,11 @@ namespace FE.ManagerPoint.Controllers.Classes
             var classInfo = _services.Get_By_Id(id);
             return View(classInfo);
         }
+        public async Task<IActionResult> ClassOnBoard(int idUser)
+        {
+            var classInfo = await _services.GetClassOnBoard(idUser);
+            ViewBag.ClassInfoJson = classInfo;
+            return View();
+        }
     }
 }
