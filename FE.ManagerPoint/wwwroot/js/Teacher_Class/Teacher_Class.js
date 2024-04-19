@@ -20,12 +20,10 @@
         "processing": true,
         "serverSide": true,
         "ajax": {
-            "url": "https://localhost:44335/user/Get_All_Teacher_No_HomeRoom",
+            "url": "https://localhost:44335/user/get_all_teacher",
             "data": function (d) {
                 delete d.columns;
                 d.search = d.search.value;
-                //d.classes = $("#search_class").val();
-                //d.subject = $("#search_subject").val();
             },
             "dataSrc": "data"
         },
@@ -142,7 +140,6 @@ function Get_HomeRoom_Teacher(idClass) {
                                     </div>
                                     <div class="col-9">
                                         <h3 class="card-title">Tên giáo viên: ${response.name}</h5>
-                                        <h5 class="card-title">Mã Lớp: ${response.teacher_Class_Code}</h5>
                                         <p class="card-text">Mã người dùng: ${response.user_Code}</p>
                                         <button id="editHomeRoom" class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#updateModal">Đổi giáo viên chủ nhiệm</button>
                                     </div>
@@ -253,13 +250,15 @@ function Add_Teacher_HomeRoom(idClass, callback) {
         data: JSON.stringify(mergedData),
         contentType: 'application/json',
         success: function (res) {
-            if (res && res.length < 0) {
-                toastr.error('Đã xảy ra lỗi xin vui lòng thử lại');
+            console.log(res)
+            if (res === "During") {
+                toastr.warning('Giáo viên đã có lớp chủ nhiệm, vui lòng kiểm tra lại!');
+            } else {
+                if (callback && typeof callback === "function") {
+                    callback();
+                }
+                $('#teacher_table').DataTable().ajax.reload();
             }
-            if (callback && typeof callback === "function") {
-                callback();
-            }
-            $('#teacher_table').DataTable().ajax.reload();
         }
     })
 }
