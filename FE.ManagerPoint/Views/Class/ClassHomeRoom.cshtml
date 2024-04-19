@@ -9,7 +9,35 @@
         vertical-align: top;
     }
 </style>
-<div id="classInfoDiv"></div>
+<div class="nav nav-tabs" id="nav-tab" role="tablist">
+    <button class="nav-link active" id="nav-10-tab" data-bs-toggle="tab" data-bs-target="#nav-10" type="button" role="tab" aria-controls="nav-10" aria-selected="false">Lớp 10</button>
+    <button class="nav-link" id="nav-11-tab" data-bs-toggle="tab" data-bs-target="#nav-11" type="button" role="tab" aria-controls="nav-11" aria-selected="true">Lớp 11</button>
+    <button class="nav-link" id="nav-12-tab" data-bs-toggle="tab" data-bs-target="#nav-12" type="button" role="tab" aria-controls="nav-12" aria-selected="true">Lớp 12</button>
+</div>
+<div class="tab-content" id="nav-tabContent">
+    <div class="tab-pane fade show active" id="nav-10" role="tabpanel" aria-labelledby="nav-10-tab">
+        <div class="row mt-3">
+            <div class="col-md-12">
+                <div id="classInfo10Div"></div>
+            </div>
+        </div>
+    </div>
+    <div class="tab-pane fade" id="nav-11" role="tabpanel" aria-labelledby="nav-11-tab">
+        <div class="row mt-3">
+            <div class="col-md-12">
+                <div id="classInfo11Div"></div>
+            </div>
+        </div>
+    </div>    
+    <div class="tab-pane fade" id="nav-12" role="tabpanel" aria-labelledby="nav-12-tab">
+        <div class="row mt-3">
+            <div class="col-md-12">
+                <div id="classInfo12Div"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script src="~/js/ClassHomeRoom/ClassHomeRoom.js"></script>
 <script>
     var classInfo = @Html.Raw(ViewBag.ClassInfoJson);
