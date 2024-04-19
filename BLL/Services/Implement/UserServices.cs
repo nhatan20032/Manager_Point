@@ -390,15 +390,16 @@ namespace BLL.Services.Implement
                 .Include(u => u.Student_Classes!).ThenInclude(tc => tc.Class).ThenInclude(c => c.Course)
                 .AsQueryable()
                 .ProjectTo<vm_student>(_mapper.ConfigurationProvider).Where(t => string.IsNullOrEmpty(search) || t.Name!.Contains(search))
-                    .Where(t => t.Role_Code!.Contains("hs"));
-                if (classes != 0) vm_UserQuery = vm_UserQuery.Where(t => t.Student_Class_id!.Contains(classes));
+                .Where(u => u.Role_Code!.All(rr => rr == "hs"));
+
+                if (classes != 0) vm_UserQuery = vm_UserQuery.Where(t => t.Student_Class_id!.All(t => t == classes));
                 if (check_class == 1)
                 {
-                    vm_UserQuery = vm_UserQuery.Where(t => t.Student_Class_Code!.Any());
+                    vm_UserQuery = vm_UserQuery.Where(t => t.Student_Class_Code!.Count > 0);
                 }
                 else if (check_class == 2)
                 {
-                    vm_UserQuery = vm_UserQuery.Where(t => !t.Student_Class_Code!.Any());
+                    vm_UserQuery = vm_UserQuery.Where(t => t.Student_Class_Code!.Count == 0);
                 }
                 int totalCount = await vm_UserQuery.CountAsync();
                 var final_result = await vm_UserQuery

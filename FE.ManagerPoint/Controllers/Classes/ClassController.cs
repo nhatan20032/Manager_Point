@@ -39,5 +39,11 @@ namespace FE.ManagerPoint.Controllers.Classes
             ViewBag.ClassInfoJson = classInfor;
             return View();
         }
+        public async Task<IActionResult> ClassDetail(int idClass)
+        {
+            var classInfor = await _services.GradePointByClass(idClass);
+            ViewBag.ClassInfoJson = classInfor;
+            return View();
+        }
     }
 }

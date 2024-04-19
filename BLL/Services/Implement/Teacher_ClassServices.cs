@@ -119,6 +119,10 @@ namespace BLL.Services.Implement
             }
         }
 
+        public Task<bool> Batch_Remove_Item(List<int> ids)
+        {
+            throw new NotImplementedException();
+        }
 
         public async Task<bool> Batch_Remove_Item_HomeRoom(int idClass)
         {
@@ -140,125 +144,30 @@ namespace BLL.Services.Implement
                 throw;
             }
         }
-        public async Task<bool> Batch_Remove_Item_Subject(int UserId)
+
+        public Task<bool> Batch_Remove_Item_Subject(int UserId)
         {
-            try
-            {
-                var class_teacher = _appContext.Teacher_Classes.Where(t => t.UserId == UserId && t.TypeTeacher == TypeTeacher.Subject_Teacher).ToList();
-
-                if (class_teacher.Any())
-                {
-                    _appContext.Teacher_Classes.RemoveRange(class_teacher);
-                    await _appContext.SaveChangesAsync();
-                }
-
-                return true;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error in Batch_Remove_Item: {ex.Message}");
-                throw;
-            }
+            throw new NotImplementedException();
         }
 
-        public async Task<bool> Batch_Remove_Item(List<int> ids)
+        public Task<int> Create_Item(vm_teacher_class request)
         {
-            try
-            {
-                var teacher_class = _appContext.Teacher_Classes.Where(t => ids.Contains(t.Id)).ToList();
-
-                if (teacher_class.Any())
-                {
-                    _appContext.Teacher_Classes.RemoveRange(teacher_class);
-                    await _appContext.SaveChangesAsync();
-                }
-
-                return true;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error in Batch_Remove_Item: {ex.Message}");
-                throw;
-            }
+            throw new NotImplementedException();
         }
 
-        public async Task<int> Create_Item(vm_teacher_class request)
+        public Task<int> Modified_Item(int id, vm_teacher_class request)
         {
-            try
-            {
-                var obj = _mapper.Map<Teacher_Class>(request);
-                _appContext.Teacher_Classes.AddRange(obj);
-                await _appContext.SaveChangesAsync();
-                return obj.Id;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error in Batch_Create_Item: {ex.Message}");
-                throw;
-            }
+            throw new NotImplementedException();
         }
 
-        public async Task<int> Modified_Item(int id, vm_teacher_class request)
+        public Task<bool> Remove_Item(int id)
         {
-            try
-            {
-                var objForUpdate = await _appContext.Teacher_Classes.FindAsync(id);
-                if (objForUpdate == null) return -1;
-                objForUpdate.ClassId = request.ClassId;
-                objForUpdate.UserId = request.UserId;
-                objForUpdate.TypeTeacher = request.TypeTeacher;
-                await _appContext.SaveChangesAsync();
-                return objForUpdate.Id;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error in Modified_Item: {ex.Message}");
-                throw;
-            }
+            throw new NotImplementedException();
         }
 
-        public async Task<bool> Remove_Item(int id)
+        public Task<bool> Remove_Item_By_IdUser_and_IdSubject(int userId, int subjectId)
         {
-            try
-            {
-                var objToRemove = await _appContext.Teacher_Classes.FindAsync(id);
-                // Xử lý trường hợp không tìm thấy đối tượng
-                if (objToRemove == null) return false;
-
-                // Kiểm tra xem đối tượng đã được theo dõi trong DbContext hay không
-                var local = _appContext.Teacher_Classes.Local.FirstOrDefault(x => x.Id == id);
-
-                // Sử dụng toán tử ba ngôi để xác định đối tượng cần xóa
-                _appContext.Teacher_Classes.Remove(local != null ? local : objToRemove);
-
-                // Lưu các thay đổi vào cơ sở dữ liệu
-                await _appContext.SaveChangesAsync();
-
-                return true;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error in Remove_Item: {ex.Message}");
-                throw;
-            }
-        }
-
-        public async Task<bool> Remove_Item_By_IdUser_and_IdSubject(int userId, int subjectId)
-        {
-            try
-            {
-                var objToRemove = await _appContext.Teacher_Classes.SingleOrDefaultAsync(x => x.UserId == userId && x.SubjectId == subjectId);
-                if (objToRemove == null) return false;
-                var local = _appContext.Teacher_Classes.Local.FirstOrDefault(x => x.UserId == userId && x.SubjectId == subjectId);
-                _appContext.Teacher_Classes.Remove(local != null ? local : objToRemove);
-                await _appContext.SaveChangesAsync();
-                return true;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error in Remove_Item: {ex.Message}");
-                throw;
-            }
+            throw new NotImplementedException();
         }
     }
 }
