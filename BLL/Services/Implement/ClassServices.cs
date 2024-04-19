@@ -12,7 +12,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Primitives;
 using Newtonsoft.Json;
-using System;
 
 namespace BLL.Services.Implement
 {
@@ -201,8 +200,7 @@ namespace BLL.Services.Implement
                 .ProjectTo<vm_teacher>(_mapper.ConfigurationProvider)
                 .SingleOrDefaultAsync(x => x.Id == idUser);
 
-            if (vm_class == null) { return null!; }
-            // Group by ClassId and select one object from each group
+            if (vm_class == null || user == null) { return null!; }
             var resultList = vm_class
                 .GroupBy(c => c.ClassId)
                 .Select(group => new
@@ -213,6 +211,36 @@ namespace BLL.Services.Implement
                     homeroom = _appContext.Users.FirstOrDefault(u =>
                         _appContext.Teacher_Classes.Any(vc => vc.ClassId == group.Key && vc.TypeTeacher == TypeTeacher.Homeroom_Teacher) && _appContext.Teacher_Classes.FirstOrDefault(vc => vc.ClassId == group.Key && vc.TypeTeacher == TypeTeacher.Homeroom_Teacher)!.UserId == u.Id)?.Name ?? "Chưa có",
                     status = _appContext.Classes.FirstOrDefault(s => s.Id == group.Key)!.Status == Status.During ? "Đang giảng dạy" : "Đã giảng dạy"
+                })
+                .ToList();
+
+            var jsonResult = JsonConvert.SerializeObject(resultList, Formatting.Indented);
+            return jsonResult;
+        }
+        public async Task<string> GetHomeRoomOnBoard(int idUser)
+        {
+            var vm_class = await _appContext.Teacher_Classes
+                .AsQueryable()
+                .ProjectTo<vm_teacher_class_subject>(_mapper.ConfigurationProvider)
+                .Where(x => x.UserId == idUser && x.TypeTeacher == TypeTeacher.Homeroom_Teacher)
+                .ToListAsync();
+
+            var user = await _appContext.Users
+                .Include(u => u.User_Roles!).ThenInclude(ur => ur.Role!)
+                .Include(u => u.Subject_Teachers!).ThenInclude(st => st.Subject)
+                .Include(u => u.Teacher_Classes!).ThenInclude(tc => tc.Class)
+                .AsQueryable()
+                .ProjectTo<vm_teacher>(_mapper.ConfigurationProvider)
+                .SingleOrDefaultAsync(x => x.Id == idUser);
+
+            if (vm_class == null || user == null) { return null!; }
+            var resultList = vm_class
+                .GroupBy(c => c.ClassId)
+                .Select(group => new
+                {
+                    userData = user,
+                    classData = _appContext.Classes.FirstOrDefault(x => x.Id == group.Key),
+                    status = _appContext.Classes.FirstOrDefault(s => s.Id == group.Key)!.Status == Status.During ? "Đang chủ nhiệm" : "Đã chủ nhiệm"
                 })
                 .ToList();
 

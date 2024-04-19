@@ -34,13 +34,20 @@ namespace BLL.Services.Implement
                         .AnyAsync(tc => tc.ClassId == teacherClass.ClassId && tc.TypeTeacher == TypeTeacher.Homeroom_Teacher);
 
                     // Nếu lớp đã có giáo viên chủ nhiệm, bỏ qua
-                    if (hasExistingHomeRoom)
+                    if (!hasExistingHomeRoom)
                     {
-                        return $"Lớp {teacherClass.ClassId} đã có giáo viên chủ nhiệm.";
-                    }
+                        var getClassIds = await _appContext.Teacher_Classes
+                         .Where(t => t.UserId == teacherClass.UserId)
+                         .Select(t => t.ClassId).ToListAsync();
+                        var classStatusDuring = await _appContext.Classes
+                        .AnyAsync(c => getClassIds.Contains(c.Id) && c.Status == Status.During);
+                        if (classStatusDuring)
+                        {
+                            return "During";
+                        }
 
-                    // Nếu lớp chưa có giáo viên chủ nhiệm, thêm vào danh sách để thêm mới
-                    addHomeRoom.Add(teacherClass);
+                        addHomeRoom.Add(teacherClass);
+                    }
                 }
 
                 // Thêm danh sách giáo viên chủ nhiệm vào context

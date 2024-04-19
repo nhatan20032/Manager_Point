@@ -1,0 +1,18 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Lớp Chủ Nhiệm";
+}
+<style>
+    .card {
+        display: inline-block;
+        margin-right: 10px;
+        vertical-align: top;
+    }
+</style>
+<div id="classInfoDiv"></div>
+<script src="~/js/ClassHomeRoom/ClassHomeRoom.js"></script>
+<script>
+    var classInfo = @Html.Raw(ViewBag.ClassInfoJson);
+    console.log(classInfo);
+    GetClassOnBoard(classInfo)
+</script>

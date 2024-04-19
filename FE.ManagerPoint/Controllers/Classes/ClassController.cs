@@ -33,5 +33,11 @@ namespace FE.ManagerPoint.Controllers.Classes
             ViewBag.ClassInfoJson = classInfo;
             return View();
         }
+        public async Task<IActionResult> ClassHomeRoom(int idUser)
+        {
+            var classInfor = await _services.GetHomeRoomOnBoard(idUser);
+            ViewBag.ClassInfoJson = classInfor;
+            return View();
+        }
     }
 }
