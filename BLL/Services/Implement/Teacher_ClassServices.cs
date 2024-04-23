@@ -65,27 +65,43 @@ namespace BLL.Services.Implement
                 throw;
             }
         }
-
-
-        public async Task<List<int>> Batch_Create_Item_Subject(List<vm_teacher_class> requests)
+        public async Task<string> Batch_Create_Item_Subject(List<vm_teacher_class_subject> requests)
         {
             try
             {
                 var obj = _mapper.Map<List<Teacher_Class>>(requests);
-                var teacherClassesToAdd = new List<Teacher_Class>();
+                var addSubjectTeacher = new List<Teacher_Class>();
 
                 foreach (var teacherClass in obj)
                 {
-                    bool isSubjectExist = teacherClassesToAdd.Any(tc => tc.SubjectId == teacherClass.SubjectId);
-                    if (!isSubjectExist) { teacherClassesToAdd.Add(teacherClass); }
-                }
+                    bool hasExistingSubjectTeacher = await _appContext.Teacher_Classes
+                        .AnyAsync(tc => tc.SubjectId == teacherClass.SubjectId && tc.ClassId == teacherClass.ClassId && tc.TypeTeacher == TypeTeacher.Subject_Teacher);
 
-                // Thêm danh sách giáo viên không trùng môn học vào context
-                _appContext.Teacher_Classes.AddRange(teacherClassesToAdd);
+                    // Nếu lớp đã có giáo viên chủ nhiệm, bỏ qua
+                    if (!hasExistingSubjectTeacher)
+                    {
+                        addSubjectTeacher.Add(teacherClass);
+                    }
+                }
+                if (addSubjectTeacher.Count() == 0)
+                {
+                    return "exist";
+                }
+                // Thêm danh sách giáo viên chủ nhiệm vào context
+                _appContext.Teacher_Classes.AddRange(addSubjectTeacher);
                 await _appContext.SaveChangesAsync();
 
-                var ids = teacherClassesToAdd.Select(t => t.Id).ToList() ?? new List<int>();
-                return ids;
+                var ids = addSubjectTeacher.Select(t => t.Id).ToList();
+                var response = new
+                {
+                    Message = "Giáo viên bộ môn đã được thêm thành công.",
+                    AddedIds = ids
+                };
+
+                // Chuyển object thành chuỗi JSON
+                var jsonResponse = JsonConvert.SerializeObject(response);
+
+                return jsonResponse;
             }
             catch (Exception ex)
             {
@@ -93,6 +109,7 @@ namespace BLL.Services.Implement
                 throw;
             }
         }
+
 
         public Task<bool> Batch_Remove_Item(List<int> ids)
         {
