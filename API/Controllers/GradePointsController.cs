@@ -34,8 +34,8 @@ namespace API.Controllers
 		{
 			return Ok(await _gradePointService.Get_By_Id(id));
 		}
-
-		[HttpPost("/gradepoint/create")]
+    
+        [HttpPost("/gradepoint/create")]
 		public async Task<IActionResult> Create_Item([FromBody] vm_create_gradepoint request)
 		{
 			if (request == null) { return BadRequest("request null check object again, make sure request have a value"); }
