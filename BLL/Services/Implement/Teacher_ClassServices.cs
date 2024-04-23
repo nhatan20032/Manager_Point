@@ -34,13 +34,20 @@ namespace BLL.Services.Implement
                         .AnyAsync(tc => tc.ClassId == teacherClass.ClassId && tc.TypeTeacher == TypeTeacher.Homeroom_Teacher);
 
                     // Nếu lớp đã có giáo viên chủ nhiệm, bỏ qua
-                    if (hasExistingHomeRoom)
+                    if (!hasExistingHomeRoom)
                     {
-                        return $"Lớp {teacherClass.ClassId} đã có giáo viên chủ nhiệm.";
-                    }
+                        var getClassIds = await _appContext.Teacher_Classes
+                         .Where(t => t.UserId == teacherClass.UserId)
+                         .Select(t => t.ClassId).ToListAsync();
+                        var classStatusDuring = await _appContext.Classes
+                        .AnyAsync(c => getClassIds.Contains(c.Id) && c.Status == Status.During);
+                        if (classStatusDuring)
+                        {
+                            return "During";
+                        }
 
-                    // Nếu lớp chưa có giáo viên chủ nhiệm, thêm vào danh sách để thêm mới
-                    addHomeRoom.Add(teacherClass);
+                        addHomeRoom.Add(teacherClass);
+                    }
                 }
 
                 // Thêm danh sách giáo viên chủ nhiệm vào context
@@ -67,25 +74,43 @@ namespace BLL.Services.Implement
         }
 
 
-        public async Task<List<int>> Batch_Create_Item_Subject(List<vm_teacher_class> requests)
+        public async Task<string> Batch_Create_Item_Subject(List<vm_teacher_class_subject> requests)
         {
             try
             {
                 var obj = _mapper.Map<List<Teacher_Class>>(requests);
-                var teacherClassesToAdd = new List<Teacher_Class>();
+                var addSubjectTeacher = new List<Teacher_Class>();
 
                 foreach (var teacherClass in obj)
                 {
-                    bool isSubjectExist = teacherClassesToAdd.Any(tc => tc.SubjectId == teacherClass.SubjectId);
-                    if (!isSubjectExist) { teacherClassesToAdd.Add(teacherClass); }
-                }
+                    bool hasExistingSubjectTeacher = await _appContext.Teacher_Classes
+                        .AnyAsync(tc => tc.SubjectId == teacherClass.SubjectId && tc.ClassId == teacherClass.ClassId && tc.TypeTeacher == TypeTeacher.Subject_Teacher);
 
-                // Thêm danh sách giáo viên không trùng môn học vào context
-                _appContext.Teacher_Classes.AddRange(teacherClassesToAdd);
+                    // Nếu lớp đã có giáo viên chủ nhiệm, bỏ qua
+                    if (!hasExistingSubjectTeacher)
+                    {
+                        addSubjectTeacher.Add(teacherClass);
+                    }
+                }
+                if (addSubjectTeacher.Count() == 0)
+                {
+                    return "exist";
+                }
+                // Thêm danh sách giáo viên chủ nhiệm vào context
+                _appContext.Teacher_Classes.AddRange(addSubjectTeacher);
                 await _appContext.SaveChangesAsync();
 
-                var ids = teacherClassesToAdd.Select(t => t.Id).ToList() ?? new List<int>();
-                return ids;
+                var ids = addSubjectTeacher.Select(t => t.Id).ToList();
+                var response = new
+                {
+                    Message = "Giáo viên bộ môn đã được thêm thành công.",
+                    AddedIds = ids
+                };
+
+                // Chuyển object thành chuỗi JSON
+                var jsonResponse = JsonConvert.SerializeObject(response);
+
+                return jsonResponse;
             }
             catch (Exception ex)
             {
@@ -94,6 +119,47 @@ namespace BLL.Services.Implement
             }
         }
 
+
+        public async Task<bool> Batch_Remove_Item_HomeRoom(int idClass)
+        {
+            try
+            {
+                var class_teacher = _appContext.Teacher_Classes.Where(t => t.ClassId == idClass && t.TypeTeacher == TypeTeacher.Homeroom_Teacher).ToList();
+
+                if (class_teacher.Any())
+                {
+                    _appContext.Teacher_Classes.RemoveRange(class_teacher);
+                    await _appContext.SaveChangesAsync();
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in Batch_Remove_Item: {ex.Message}");
+                throw;
+            }
+        }
+        public async Task<bool> Batch_Remove_Item_Subject(int UserId)
+        {
+            try
+            {
+                var class_teacher = _appContext.Teacher_Classes.Where(t => t.UserId == UserId && t.TypeTeacher == TypeTeacher.Subject_Teacher).ToList();
+
+                if (class_teacher.Any())
+                {
+                    _appContext.Teacher_Classes.RemoveRange(class_teacher);
+                    await _appContext.SaveChangesAsync();
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in Batch_Remove_Item: {ex.Message}");
+                throw;
+            }
+        }
 
         public async Task<bool> Batch_Remove_Item(List<int> ids)
         {
@@ -168,6 +234,24 @@ namespace BLL.Services.Implement
                 // Lưu các thay đổi vào cơ sở dữ liệu
                 await _appContext.SaveChangesAsync();
 
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in Remove_Item: {ex.Message}");
+                throw;
+            }
+        }
+
+        public async Task<bool> Remove_Item_By_IdUser_and_IdSubject(int userId, int subjectId)
+        {
+            try
+            {
+                var objToRemove = await _appContext.Teacher_Classes.SingleOrDefaultAsync(x => x.UserId == userId && x.SubjectId == subjectId);
+                if (objToRemove == null) return false;
+                var local = _appContext.Teacher_Classes.Local.FirstOrDefault(x => x.UserId == userId && x.SubjectId == subjectId);
+                _appContext.Teacher_Classes.Remove(local != null ? local : objToRemove);
+                await _appContext.SaveChangesAsync();
                 return true;
             }
             catch (Exception ex)

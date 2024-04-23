@@ -3,9 +3,11 @@ using BLL.Extentions.Automapper;
 using BLL.Services.Implement;
 using BLL.Services.Interface;
 using Manager_Point.ApplicationDbContext;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting.Internal;
 
 namespace BLL.Extentions
 {

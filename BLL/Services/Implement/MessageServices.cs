@@ -10,8 +10,8 @@ using System.Data.Entity;
 
 namespace BLL.Services.Implement
 {
-
-    public class MessageServices : IMessageServices
+	
+	public class MessageServices : IMessageServices
     {
         private readonly AppDbContext _appContext;
         private readonly IMapper _mapper;
