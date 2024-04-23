@@ -81,11 +81,5 @@ namespace API.Controllers
         {
             return Ok(await _classService.Batch_Remove_Item(ids));
         }
-
-        [HttpGet("/class/abc")]
-        public async Task<IActionResult> ABC(int idClass, int? semester = null)
-        {
-            return Ok(await _classService.GradePointByClass(idClass,semester));
-        }
     }
 }
