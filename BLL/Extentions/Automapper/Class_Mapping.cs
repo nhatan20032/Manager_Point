@@ -8,7 +8,7 @@ namespace BLL.Extentions.Automapper
     {
         public Class_Mapping()
         {
-            CreateMap<Class, vm_class>().ForMember(dest => dest.CourseName, opt => opt.MapFrom(srs => srs.Course.Name)).ReverseMap();
+            CreateMap<Class, vm_class>().ForMember(dest => dest.CourseName,opt => opt.MapFrom(srs => srs.Course.Name)).ReverseMap();
             CreateMap<Class, vm_create_class>().ReverseMap();
             CreateMap<Class, vm_update_class>().ReverseMap();
 
