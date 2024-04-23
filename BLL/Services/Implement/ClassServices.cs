@@ -3,7 +3,6 @@ using AutoMapper.QueryableExtensions;
 using BLL.Services.Interface;
 using BLL.ViewModels;
 using BLL.ViewModels.Class;
-using BLL.ViewModels.GradePoint;
 using BLL.ViewModels.Teacher_Class;
 using BLL.ViewModels.User;
 using Manager_Point.ApplicationDbContext;
@@ -13,8 +12,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Primitives;
 using Newtonsoft.Json;
-using System.Collections.Generic;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace BLL.Services.Implement
 {
@@ -268,7 +265,6 @@ namespace BLL.Services.Implement
             var jsonResult = JsonConvert.SerializeObject(resultList, Formatting.Indented);
             return jsonResult;
         }
-
         public async Task<string> GradePointByClass(int idClass, int? semester = null)
         {
             var query = _appContext.GradePoints.Where(x => x.ClassId == idClass);
@@ -357,8 +353,6 @@ namespace BLL.Services.Implement
             var jsonResult = JsonConvert.SerializeObject(paginatedResult, Formatting.Indented);
             return jsonResult;
         }
-
-
 
 
     }

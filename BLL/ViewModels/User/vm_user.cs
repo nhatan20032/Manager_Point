@@ -12,13 +12,13 @@ namespace BLL.ViewModels.User
         public List<string>? Subject_User { get; set; }
         public List<int>? Subject_id { get; set; }
         public List<string>? Teacher_Class_Name { get; set; }
-        public List<string>? Student_Class_Name { get; set; }
+        public List<string>? Student_Class_Name { get; set; }        
         public List<string>? Teacher_Class_Code { get; set; }
         public List<string>? Student_Class_Code { get; set; }
         public List<int>? Student_Class_id { get; set; }
         public List<int>? Teacher_Class_id { get; set; }
-        public List<int>? Course_id { get; set; }
-        public List<string>? Course_Name { get; set; }
+        public List<int>? Course_id{ get; set; }
+        public List<string>? Course_Name{ get; set; }
         public string? User_Code { get; set; }
 
         [JsonIgnore]

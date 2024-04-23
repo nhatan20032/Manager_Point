@@ -3,17 +3,17 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FE.ManagerPoint.Controllers.Classes
 {
-    public class ClassController : Controller
-    {
+	public class ClassController : Controller
+	{
         private readonly IClassServices _services;
         public ClassController(IClassServices services)
         {
             _services = services;
         }
         public IActionResult Index()
-        {
-            return View();
-        }
+		{
+			return View();
+		}
         public IActionResult Student_Class()
         {
             return View();
@@ -27,7 +27,6 @@ namespace FE.ManagerPoint.Controllers.Classes
             var classInfo = _services.Get_By_Id(id);
             return View(classInfo);
         }
-
         public async Task<IActionResult> ClassOnBoard(int idUser)
         {
             var classInfo = await _services.GetClassOnBoard(idUser);
@@ -40,12 +39,5 @@ namespace FE.ManagerPoint.Controllers.Classes
             ViewBag.ClassInfoJson = classInfor;
             return View();
         }
-        public async Task<IActionResult> ClassDetail(int idClass)
-        {
-            var classInfor = await _services.GradePointByClass(idClass);
-            ViewBag.ClassInfoJson = classInfor;
-            return View();
-        }
-
     }
 }

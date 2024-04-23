@@ -6,8 +6,8 @@ using Manager_Point.Models;
 
 namespace BLL.Services.Implement
 {
-
-    public class Role_UserServices : IRole_UserServices
+	
+	public class Role_UserServices : IRole_UserServices
     {
         private readonly AppDbContext _appContext;
         private readonly IMapper _mapper;

@@ -15,6 +15,7 @@ namespace BLL.Services.Interface
         public Task<int> Modified_Item(int id, vm_update_class request);
         public Task<bool> Remove_Item(int id);
         public Task<bool> Batch_Remove_Item(List<int> ids);
+
         public Task<string> GradePointByClass(int idClass, int? semester = null);
     }
 }
