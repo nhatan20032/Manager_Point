@@ -12,5 +12,5 @@ namespace FE.ManagerPoint.Controllers.Account
         {
             return View();
         }
-    } 
+    }
 }

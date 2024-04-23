@@ -9,7 +9,7 @@ namespace BLL.ViewModels.Class
         public required string ClassCode { get; set; }
         public string? Name { get; set; }
         public int GradeLevel { get; set; }
-        public Status Status { get; set; } 
+        public Status Status { get; set; }
         public string CourseName { get; set; }
     }
 }

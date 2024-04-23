@@ -34,20 +34,13 @@ namespace BLL.Services.Implement
                         .AnyAsync(tc => tc.ClassId == teacherClass.ClassId && tc.TypeTeacher == TypeTeacher.Homeroom_Teacher);
 
                     // Nếu lớp đã có giáo viên chủ nhiệm, bỏ qua
-                    if (!hasExistingHomeRoom)
+                    if (hasExistingHomeRoom)
                     {
-                        var getClassIds = await _appContext.Teacher_Classes
-                         .Where(t => t.UserId == teacherClass.UserId)
-                         .Select(t => t.ClassId).ToListAsync();
-                        var classStatusDuring = await _appContext.Classes
-                        .AnyAsync(c => getClassIds.Contains(c.Id) && c.Status == Status.During);
-                        if (classStatusDuring)
-                        {
-                            return "During";
-                        }
-
-                        addHomeRoom.Add(teacherClass);
+                        return $"Lớp {teacherClass.ClassId} đã có giáo viên chủ nhiệm.";
                     }
+
+                    // Nếu lớp chưa có giáo viên chủ nhiệm, thêm vào danh sách để thêm mới
+                    addHomeRoom.Add(teacherClass);
                 }
 
                 // Thêm danh sách giáo viên chủ nhiệm vào context
@@ -74,43 +67,25 @@ namespace BLL.Services.Implement
         }
 
 
-        public async Task<string> Batch_Create_Item_Subject(List<vm_teacher_class_subject> requests)
+        public async Task<List<int>> Batch_Create_Item_Subject(List<vm_teacher_class> requests)
         {
             try
             {
                 var obj = _mapper.Map<List<Teacher_Class>>(requests);
-                var addSubjectTeacher = new List<Teacher_Class>();
+                var teacherClassesToAdd = new List<Teacher_Class>();
 
                 foreach (var teacherClass in obj)
                 {
-                    bool hasExistingSubjectTeacher = await _appContext.Teacher_Classes
-                        .AnyAsync(tc => tc.SubjectId == teacherClass.SubjectId && tc.ClassId == teacherClass.ClassId && tc.TypeTeacher == TypeTeacher.Subject_Teacher);
+                    bool isSubjectExist = teacherClassesToAdd.Any(tc => tc.SubjectId == teacherClass.SubjectId);
+                    if (!isSubjectExist) { teacherClassesToAdd.Add(teacherClass); }
+                }
 
-                    // Nếu lớp đã có giáo viên chủ nhiệm, bỏ qua
-                    if (!hasExistingSubjectTeacher)
-                    {
-                        addSubjectTeacher.Add(teacherClass);
-                    }
-                }
-                if (addSubjectTeacher.Count() == 0)
-                {
-                    return "exist";
-                }
-                // Thêm danh sách giáo viên chủ nhiệm vào context
-                _appContext.Teacher_Classes.AddRange(addSubjectTeacher);
+                // Thêm danh sách giáo viên không trùng môn học vào context
+                _appContext.Teacher_Classes.AddRange(teacherClassesToAdd);
                 await _appContext.SaveChangesAsync();
 
-                var ids = addSubjectTeacher.Select(t => t.Id).ToList();
-                var response = new
-                {
-                    Message = "Giáo viên bộ môn đã được thêm thành công.",
-                    AddedIds = ids
-                };
-
-                // Chuyển object thành chuỗi JSON
-                var jsonResponse = JsonConvert.SerializeObject(response);
-
-                return jsonResponse;
+                var ids = teacherClassesToAdd.Select(t => t.Id).ToList() ?? new List<int>();
+                return ids;
             }
             catch (Exception ex)
             {
@@ -146,6 +121,7 @@ namespace BLL.Services.Implement
         }
 
         public Task<bool> Batch_Remove_Item_Subject(int UserId)
+
         {
             throw new NotImplementedException();
         }
@@ -165,9 +141,11 @@ namespace BLL.Services.Implement
             throw new NotImplementedException();
         }
 
+
         public Task<bool> Remove_Item_By_IdUser_and_IdSubject(int userId, int subjectId)
         {
             throw new NotImplementedException();
         }
+
     }
 }

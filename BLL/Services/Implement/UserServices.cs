@@ -1,21 +1,21 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
-using Microsoft.EntityFrameworkCore;
 using BLL.Author;
 using BLL.Authorization;
 using BLL.Services.Interface;
 using BLL.ViewModels;
+using BLL.ViewModels.Teacher_Class;
 using BLL.ViewModels.User;
 using Manager_Point.ApplicationDbContext;
 using Manager_Point.Models;
 using Manager_Point.Models.Enum;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Primitives;
+using Newtonsoft.Json;
 using OfficeOpenXml;
 using System.Globalization;
-using Newtonsoft.Json;
-using BLL.ViewModels.Teacher_Class;
 
 
 namespace BLL.Services.Implement
@@ -141,7 +141,7 @@ namespace BLL.Services.Implement
                 .Include(u => u.Teacher_Classes!).ThenInclude(tc => tc.Class)
                 .AsQueryable()
                 .ProjectTo<vm_teacher>(_mapper.ConfigurationProvider).Where(t => string.IsNullOrEmpty(search) || t.Name!.Contains(search))
-                    .Where(t => t.Role_Code!.Contains("gv"));
+                    .Where(t => t.Role_Code!.Any(t => t == "gv"));
 
                 if (!string.IsNullOrEmpty(search))
                 {
@@ -159,12 +159,12 @@ namespace BLL.Services.Implement
 
                 if (subject != 0)
                 {
-                    vm_UserQuery = vm_UserQuery.Where(t => t.Subject_id!.Contains(subject));
+                    vm_UserQuery = vm_UserQuery.Where(t => t.Subject_id!.Any(t => t == subject));
                 }
 
                 if (classes != 0)
                 {
-                    vm_UserQuery = vm_UserQuery.Where(t => t.Teacher_Class_id!.Contains(classes));
+                    vm_UserQuery = vm_UserQuery.Where(t => t.Teacher_Class_id!.Any(t => t == classes));
                 }
 
                 int totalCount = await vm_UserQuery.CountAsync();
@@ -206,7 +206,7 @@ namespace BLL.Services.Implement
                 .Include(u => u.Teacher_Classes!).ThenInclude(tc => tc.Class)
                 .AsQueryable()
                 .ProjectTo<vm_teacher>(_mapper.ConfigurationProvider).Where(t => string.IsNullOrEmpty(search) || t.Name!.Contains(search))
-                    .Where(t => t.Role_Code!.Contains("gv")).Where(t => !t.TypeTeacher!.Any(tt => tt == TypeTeacher.Homeroom_Teacher));
+                    .Where(t => t.Role_Code!.Any(t => t == "gv")).Where(t => !t.TypeTeacher!.Any(tt => tt == TypeTeacher.Homeroom_Teacher));
 
                 if (!string.IsNullOrEmpty(search))
                 {
@@ -215,12 +215,12 @@ namespace BLL.Services.Implement
 
                 if (subject != 0)
                 {
-                    vm_UserQuery = vm_UserQuery.Where(t => t.Subject_id!.Contains(subject));
+                    vm_UserQuery = vm_UserQuery.Where(t => t.Subject_id!.Any(t => t == subject));
                 }
 
                 if (classes != 0)
                 {
-                    vm_UserQuery = vm_UserQuery.Where(t => t.Teacher_Class_id!.Contains(classes));
+                    vm_UserQuery = vm_UserQuery.Where(t => t.Teacher_Class_id!.Any(t => t == classes));
                 }
 
                 int totalCount = await vm_UserQuery.CountAsync();
@@ -315,10 +315,10 @@ namespace BLL.Services.Implement
                     .ProjectTo<vm_user>(_mapper.ConfigurationProvider);
 
                 // Đếm số lượng giáo viên
-                int teacherCount = await vm_UserQuery.CountAsync(t => t.Role_Code!.Contains("gv"));
+                int teacherCount = await vm_UserQuery.CountAsync(t => t.Role_Code!.Any(t => t == "gv"));
 
                 // Đếm số lượng học sinh
-                int studentCount = await vm_UserQuery.CountAsync(t => t.Role_Code!.Contains("hs"));
+                int studentCount = await vm_UserQuery.CountAsync(t => t.Role_Code!.Any(t => t == "hs"));
 
                 var result = new
                 {
@@ -353,7 +353,7 @@ namespace BLL.Services.Implement
                     .Include(u => u.Teacher_Classes!).ThenInclude(tc => tc.Class)
                     .AsQueryable()
                     .ProjectTo<vm_teacher>(_mapper.ConfigurationProvider)
-                    .Where(u => u.Role_Code!.Contains("gv") && u.Subject_id!.Contains(subject.Id))
+                    .Where(u => u.Role_Code!.Any(t => t == "gv") && u.Subject_id!.Any(t => t == subject.Id))
                     .CountAsync();
 
                     var subjectInfo = new
@@ -390,9 +390,9 @@ namespace BLL.Services.Implement
                 .Include(u => u.Student_Classes!).ThenInclude(tc => tc.Class).ThenInclude(c => c.Course)
                 .AsQueryable()
                 .ProjectTo<vm_student>(_mapper.ConfigurationProvider).Where(t => string.IsNullOrEmpty(search) || t.Name!.Contains(search))
-                .Where(u => u.Role_Code!.All(rr => rr == "hs"));
+                .Where(u => u.Role_Code!.Any(rr => rr == "hs"));
 
-                if (classes != 0) vm_UserQuery = vm_UserQuery.Where(t => t.Student_Class_id!.All(t => t == classes));
+                if (classes != 0) vm_UserQuery = vm_UserQuery.Where(t => t.Student_Class_id!.Any(t => t == classes));
                 if (check_class == 1)
                 {
                     vm_UserQuery = vm_UserQuery.Where(t => t.Student_Class_Code!.Count > 0);
@@ -720,6 +720,6 @@ namespace BLL.Services.Implement
                 Console.WriteLine($"Error in Count_Teachers_By_Subject: {ex.Message}");
                 throw;
             }
-        }        
+        }
     }
 }

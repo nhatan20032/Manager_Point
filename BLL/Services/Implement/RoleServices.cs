@@ -2,7 +2,6 @@
 using AutoMapper.QueryableExtensions;
 using BLL.Services.Interface;
 using BLL.ViewModels;
-using BLL.ViewModels.Class;
 using BLL.ViewModels.Role;
 using Manager_Point.ApplicationDbContext;
 using Manager_Point.Models;
@@ -13,8 +12,8 @@ using System.Data.Entity;
 
 namespace BLL.Services.Implement
 {
-	
-	public class RoleServices : IRoleServices
+
+    public class RoleServices : IRoleServices
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly AppDbContext _appContext;
