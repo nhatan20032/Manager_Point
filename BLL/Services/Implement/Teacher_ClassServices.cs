@@ -74,6 +74,7 @@ namespace BLL.Services.Implement
         }
 
 
+
         public async Task<string> Batch_Create_Item_Subject(List<vm_teacher_class_subject> requests)
         {
             try
@@ -118,6 +119,7 @@ namespace BLL.Services.Implement
                 throw;
             }
         }
+
 
 
         public async Task<bool> Batch_Remove_Item_HomeRoom(int idClass)
