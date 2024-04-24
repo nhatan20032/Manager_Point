@@ -140,13 +140,14 @@ namespace BLL.Services.Implement
             return vmClasses;
         }
 
-        public async Task<vm_class> Get_By_Id(int id)
+        public async Task<string> Get_By_Id(int id)
         {
             try
             {
                 var classes = _appContext.Classes.ProjectTo<vm_class>(_mapper.ConfigurationProvider).SingleOrDefault(x => x.Id == id);
                 if (classes == null) return null!;
-                return classes;
+                var jsonResult = JsonConvert.SerializeObject(classes, Formatting.Indented);
+                return jsonResult;
             }
             catch (Exception ex)
             {

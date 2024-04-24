@@ -115,3 +115,13 @@ function GetDataGradePointS3(idClass) {
         }
     });
 }
+function GetClassInfo(classInfo) {
+    let html = `<div class="card-body">
+                    <h3 class="card-title">Lớp: ${classInfo.Name}</h3>
+                    <h6 class="card-subtitle mb-2 text-muted">Mã lớp: ${classInfo.ClassCode}</h6>
+                    <p class="card-text">Khối: ${classInfo.GradeLevel}</p>
+                    <p class="card-text">Tên khóa học: ${classInfo.CourseName}</p>
+                </div>`
+    document.getElementById("classInfo").innerHTML = html 
+
+}
