@@ -7,7 +7,7 @@ namespace BLL.Services.Interface
     {
         public Task<string> Get_All_Async(int offset = 0, int limit = 10, string search = "");
         public List<vm_class> Get_List();
-        public Task<vm_class> Get_By_Id(int id);
+        public Task<string> Get_By_Id(int id);
         public Task<string> GetClassOnBoard(int idUser);
         public Task<string> GetHomeRoomOnBoard(int idUser);
         public Task<int> Create_Item(vm_create_class request);
