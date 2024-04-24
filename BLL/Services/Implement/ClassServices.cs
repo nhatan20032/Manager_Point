@@ -3,15 +3,20 @@ using AutoMapper.QueryableExtensions;
 using BLL.Services.Interface;
 using BLL.ViewModels;
 using BLL.ViewModels.Class;
+using BLL.ViewModels.GradePoint;
 using BLL.ViewModels.Teacher_Class;
 using BLL.ViewModels.User;
 using Manager_Point.ApplicationDbContext;
 using Manager_Point.Models;
 using Manager_Point.Models.Enum;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Primitives;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System.Collections.Generic;
+using System.Net.WebSockets;
 
 namespace BLL.Services.Implement
 {
@@ -383,5 +388,65 @@ namespace BLL.Services.Implement
                 return "xuat sac";
             }
         }
-    }
+
+		public async Task<string> GradePointSubjectByClass(int idClass,int idUser, int? semester = null)
+		{
+            var teacherSubject = _appContext.Teacher_Classes.FirstOrDefault(c => c.ClassId == idClass && c.UserId == idUser);
+            if (semester == 3) 
+            {
+                var results = new List<vm_gradepoint_whole_year>();
+                var vm_gradePoint = _appContext.GradePoints.ProjectTo<vm_gradepoint>(_mapper.ConfigurationProvider).Where(c => c.SubjectId == teacherSubject.SubjectId && c.ClassId == idClass).ToList();
+                foreach (var subjectId in vm_gradePoint.Select(gp => gp.SubjectId).Distinct())
+                {
+                    float k1 = 0;
+                    float k2 = 0;
+                    string username = "";
+                    var gradesForSubject = vm_gradePoint.Where(gp => gp.SubjectId == subjectId).ToList();
+                    foreach (var item in gradesForSubject)
+                    {
+                        username = item.userName;
+                        if (item.Semester == (Semester)Enum.ToObject(typeof(Semester), 1))
+                        {
+                            k1 = item.Average;
+                        }
+                        if (item.Semester == (Semester)Enum.ToObject(typeof(Semester), 2))
+                        {
+                            k2 = item.Average;
+                        }
+
+                    }
+                    var result = new vm_gradepoint_whole_year
+                    {
+                        UserName = username,
+                        SubjectName = _appContext.Subjects.FirstOrDefault(c => c.Id == subjectId).Name,
+                        Semester1 = k1,
+                        Semester2 = k2,
+                        Average_Whole_year = (k1 + k2 * 2) / 3
+                    };
+
+                    results.Add(result);
+                }
+
+                var paginatedResult = new Pagination<vm_gradepoint_whole_year>
+                {
+                    draw = 1,
+                    recordsTotal = 1,
+                    recordsFiltered = 1,
+                    data = results
+                };
+                var jsonResult = JsonConvert.SerializeObject(paginatedResult, Formatting.Indented);
+                return jsonResult;
+            }
+            var vm_gradePoint1  = _appContext.GradePoints.ProjectTo<vm_gradepoint>(_mapper.ConfigurationProvider).Where(c=>c.SubjectId == teacherSubject.SubjectId && c.ClassId == idClass && c.Semester == (Semester)Enum.ToObject(typeof(Semester), semester)).ToList();
+			var paginatedResult1 = new Pagination<vm_gradepoint>
+			{
+				draw = 1,
+				recordsTotal = 1,
+				recordsFiltered = 1,
+				data = vm_gradePoint1
+			};
+			var jsonResult1 = JsonConvert.SerializeObject(paginatedResult1, Formatting.Indented);
+			return jsonResult1;
+		}
+	}
 }

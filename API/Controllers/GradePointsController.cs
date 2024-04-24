@@ -109,6 +109,18 @@ namespace API.Controllers
 			}
 		}
 
+
+		//[HttpGet("/gradepoint/GetClassByUser")]
+		//public async Task<IActionResult> GetClassByUser(int id)
+		//{
+		//	return Ok(await _gradePointService.GetClassByUser(id));
+		//}
+		[HttpGet("/gradepoint/subject")]
+		public async Task<IActionResult> DetailGradePointByClass(int idClass , int? semester = null)
+		{
+			int idUser = 9;
+			return Ok(await _classService.GradePointSubjectByClass(idClass, idUser, semester));
+		}
 	}
 
 }

@@ -8,10 +8,11 @@ namespace BLL.ViewModels.GradePoint
 {
     public class vm_gradepoint_whole_year
     {
+        public string UserName { get; set; }
         public int SubjectId { get; set; }
         public string SubjectName { get; set; }
-        public float Midterm_Grades_Whole_year { get; set; }
-        public float Final_Grades_Whole_year { get; set; }
+        public float Semester1 { get; set; }
+        public float Semester2 { get; set; }
 
         private float _averageWholeYear;
 

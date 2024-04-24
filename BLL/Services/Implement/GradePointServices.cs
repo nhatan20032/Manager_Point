@@ -2,6 +2,8 @@
 using AutoMapper.QueryableExtensions;
 using BLL.Services.Interface;
 using BLL.ViewModels;
+using BLL.ViewModels.Class;
+using BLL.ViewModels.Course;
 using BLL.ViewModels.GradePoint;
 using Manager_Point.ApplicationDbContext;
 using Manager_Point.Models;
@@ -395,30 +397,28 @@ namespace BLL.Services.Implement
 
 				foreach (var subjectId in vm_gradepoints.Select(gp => gp.SubjectId).Distinct())
 				{
-					var gradesForSubject = vm_gradepoints.Where(gp => gp.SubjectId == subjectId).ToList();
-
-					float midtermTotal = 0;
-					float finalTotal = 0;
-					float averageTotal = 0;
-
-					midtermTotal = gradesForSubject.Sum(x => x.Midterm_Grades);
-					finalTotal = gradesForSubject.Sum(x => x.Final_Grades);
-					averageTotal = gradesForSubject.Sum(x => x.Average);
-
-					/*                    foreach (var grade in gradesForSubject)
-										{
-											midtermTotal += grade.Midterm_Grades;
-											finalTotal += grade.Final_Grades;
-											averageTotal += grade.Average;
-										}
-					*/
-					var result = new vm_gradepoint_whole_year
+					float k1 = 0;
+					float k2 = 0;
+					var gradesForSubject =  vm_gradepoints.Where(gp => gp.SubjectId == subjectId).ToList();
+					foreach (var item in gradesForSubject)
 					{
+						if (item.Semester == (Semester)Enum.ToObject(typeof(Semester), 1))
+						{
+							k1 = item.Average;
+						}
+						if (item.Semester == (Semester)Enum.ToObject(typeof(Semester), 2))
+						{
+							k2 = item.Average;
+						}
+
+					}
+				var result = new vm_gradepoint_whole_year
+				{
 						SubjectName = _appContext.Subjects.FirstOrDefault(c => c.Id == subjectId).Name,
 						SubjectId = subjectId,
-						Midterm_Grades_Whole_year = midtermTotal / gradesForSubject.Count,
-						Final_Grades_Whole_year = finalTotal / gradesForSubject.Count,
-						Average_Whole_year = averageTotal / gradesForSubject.Count
+						Semester1 = k1,
+						Semester2 = k2,
+						Average_Whole_year = (k1 + k2*2)/3
 					};
 
 					results.Add(result);
@@ -437,7 +437,10 @@ namespace BLL.Services.Implement
 			
 		}
 
-
+		//public async Task<List<vm_class>> GetClassByUser(int userid)
+		//{
+		//	return 
+		//}
 	}
 
 }

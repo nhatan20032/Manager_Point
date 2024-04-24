@@ -115,3 +115,112 @@ function GetDataGradePointS3(idClass) {
         }
     });
 }
+
+
+function GetDataGradePointBySubject(idClass) {
+    debugger
+    $.ajax({
+        url: `https://localhost:44335/gradepoint/subject?idClass=${idClass}&semester=1`,
+        method: 'GET',
+        success: function (res) {
+            var data = JSON.parse(res);
+            
+            var columns = [
+                { data: 'Id', title: 'ID', visible: false },
+                { data: 'userName', title: 'Tên học sinh' },
+                { data: 'subjectName', title: 'Môn học' },
+                { data: 'ExaminationPoint', title: 'Điểm thành phần' },
+                { data: 'Midterm_Grades', title: 'Điểm giữa kỳ' },
+                { data: 'Final_Grades', title: 'Điểm cuối kỳ' },
+                { data: 'Average', title: 'Điểm trung bình' }
+            ];
+
+            $('#Subject-1').DataTable({
+                layout: {
+                    topStart: {
+                        buttons: ['copy', 'csv', 'excel', 'pdf', 'print']
+                    }
+                },
+                "processing": true,
+                data: data.data,
+                columns: columns,
+                "searching": true,
+                "paging": true,
+                "lengthChange": true,
+                "info": true,
+                "pageLength": 100,
+            });
+        }
+    });
+}
+function GetDataGradePointBySubject2(idClass) {
+    debugger
+    $.ajax({
+        url: `https://localhost:44335/gradepoint/subject?idClass=${idClass}&semester=2`,
+        method: 'GET',
+        success: function (res) {
+            var data = JSON.parse(res);
+
+            var columns = [
+                { data: 'Id', title: 'ID', visible: false },
+                { data: 'userName', title: 'Tên học sinh' },
+                { data: 'subjectName', title: 'Môn học' },
+                { data: 'ExaminationPoint', title: 'Điểm thành phần' },
+                { data: 'Midterm_Grades', title: 'Điểm giữa kỳ' },
+                { data: 'Final_Grades', title: 'Điểm cuối kỳ' },
+                { data: 'Average', title: 'Điểm trung bình' }
+            ];
+
+            $('#Subject-2').DataTable({
+                layout: {
+                    topStart: {
+                        buttons: ['copy', 'csv', 'excel', 'pdf', 'print']
+                    }
+                },
+                "processing": true,
+                data: data.data,
+                columns: columns,
+                "searching": true,
+                "paging": true,
+                "lengthChange": true,
+                "info": true,
+                "pageLength": 100,
+            });
+        }
+    });
+}
+function GetDataGradePointBySubject3(idClass) {
+    debugger
+    $.ajax({
+        url: `https://localhost:44335/gradepoint/subject?idClass=${idClass}&semester=3`,
+        method: 'GET',
+        success: function (res) {
+            var data = JSON.parse(res);
+
+            var columns = [
+              
+                { data: 'UserName', title: 'Tên học sinh' },
+                { data: 'SubjectName', title: 'Môn học' },
+                { data: 'Semester1', title: 'kỳ 1' },
+                { data: 'Semester2', title: 'kỳ 2' },
+                { data: 'Average_Whole_year', title: 'Điểm trung bình' }
+            ];
+
+            $('#Subject-3').DataTable({
+                layout: {
+                    topStart: {
+                        buttons: ['copy', 'csv', 'excel', 'pdf', 'print']
+                    }
+                },
+                "processing": true,
+                data: data.data,
+                columns: columns,
+                "searching": true,
+                "paging": true,
+                "lengthChange": true,
+                "info": true,
+                "pageLength": 100,
+            });
+        }
+    });
+}
