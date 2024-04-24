@@ -22,6 +22,8 @@ namespace BLL.Services.Implement
         public string UserName { get; set; }
         public int UserId { get; set; }
         public int SubjectId { get; set; }
+        public float TotalPoint { get; set; } = 0;
+        public string Rank { get; set; }
         public List<SubjectByClass> SubjectClasses { get; set; }
 
     }
@@ -295,11 +297,9 @@ namespace BLL.Services.Implement
                     {
                         // Môn học đã tồn tại, cập nhật trung bình
                         existingSubject.Avegare = (existingSubject.Avegare + gradePoint.Average) / 2;
-                        existingSubject.Rank = existingSubject.Avegare < 5 ? "yeu" :
-                         existingSubject.Avegare < 6.5 ? "trung binh" :
-                         existingSubject.Avegare < 8 ? "kha" :
-                         existingSubject.Avegare < 9 ? "gioi" :
-                         "xuat sac";
+                        existingSubject.Rank = GetRank(gradePoint.Average);
+                        existingUserData.TotalPoint += gradePoint.Average;
+
                     }
                     else
                     {
@@ -309,12 +309,9 @@ namespace BLL.Services.Implement
                             SubjectId = gradePoint.SubjectId,
                             SubjectName = _appContext.Subjects.FirstOrDefault(s => s.Id == gradePoint.SubjectId)?.Name,
                             Avegare = gradePoint.Average,
-                            Rank = gradePoint.Average < 5 ? "yeu" :
-                             gradePoint.Average < 6.5 ? "trung binh" :
-                             gradePoint.Average < 8 ? "kha" :
-                             gradePoint.Average < 9 ? "gioi" :
-                             "xuat sac"
+                            Rank = GetRank(gradePoint.Average)
                         });
+                     //   existingUserData.TotalPoint += gradePoint.Average;
                     }
 
                 }
@@ -328,19 +325,28 @@ namespace BLL.Services.Implement
                         UserName = user.Name,
                         UserId = gradePoint.UserId,
                         SubjectClasses = new List<SubjectByClass>
-                    {
-                        new SubjectByClass
                         {
-                            SubjectId = gradePoint.SubjectId,
-                            SubjectName = _appContext.Subjects.FirstOrDefault(s => s.Id == gradePoint.SubjectId)?.Name,
-                            Avegare = gradePoint.Average
-                        }
-                    }
+                            new SubjectByClass
+                            {
+                                SubjectId = gradePoint.SubjectId,
+                                SubjectName = _appContext.Subjects.FirstOrDefault(s => s.Id == gradePoint.SubjectId)?.Name,
+                                Avegare = gradePoint.Average
+                            }
+                        },
+                       
                     };
+                    userData.TotalPoint = gradePoint.Average;
+                  
                     groupData.Add(userData);
                 }
             }
+            foreach (var userData in groupData)
+            {
+                userData.TotalPoint /= userData.SubjectClasses.Count() + 1;
+                userData.Rank = GetRank(userData.TotalPoint);
+            };
 
+          
             var paginatedResult = new Pagination<Data>
             {
                 // Có thể cần cập nhật draw tại đây
@@ -354,6 +360,28 @@ namespace BLL.Services.Implement
             return jsonResult;
         }
 
-
+        private string GetRank(float average)
+        {
+            if (average < 5)
+            {
+                return "yeu";
+            }
+            else if (average < 6.5)
+            {
+                return "trung binh";
+            }
+            else if (average < 8)
+            {
+                return "kha";
+            }
+            else if (average < 9)
+            {
+                return "gioi";
+            }
+            else
+            {
+                return "xuat sac";
+            }
+        }
     }
 }
