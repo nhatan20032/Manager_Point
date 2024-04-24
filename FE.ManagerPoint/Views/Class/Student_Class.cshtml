@@ -111,7 +111,7 @@
             }
             else {
                 createClass_Student(function () {
-                    toastr.success('Gán môn học cho giáo viên thành công');
+                    toastr.success('Gán lớp học cho học sinh thành công');
                 });
             }
         });
@@ -125,7 +125,7 @@
             } else {
                 event.preventDefault();
                 editClass(id, ids, function () {
-                    toastr.success('Sửa môn dạy thành công');
+                    toastr.success('Sửa lớp học thành công');
                     let = $('#updateModal').modal('hide');
                     form.removeClass('was-validated');
                 });
