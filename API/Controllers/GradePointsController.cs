@@ -11,9 +11,11 @@ namespace API.Controllers
 	public class GradePointsController : Controller
 	{
 		IGradePointServices _gradePointService;
-		public GradePointsController(IGradePointServices gradePointService)
+		IClassServices _classService;
+		public GradePointsController(IGradePointServices gradePointService, IClassServices classServices)
 		{
 			_gradePointService = gradePointService;
+			_classService = classServices;
 		}
 		[HttpGet("/gradepoint/get_all")]
 		public async Task<IActionResult> Get_All_Item(int id ,int semester, int start = 0, int length = 10, string search = "")
@@ -34,8 +36,12 @@ namespace API.Controllers
 		{
 			return Ok(await _gradePointService.Get_By_Id(id));
 		}
-
-		[HttpPost("/gradepoint/create")]
+		[HttpGet("/gradepoint/GradePointByClass")]
+		public async Task<IActionResult> GradePointByClass(int idClass, int? semester = null)
+		{
+            return Ok(await _classService.GradePointByClass(idClass, semester));
+        }
+        [HttpPost("/gradepoint/create")]
 		public async Task<IActionResult> Create_Item([FromBody] vm_create_gradepoint request)
 		{
 			if (request == null) { return BadRequest("request null check object again, make sure request have a value"); }
@@ -67,34 +73,6 @@ namespace API.Controllers
 		{
 			return Ok(await _gradePointService.Batch_Remove_Item(ids));
 		}
-		/*	[HttpPost("/gradepoint/ImportFile")]
-			[Consumes("multipart/form-data")]
-			public async Task<IActionResult> Import(IFormFile file)
-			{
-				if (file == null || file.Length <= 0)
-				{
-					return BadRequest("File is required.");
-				}
-
-
-				try
-				{
-					using (var memoryStream = new MemoryStream())
-					{
-						await file.CopyToAsync(memoryStream);
-						memoryStream.Position = 0;
-
-						int addedUsersCount = await _gradePointService.ImportFromExcel(memoryStream);
-
-						return Ok($"Successfully added {addedUsersCount} users from Excel.");
-					}
-				}
-				catch (Exception ex)
-				{
-					return StatusCode(500, $"Error importing users: {ex.Message}");
-				}
-
-			}*/
 		[HttpPost("/gradepoint/ImportFile")]
 		[Consumes("multipart/form-data")]
 		public async Task<IActionResult> Import(IFormFile file)

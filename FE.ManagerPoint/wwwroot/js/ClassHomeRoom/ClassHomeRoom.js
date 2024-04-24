@@ -17,7 +17,7 @@
                         <h5 class="card-title">Mã Lớp: ${item.classData.ClassCode}</h5>
                         <p class="card-text">Khối: ${item.classData.GradeLevel}</p>
                         <p class="card-text">Trạng thái: ${statusBadge}</p>
-                        <a href="#" class="btn btn-primary">Vào lớp</a>
+                        <a href="/Class/GetInClassHomeRoom?idClass=${item.classData.Id}" class="btn btn-primary">Vào lớp</a>
                     </div>
                 </div>
             `;

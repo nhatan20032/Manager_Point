@@ -141,7 +141,7 @@ namespace BLL.Services.Implement
                 .Include(u => u.Teacher_Classes!).ThenInclude(tc => tc.Class)
                 .AsQueryable()
                 .ProjectTo<vm_teacher>(_mapper.ConfigurationProvider).Where(t => string.IsNullOrEmpty(search) || t.Name!.Contains(search))
-                    .Where(t => t.Role_Code!.Contains("gv"));
+                    .Where(t => t.Role_Code!.Any(t => t == "gv"));
 
                 if (!string.IsNullOrEmpty(search))
                 {
@@ -206,7 +206,7 @@ namespace BLL.Services.Implement
                 .Include(u => u.Teacher_Classes!).ThenInclude(tc => tc.Class)
                 .AsQueryable()
                 .ProjectTo<vm_teacher>(_mapper.ConfigurationProvider).Where(t => string.IsNullOrEmpty(search) || t.Name!.Contains(search))
-                    .Where(t => t.Role_Code!.Contains("gv")).Where(t => !t.TypeTeacher!.Any(tt => tt == TypeTeacher.Homeroom_Teacher));
+                    .Where(t => t.Role_Code!.Any(t => t == "gv")).Where(t => !t.TypeTeacher!.Any(tt => tt == TypeTeacher.Homeroom_Teacher));
 
                 if (!string.IsNullOrEmpty(search))
                 {
@@ -315,10 +315,10 @@ namespace BLL.Services.Implement
                     .ProjectTo<vm_user>(_mapper.ConfigurationProvider);
 
                 // Đếm số lượng giáo viên
-                int teacherCount = await vm_UserQuery.CountAsync(t => t.Role_Code!.Contains("gv"));
+                int teacherCount = await vm_UserQuery.CountAsync(t => t.Role_Code!.Any(t => t =="gv"));
 
                 // Đếm số lượng học sinh
-                int studentCount = await vm_UserQuery.CountAsync(t => t.Role_Code!.Contains("hs"));
+                int studentCount = await vm_UserQuery.CountAsync(t => t.Role_Code!.Any(t => t == "hs"));
 
                 var result = new
                 {
@@ -353,7 +353,7 @@ namespace BLL.Services.Implement
                     .Include(u => u.Teacher_Classes!).ThenInclude(tc => tc.Class)
                     .AsQueryable()
                     .ProjectTo<vm_teacher>(_mapper.ConfigurationProvider)
-                    .Where(u => u.Role_Code!.Contains("gv") && u.Subject_id!.Contains(subject.Id))
+                    .Where(u => u.Role_Code!.Any(t => t == "gv") && u.Subject_id!.All(t => t == subject.Id))
                     .CountAsync();
 
                     var subjectInfo = new
