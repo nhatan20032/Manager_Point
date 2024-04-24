@@ -33,7 +33,7 @@ namespace Manager_Point.ApplicationDbContext
             {
 
                 //optionsBuilder.UseSqlServer("Data Source=LAPTOP-RST0N7P9; Initial Catalog = manager_point; Integrated Security = True; Encrypt = True; TrustServerCertificate = True;");
-                optionsBuilder.UseSqlServer("Data Source=Duy; Initial Catalog = manager_point; Integrated Security = True; Encrypt = True; TrustServerCertificate = True;");
+                optionsBuilder.UseSqlServer("Data Source=ADMIN-PC; Initial Catalog = manager_point; Integrated Security = True; Encrypt = True; TrustServerCertificate = True;");
 
             }
         }

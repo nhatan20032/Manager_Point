@@ -141,7 +141,7 @@ namespace BLL.Services.Implement
                 .Include(u => u.Teacher_Classes!).ThenInclude(tc => tc.Class)
                 .AsQueryable()
                 .ProjectTo<vm_teacher>(_mapper.ConfigurationProvider).Where(t => string.IsNullOrEmpty(search) || t.Name!.Contains(search))
-                    .Where(t => t.Role_Code!.All(t => t == "gv"));
+                    .Where(t => t.Role_Code!.Any(t => t == "gv"));
 
                 if (!string.IsNullOrEmpty(search))
                 {

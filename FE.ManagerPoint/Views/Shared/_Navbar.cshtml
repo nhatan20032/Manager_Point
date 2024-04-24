@@ -32,7 +32,7 @@
         // Lấy giá trị fullname từ session và thay thế vào chỗ "Xin chào: ???"
         var fullname = sessionStorage.getItem("FullName");
         if (fullname) {
-            $("#user a").text("Xin chào: " + fullname);
+            $(".user a").text("Xin chào: " + fullname);
         }
     });
 
