@@ -298,7 +298,7 @@ namespace BLL.Services.Implement
                         // Môn học đã tồn tại, cập nhật trung bình
                         existingSubject.Avegare = (existingSubject.Avegare + gradePoint.Average) / 2;
                         existingSubject.Rank = GetRank(gradePoint.Average);
-                        existingUserData.TotalPoint += gradePoint.Average;
+                        //existingUserData.TotalPoint += gradePoint.Average;
 
                     }
                     else
@@ -311,7 +311,7 @@ namespace BLL.Services.Implement
                             Avegare = gradePoint.Average,
                             Rank = GetRank(gradePoint.Average)
                         });
-                     //   existingUserData.TotalPoint += gradePoint.Average;
+                        existingUserData.TotalPoint += gradePoint.Average;
                     }
 
                 }
@@ -342,7 +342,7 @@ namespace BLL.Services.Implement
             }
             foreach (var userData in groupData)
             {
-                userData.TotalPoint /= userData.SubjectClasses.Count() + 1;
+                userData.TotalPoint /= userData.SubjectClasses.Count();
                 userData.Rank = GetRank(userData.TotalPoint);
             };
 
