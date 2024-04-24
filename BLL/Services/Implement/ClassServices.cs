@@ -384,5 +384,20 @@ namespace BLL.Services.Implement
                 return "xuat sac";
             }
         }
+
+        public async Task<vm_class> Get_By_Id_vm_class(int id)
+        {
+            try
+            {
+                var classes = _appContext.Classes.ProjectTo<vm_class>(_mapper.ConfigurationProvider).SingleOrDefault(x => x.Id == id);
+                if (classes == null) return null!;
+                return classes;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in Get_By_Id: {ex.Message}");
+                throw;
+            }
+        }
     }
 }
