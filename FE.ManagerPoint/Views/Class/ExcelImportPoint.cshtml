@@ -1,0 +1,35 @@
+﻿<!-- Modal Create -->
+<div class="modal fade" id="excelModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="excelModal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Thêm người dùng bằng Excel</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="user_excel_import" class="needs-validation" novalidate>
+                <div class="modal-body">
+                    <div class="row">
+                        <input id="file_excel" type="file" class="form-control" accept=".xls,.xlsx" />
+                    </div>
+                    <div class="row mt-3">
+                        <button type="button" class="btn btn-primary" onclick="downloadExcelFile()">Tải file Excel mẫu <i class="fa-solid fa-download"></i></button>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="save_excel" type="submit" class="btn btn-primary">Lưu</button>
+                    <button id="un_save_excel" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        $('#un_save_excel[data-bs-dismiss="modal"]').on('click', function () {
+            $('#user_excel_import').trigger('reset');
+            if ($('#user_excel_import').hasClass('was-validated')) {
+                $('#user_excel_import').removeClass('was-validated');
+            }
+        });
+    });
+</script>

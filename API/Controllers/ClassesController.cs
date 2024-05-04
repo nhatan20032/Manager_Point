@@ -11,9 +11,12 @@ namespace API.Controllers
     public class ClassesController : Controller
     {
         IClassServices _classService;
-        public ClassesController(IClassServices classService)
+        IGradePointServices
+            _gradePointServices;
+        public ClassesController(IClassServices classService, IGradePointServices gradePointServices)
         {
             _classService = classService;
+            _gradePointServices = gradePointServices;
         }
         [HttpGet("/class/get_all")]
         public async Task<IActionResult> Get_All_Item(int offset = 0, int limit = 10, string search = "")
@@ -81,12 +84,34 @@ namespace API.Controllers
         {
             return Ok(await _classService.Batch_Remove_Item(ids));
         }
-        [HttpGet("/class/class_etail")]
+       /* [HttpGet("/class/class_etail")]
         public async  Task<IActionResult> DetailClass(int idClass,int? semester = null)
         {
             return Ok(await _classService.GradePointByClass(idClass, semester));
+        }*/
+        [HttpPost("/class/import_excel")]
+        public async Task<IActionResult> ImportUsersFromExcel(IFormFile file)
+        {
+            if (file == null || file.Length <= 0)
+            {
+                return BadRequest("File is required.");
+            }
+
+            try
+            {
+                using var memoryStream = new MemoryStream();
+                await file.CopyToAsync(memoryStream);
+                memoryStream.Position = 0;
+
+                int addPointCount = await _gradePointServices.ImportFromExcel(memoryStream);
+
+                return Ok($"Successfully added {addPointCount} Point from Excel.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error importing Point: {ex.Message}");
+            }
         }
 
-	
-	}
+    }
 }

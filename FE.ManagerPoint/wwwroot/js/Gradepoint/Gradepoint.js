@@ -90,8 +90,8 @@ function GetAllYear() {
         "rowId": "Id",
         "columns": [
             { "data": "SubjectName", "orderable": false },
-            { "data": "Midterm_Grades_Whole_year", "orderable": false },
-            { "data": "Final_Grades_Whole_year", "orderable": false },
+            { "data": "Semester1", "orderable": false },
+            { "data": "Semester2", "orderable": false },
             { "data": "Average_Whole_year", "orderable": false },
 
         ],

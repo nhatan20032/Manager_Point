@@ -127,6 +127,13 @@ namespace BLL.Services.Implement
 							objForUpdate.Average = avg;
 							await _appContext.SaveChangesAsync();
 						}
+						else
+						{
+                            var objForUpdate = await _appContext.GradePoints.FindAsync(item.Id);
+                            float avg = (item.Midterm_Grades * 2 + item.Final_Grades * 3 + 0) / 6;
+                            objForUpdate.Average = avg;
+                            await _appContext.SaveChangesAsync();
+                        }
 					}
 
 
@@ -166,67 +173,78 @@ namespace BLL.Services.Implement
 			}
 		}
 
-		/*  public async Task<int> ImportFromExcel(Stream excelFileStream)
-		  {
+		public async Task<int> ImportFromExcel(Stream excelFileStream)
+		{
+			int userId = 13;
+			try
+			{
+				var gradeDataList = new List<vm_update_gradepoint>();
+				var gradeDataListBug = new List<vm_update_gradepoint>();
 
-			  try
-			  {
-				  var gradeDataList = new List<vm_update_gradepoint>();
+                using (var package = new ExcelPackage(excelFileStream))
+				{
+					ExcelWorksheet worksheet = package.Workbook.Worksheets[0]; // Lấy sheet đầu tiên
 
-				  using (var package = new ExcelPackage(excelFileStream))
-				  {
-					  ExcelWorksheet worksheet = package.Workbook.Worksheets[0]; // Lấy sheet đầu tiên
+					int rowCount = worksheet.Dimension.Rows;
+					int colCount = worksheet.Dimension.Columns;
 
-					  int rowCount = worksheet.Dimension.Rows;
-					  int colCount = worksheet.Dimension.Columns;
+					for (int row = 5; row <= rowCount; row++) // Bắt đầu từ hàng thứ hai, bỏ qua tiêu đề
+					{
+						var gradeData = new vm_update_gradepoint();
+						var userIdByCode =  _appContext.Users.FirstOrDefault(c => c.User_Code == worksheet.Cells[row, 3].Value.ToString());
+						var classIdByCode =  _appContext.Classes.FirstOrDefault(c => c.ClassCode == worksheet.Cells[row, 4].Value.ToString());
+						var subjectById =  _appContext.Subjects.FirstOrDefault(c => c.Id == Convert.ToInt32(worksheet.Cells[row, 2].Value.ToString()));
+						if (userIdByCode != null && classIdByCode != null && subjectById != null)
+						{
+							var teacherByIdSubject = _appContext.Subjects_Teachers.FirstOrDefault(c => c.SubjectId == Convert.ToInt32(worksheet.Cells[row, 2].Value.ToString()) && c.UserId == userId );
+							if (teacherByIdSubject != null)
+							{
+								gradeData.SubjectId = Convert.ToInt32(worksheet.Cells[row, 2].Value.ToString());
+								gradeData.UserId = userIdByCode.Id;
+								gradeData.ClassId = classIdByCode.Id;
+								gradeData.Semester = Enum.Parse<Semester>(worksheet.Cells[row, 5].Value.ToString());
+								gradeData.Midterm_Grades = float.Parse(worksheet.Cells[row, 6].Value.ToString());
+								gradeData.Final_Grades = float.Parse(worksheet.Cells[row, 7].Value.ToString());
+								gradeDataList.Add(gradeData);
+							}
+						}
+						
+					}
+					foreach (var gradeData in gradeDataList)
+					{
+						var checkedGrade = _appContext.GradePoints.FirstOrDefault(c => c.ClassId == gradeData.ClassId && c.UserId == gradeData.UserId && c.SubjectId == gradeData.SubjectId);
+						if (checkedGrade != null)
+						{
+							// Cập nhật thuộc tính chỉ khi nó là null hoặc 0
+							if (checkedGrade.Midterm_Grades == null || checkedGrade.Midterm_Grades == 0)
+								checkedGrade.Midterm_Grades = gradeData.Midterm_Grades;
 
-					  for (int row = 2; row <= rowCount; row++) // Bắt đầu từ hàng thứ hai, bỏ qua tiêu đề
-					  {
-						  var gradeData = new vm_update_gradepoint();
-						  gradeData.SubjectId = Convert.ToInt32(worksheet.Cells[row, 1].Value.ToString());
-						  gradeData.UserId = Convert.ToInt32(worksheet.Cells[row, 2].Value.ToString());
-						  gradeData.ClassId = Convert.ToInt32(worksheet.Cells[row, 3].Value.ToString());
-						  gradeData.Semester = Enum.Parse<Semester>(worksheet.Cells[row, 4].Value.ToString());
-						  gradeData.Midterm_Grades = float.Parse(worksheet.Cells[row, 5].Value.ToString());
-						  gradeData.Final_Grades = float.Parse(worksheet.Cells[row, 6].Value.ToString());
-						  gradeData.Average = (gradeData.Midterm_Grades + gradeData.Final_Grades) / 2;
-						  gradeDataList.Add(gradeData);
-					  }
-					  foreach (var gradeData in gradeDataList)
-					  {
-						  var checkedGrade = _appContext.GradePoints.FirstOrDefault(c => c.ClassId == gradeData.ClassId && c.UserId == gradeData.UserId && c.SubjectId == gradeData.SubjectId);
-						  if (checkedGrade != null)
-						  {
-							  // Cập nhật thuộc tính chỉ khi nó là null hoặc 0
-							  if (checkedGrade.Midterm_Grades == null || checkedGrade.Midterm_Grades == 0)
-								  checkedGrade.Midterm_Grades = gradeData.Midterm_Grades;
+							if (checkedGrade.Final_Grades == null || checkedGrade.Final_Grades == 0)
+								checkedGrade.Final_Grades = gradeData.Final_Grades;
 
-							  if (checkedGrade.Final_Grades == null || checkedGrade.Final_Grades == 0)
-								  checkedGrade.Final_Grades = gradeData.Final_Grades;
+							// Cập nhật cơ sở dữ liệu
+							_appContext.GradePoints.Update(checkedGrade);
+						}
+						else
+						{
+							// Thêm mới bản ghi nếu không tìm thấy
+							var newGrade = _mapper.Map<GradePoint>(gradeData);
+							_appContext.GradePoints.Add(newGrade);
+						}
+					}
+					await _appContext.SaveChangesAsync();
+					return gradeDataList.Count;
 
-							  // Cập nhật cơ sở dữ liệu
-							  _appContext.GradePoints.Update(checkedGrade);
-						  }
-						  else
-						  {
-							  // Thêm mới bản ghi nếu không tìm thấy
-							  var newGrade = _mapper.Map<GradePoint>(gradeData);
-							  _appContext.GradePoints.Add(newGrade);
-						  }
-					  }
-					  await _appContext.SaveChangesAsync();
-					  return gradeDataList.Count;
+				}
 
-				  }
-
-			  }
-			  catch (Exception ex)
-			  {
-				  Console.WriteLine($"Error in AddUsersFromExcel: {ex.Message}");
-				  throw;
-			  }
-		  }*/
-		public async Task<(int, byte[])> ImportFromExcel(Stream excelFileStream)
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine($"Error in AddPointFromExcel: {ex.Message}");
+				throw;
+			}
+		}
+	/*	public async Task<(int, byte[])> ImportFromExcel(Stream excelFileStream)
 		{
 			try
 			{
@@ -317,7 +335,7 @@ namespace BLL.Services.Implement
 				throw;
 			}
 		}
-
+*/
 		public async Task<int> Modified_Item(int id, vm_update_gradepoint request)
 		{
 			try

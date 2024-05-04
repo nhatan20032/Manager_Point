@@ -41,6 +41,11 @@ namespace API.Controllers
 		{
             return Ok(await _classService.GradePointByClass(idClass, semester));
         }
+        [HttpGet("/gradepoint/GradePointByClassAllYear")]
+        public async Task<IActionResult> GradePointByClassAllYear(int idClass, int? semester = null)
+        {
+            return Ok(await _classService.GradePointByClassAllYear(idClass, semester));
+        }
         [HttpPost("/gradepoint/create")]
 		public async Task<IActionResult> Create_Item([FromBody] vm_create_gradepoint request)
 		{
@@ -73,41 +78,41 @@ namespace API.Controllers
 		{
 			return Ok(await _gradePointService.Batch_Remove_Item(ids));
 		}
-		[HttpPost("/gradepoint/ImportFile")]
-		[Consumes("multipart/form-data")]
-		public async Task<IActionResult> Import(IFormFile file)
-		{
-			if (file == null || file.Length <= 0)
-			{
-				return BadRequest("File is required.");
-			}
+		//[HttpPost("/gradepoint/ImportFile")]
+		//[Consumes("multipart/form-data")]
+		//public async Task<IActionResult> Import(IFormFile file)
+		//{
+		//	if (file == null || file.Length <= 0)
+		//	{
+		//		return BadRequest("File is required.");
+		//	}
 
-			try
-			{
-				using (var memoryStream = new MemoryStream())
-				{
-					await file.CopyToAsync(memoryStream);
-					memoryStream.Position = 0;
+		//	try
+		//	{
+		//		using (var memoryStream = new MemoryStream())
+		//		{
+		//			await file.CopyToAsync(memoryStream);
+		//			memoryStream.Position = 0;
 
-					(int addedUsersCount, byte[] invalidExcelBytes) = await _gradePointService.ImportFromExcel(memoryStream);
+		//			(int addedUsersCount, byte[] invalidExcelBytes) = await _gradePointService.ImportFromExcel(memoryStream);
 
-					if (invalidExcelBytes != null)
-					{
-						// Trả về tệp Excel chứa các dòng không hợp lệ
-						return File(invalidExcelBytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "InvalidRows.xlsx");
-					}
-					else
-					{
-						// Trả về kết quả thành công
-						return Ok($"Successfully added {addedUsersCount} users from Excel.");
-					}
-				}
-			}
-			catch (Exception ex)
-			{
-				return StatusCode(500, $"Error importing users: {ex.Message}");
-			}
-		}
+		//			if (invalidExcelBytes != null)
+		//			{
+		//				// Trả về tệp Excel chứa các dòng không hợp lệ
+		//				return File(invalidExcelBytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "InvalidRows.xlsx");
+		//			}
+		//			else
+		//			{
+		//				// Trả về kết quả thành công
+		//				return Ok($"Successfully added {addedUsersCount} users from Excel.");
+		//			}
+		//		}
+		//	}
+		//	catch (Exception ex)
+		//	{
+		//		return StatusCode(500, $"Error importing users: {ex.Message}");
+		//	}
+		//}
 
 
 		//[HttpGet("/gradepoint/GetClassByUser")]
@@ -121,6 +126,6 @@ namespace API.Controllers
 			int idUser = 9;
 			return Ok(await _classService.GradePointSubjectByClass(idClass, idUser, semester));
 		}
-	}
+    }
 
 }

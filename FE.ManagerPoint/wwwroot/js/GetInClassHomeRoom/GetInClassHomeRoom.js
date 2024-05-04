@@ -5,7 +5,7 @@
         success: function (res) {
             var data = JSON.parse(res);
             var columns = [
-                { title: '', data: 'UserName' },
+                { title: 'Họ và Tên', data: 'UserName' },
                 { title: 'Lớp', data: 'ClassName' },
                 ...data.data[0].SubjectClasses.map(function (subject) {
                     return {
@@ -16,7 +16,7 @@
                     };
                 }),
                 { title: 'Điểm trung bình', data: 'TotalPoint' },
-                { title: 'Danh hiệu', data: 'Rank' }
+                { title: 'Danh hiệu', data: 'Rank' },
             ];
 
             $('#GradePointStudent-1').DataTable({
@@ -44,7 +44,7 @@ function GetDataGradePointS2(idClass) {
         success: function (res) {
             var data = JSON.parse(res);
             var columns = [
-                { title: '', data: 'UserName' },
+                { title: 'Họ và Tên', data: 'UserName' },
                 { title: 'Lớp', data: 'ClassName' },
                 ...data.data[0].SubjectClasses.map(function (subject) {
                     return {
@@ -55,7 +55,7 @@ function GetDataGradePointS2(idClass) {
                     };
                 }),
                 { title: 'Điểm trung bình', data: 'TotalPoint' },
-                { title: 'Danh hiệu', data: 'Rank' }
+                { title: 'Danh hiệu', data: 'Rank' },
             ];
 
             $('#GradePointStudent-2').DataTable({
@@ -78,12 +78,12 @@ function GetDataGradePointS2(idClass) {
 }
 function GetDataGradePointS3(idClass) {
     $.ajax({
-        url: `https://localhost:44335/gradepoint/GradePointByClass?idClass=${idClass}`,
+        url: `https://localhost:44335/gradepoint/GradePointByClassAllYear?idClass=${idClass}`,
         method: 'GET',
         success: function (res) {
             var data = JSON.parse(res);
             var columns = [
-                { title: '', data: 'UserName' },
+                { title: 'Họ và Tên', data: 'UserName' },
                 { title: 'Lớp', data: 'ClassName' },
                 ...data.data[0].SubjectClasses.map(function (subject) {
                     return {
@@ -94,7 +94,8 @@ function GetDataGradePointS3(idClass) {
                     };
                 }),
                 { title: 'Điểm trung bình', data: 'TotalPoint' },
-                { title: 'Danh hiệu', data: 'Rank' }
+                { title: 'Danh hiệu', data: 'Rank' },
+                { title: 'Thuộc loại', data: 'Conduct' }
             ];
 
             $('#GradePointStudent-3').DataTable({
@@ -118,7 +119,6 @@ function GetDataGradePointS3(idClass) {
 
 
 function GetDataGradePointBySubject(idClass) {
-    debugger
     $.ajax({
         url: `https://localhost:44335/gradepoint/subject?idClass=${idClass}&semester=1`,
         method: 'GET',
@@ -154,7 +154,6 @@ function GetDataGradePointBySubject(idClass) {
     });
 }
 function GetDataGradePointBySubject2(idClass) {
-    debugger
     $.ajax({
         url: `https://localhost:44335/gradepoint/subject?idClass=${idClass}&semester=2`,
         method: 'GET',
@@ -190,7 +189,7 @@ function GetDataGradePointBySubject2(idClass) {
     });
 }
 function GetDataGradePointBySubject3(idClass) {
-    debugger
+   
     $.ajax({
         url: `https://localhost:44335/gradepoint/subject?idClass=${idClass}&semester=3`,
         method: 'GET',
@@ -232,6 +231,33 @@ function GetClassInfo(classInfo) {
                     <p class="card-text">Khối: ${classInfo.GradeLevel}</p>
                     <p class="card-text">Tên khóa học: ${classInfo.CourseName}</p>
                 </div>`
-    document.getElementById("classInfo").innerHTML = html 
+    document.getElementById("classInfo").innerHTML = html
 
+}
+
+function Import_Excel(callback) {
+    var fd = new FormData();
+    var files = $('#file_excel')[0].files[0];
+    fd.append('file', files);
+    $.ajax({
+        url: "https://localhost:44335/class/import_excel",
+        method: "POST",
+        data: fd,
+        contentType: false,
+        processData: false,
+        success: function (result) {
+            if (callback && typeof callback === "function") {
+                callback();
+            }
+            $('#Subject-1').DataTable().ajax.reload();
+            $('#Subject-2').DataTable().ajax.reload();
+            $('#Subject-3').DataTable().ajax.reload();
+
+            console.log(result);
+        },
+        error: function (xhr, status, error) {
+            var errorMessage = xhr.responseJSON.message;
+            toastr.error(errorMessage, "Lỗi vui lòng kiểm tra lại file excel");
+        }
+    })
 }

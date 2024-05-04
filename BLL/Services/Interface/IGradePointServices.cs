@@ -1,5 +1,4 @@
-﻿using BLL.ViewModels.Class;
-using BLL.ViewModels.GradePoint;
+﻿using BLL.ViewModels.GradePoint;
 
 namespace BLL.Services.Interface
 {
@@ -14,8 +13,8 @@ namespace BLL.Services.Interface
         public Task<bool> Remove_Item(int id);
         public Task<bool> Batch_Remove_Item(List<int> ids);
 
-		//public Task<int> ImportFromExcel(Stream excelFileStream);
-		public Task<(int, byte[])> ImportFromExcel(Stream excelFileStream);
+		public Task<int> ImportFromExcel(Stream excelFileStream);
+		//public Task<(int, byte[])> ImportFromExcel(Stream excelFileStream);
         //public Task<List<vm_class>> GetClassByUser (int classid);
 	}
 }

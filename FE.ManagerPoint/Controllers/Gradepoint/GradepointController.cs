@@ -8,5 +8,5 @@ namespace FE.ManagerPoint.Controllers.Gradepoint
         {
             return View();
         }
-    }
+    } 
 }

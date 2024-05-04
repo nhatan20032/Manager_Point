@@ -51,5 +51,26 @@ namespace FE.ManagerPoint.Controllers.Classes
             ViewBag.idCLass = idClass;
             return View();
         }
+        [HttpPost("/class/upload")]
+        public string Upload(IFormFile file)
+        {
+            if (file != null && file.Length > 0)
+            {
+                var fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+                var uploadDirectory = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
+                if (!Directory.Exists(uploadDirectory))
+                {
+                    Directory.CreateDirectory(uploadDirectory);
+                }
+                var filePath = Path.Combine(uploadDirectory, fileName);
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    file.CopyTo(stream);
+                }
+                var relativePath = "/uploads/" + fileName;
+                return relativePath;
+            }
+            return null!;
+        }
     }
 }
