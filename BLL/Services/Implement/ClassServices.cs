@@ -339,10 +339,10 @@ namespace BLL.Services.Implement
                                 Avegare = gradePoint.Average
                             }
                         },
-                       
+
                     };
                     userData.TotalPoint = gradePoint.Average;
-                  
+
                     groupData.Add(userData);
                 }
             }
@@ -352,7 +352,7 @@ namespace BLL.Services.Implement
                 userData.Rank = GetRank(userData.TotalPoint);
             };
 
-          
+
             var paginatedResult = new Pagination<Data>
             {
                 // Có thể cần cập nhật draw tại đây
@@ -404,13 +404,13 @@ namespace BLL.Services.Implement
                 throw;
             }
         }
-    
-        
 
-		public async Task<string> GradePointSubjectByClass(int idClass,int idUser, int? semester = null)
-		{
+
+
+        public async Task<string> GradePointSubjectByClass(int idClass, int idUser, int? semester = null)
+        {
             var teacherSubject = _appContext.Teacher_Classes.FirstOrDefault(c => c.ClassId == idClass && c.UserId == idUser);
-            if (semester == 3) 
+            if (semester == 3)
             {
                 var results = new List<vm_gradepoint_whole_year>();
                 var vm_gradePoint = _appContext.GradePoints.ProjectTo<vm_gradepoint>(_mapper.ConfigurationProvider).Where(c => c.SubjectId == teacherSubject.SubjectId && c.ClassId == idClass).ToList();
@@ -455,16 +455,16 @@ namespace BLL.Services.Implement
                 var jsonResult = JsonConvert.SerializeObject(paginatedResult, Formatting.Indented);
                 return jsonResult;
             }
-            var vm_gradePoint1  = _appContext.GradePoints.ProjectTo<vm_gradepoint>(_mapper.ConfigurationProvider).Where(c=>c.SubjectId == teacherSubject.SubjectId && c.ClassId == idClass && c.Semester == (Semester)Enum.ToObject(typeof(Semester), semester)).ToList();
-			var paginatedResult1 = new Pagination<vm_gradepoint>
-			{
-				draw = 1,
-				recordsTotal = 1,
-				recordsFiltered = 1,
-				data = vm_gradePoint1
-			};
-			var jsonResult1 = JsonConvert.SerializeObject(paginatedResult1, Formatting.Indented);
-			return jsonResult1;
-		}
-	}
+            var vm_gradePoint1 = _appContext.GradePoints.ProjectTo<vm_gradepoint>(_mapper.ConfigurationProvider).Where(c => c.SubjectId == teacherSubject.SubjectId && c.ClassId == idClass && c.Semester == (Semester)Enum.ToObject(typeof(Semester), semester)).ToList();
+            var paginatedResult1 = new Pagination<vm_gradepoint>
+            {
+                draw = 1,
+                recordsTotal = 1,
+                recordsFiltered = 1,
+                data = vm_gradePoint1
+            };
+            var jsonResult1 = JsonConvert.SerializeObject(paginatedResult1, Formatting.Indented);
+            return jsonResult1;
+        }
+    } 
 }

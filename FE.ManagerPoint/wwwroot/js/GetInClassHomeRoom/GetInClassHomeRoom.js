@@ -232,6 +232,6 @@ function GetClassInfo(classInfo) {
                     <p class="card-text">Khối: ${classInfo.GradeLevel}</p>
                     <p class="card-text">Tên khóa học: ${classInfo.CourseName}</p>
                 </div>`
-    document.getElementById("classInfo").innerHTML = html 
+    document.getElementById("classInfo").innerHTML = html
 
 }
