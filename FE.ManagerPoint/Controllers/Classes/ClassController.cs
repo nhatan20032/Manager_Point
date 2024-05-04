@@ -24,7 +24,7 @@ namespace FE.ManagerPoint.Controllers.Classes
         }
         public IActionResult Add_Teacher_To_Class(int id)
         {
-            var classInfo = _services.Get_By_Id(id);
+            var classInfo = _services.Get_By_Id_vm_class(id);
             return View(classInfo);
         }
         public async Task<IActionResult> ClassOnBoard(int idUser)
@@ -44,8 +44,10 @@ namespace FE.ManagerPoint.Controllers.Classes
             ViewBag.ClassInfoJson = classInfor;
             return View();
         }
-        public IActionResult GetInClassHomeRoom(int idClass)
+        public async Task<IActionResult> GetInClassHomeRoom(int idClass)
         {
+            var classInfor = await _services.Get_By_Id(idClass);
+            ViewBag.ClassInfor = classInfor;
             ViewBag.idCLass = idClass;
             return View();
         }

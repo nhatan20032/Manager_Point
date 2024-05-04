@@ -2,7 +2,11 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
     ViewBag.Title = "Lớp học";
     var classId = ViewBag.idClass;
+    var classInfo = ViewBag.ClassInfor;
 }
+<div class="row p-3">
+    <div id="classInfo" class="card col-md-12" style="width: 100%;"></div>
+</div>
 <div class="row mt-3">
     <div class="nav nav-tabs" id="nav-tab" role="tablist">
         <button class="nav-link active" id="nav-1-tab" data-bs-toggle="tab" data-bs-target="#nav-1" type="button" role="tab" aria-controls="nav-1" aria-selected="false">Kì 1</button>
@@ -27,6 +31,9 @@
     $(document).ready(function () {
         $('#semester').select2({ width: '100%' });
         let classId = '@classId';
+        var classInfo = @Html.Raw(ViewBag.ClassInfor); // Lấy dữ liệu từ ViewBag
+        console.log(classInfo);
+        GetClassInfo(classInfo)
         GetDataGradePointS1(classId);
         GetDataGradePointS2(classId);
         GetDataGradePointS3(classId);
