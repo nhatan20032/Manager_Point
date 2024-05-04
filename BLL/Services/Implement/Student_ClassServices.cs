@@ -41,8 +41,11 @@ namespace BLL.Services.Implement
 
                 var userId = obj.Select(sc => sc.UserId).Distinct().ToList();
                 var subjectIds = await _appContext.Subjects.Select(t => t.Id).ToListAsync();
-
                 var gradePoints = CreateGradePoints(userId, subjectIds, classIds);
+                if (gradePoints == null || gradePoints.Count == 0)
+                {
+                    return new List<int> { 4000 };
+                }
                 var mappedGradePoints = _mapper.Map<List<GradePoint>>(gradePoints);
                 _appContext.GradePoints.AddRange(mappedGradePoints);
                 await _appContext.SaveChangesAsync();

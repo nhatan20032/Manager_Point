@@ -275,15 +275,18 @@ function createClass_Student(callback) {
         data: JSON.stringify(mergedData),
         contentType: 'application/json',
         success: function (res) {
-            if (res && res.length < 0) {
+            if (res === 4000) {
+                toastr.error('Chưa tạo môn học, vui lòng tạo môn học!');
+            } else if (res && res.length < 0) {
                 toastr.error('Lớp đã đạt tối đa học sinh, vui lòng kiểm tra lại!');
+            } else {
+                if (callback && typeof callback === "function") {
+                    callback();
+                }
+                $('#class_table').DataTable().ajax.reload();
+                $('#student_table').DataTable().ajax.reload();
+                $('#student_class_table').DataTable().ajax.reload();
             }
-            if (callback && typeof callback === "function") {
-                callback();
-            }
-            $('#class_table').DataTable().ajax.reload();
-            $('#student_table').DataTable().ajax.reload();
-            $('#student_class_table').DataTable().ajax.reload();
         },
     });
 }
