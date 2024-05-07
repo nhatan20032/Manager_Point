@@ -18,5 +18,7 @@ namespace BLL.Services.Interface
         public Task<bool> Batch_Remove_Item(List<int> ids);
 
         public Task<string> GradePointByClass(int idClass, int? semester = null);
+        public Task<string> GradePointSubjectByClass(int idClass, int idUser, int? semester = null);
+
     }
 }

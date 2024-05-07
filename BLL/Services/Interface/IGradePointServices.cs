@@ -1,4 +1,5 @@
-﻿using BLL.ViewModels.GradePoint;
+﻿using BLL.ViewModels.Class;
+using BLL.ViewModels.GradePoint;
 
 namespace BLL.Services.Interface
 {
@@ -15,6 +16,6 @@ namespace BLL.Services.Interface
 
 		//public Task<int> ImportFromExcel(Stream excelFileStream);
 		public Task<(int, byte[])> ImportFromExcel(Stream excelFileStream);
+        //public Task<List<vm_class>> GetClassByUser (int classid);
 	}
-
 }
