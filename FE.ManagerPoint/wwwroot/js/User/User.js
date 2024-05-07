@@ -427,8 +427,7 @@ function Import_Excel(callback) {
             console.log(result);
         },
         error: function (xhr, status, error) {
-            var errorMessage = xhr.responseJSON.message;
-            toastr.error(errorMessage, "Lỗi vui lòng kiểm tra lại file excel");
+            toastr.error("Lỗi vui lòng kiểm tra lại file excel");
         }
     })
 }
