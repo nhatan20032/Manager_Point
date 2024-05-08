@@ -32,9 +32,10 @@ namespace API.Controllers
         }
 
         [HttpGet("/gradepoint/get_by_id")]
-		public async Task<IActionResult> Get_By_Id(int id)
+		public async Task<IActionResult> Get_By_Id(int ClassId , int UserId, int SubjectId, int Semester)
 		{
-			return Ok(await _gradePointService.Get_By_Id(id));
+			var abc = await _gradePointService.Get_By_Id(ClassId, UserId, SubjectId, Semester);
+            return Ok(abc);
 		}
 		[HttpGet("/gradepoint/GradePointByClass")]
 		public async Task<IActionResult> GradePointByClass(int idClass, int? semester = null)
@@ -121,9 +122,9 @@ namespace API.Controllers
 		//	return Ok(await _gradePointService.GetClassByUser(id));
 		//}
 		[HttpGet("/gradepoint/subject")]
-		public async Task<IActionResult> DetailGradePointByClass(int idClass , int? semester = null)
+		public async Task<IActionResult> DetailGradePointByClass(int idClass ,int idUser, int? semester = null)
 		{
-			int idUser = 9;
+			 //int idUser = 13;
 			return Ok(await _classService.GradePointSubjectByClass(idClass, idUser, semester));
 		}
     }

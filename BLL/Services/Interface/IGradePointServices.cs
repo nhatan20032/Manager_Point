@@ -6,7 +6,7 @@ namespace BLL.Services.Interface
     {
         public Task<string> Get_All_Async(int id, int offset = 0, int limit = 10, string search = "", int semester = 1);
         public Task<string> GetSumPointWholeyear_Async(int id,int classid,string search = "");
-        public Task<vm_gradepoint> Get_By_Id(int id);
+        public Task<vm_gradepoint> Get_By_Id(int ClassId, int UserId, int SubjectId, int Semester);
         public Task<int> Create_Item(vm_create_gradepoint request);
         public Task<List<int>> Batch_Create_Item(List<vm_create_gradepoint> requests);
         public Task<int> Modified_Item(int id, vm_update_gradepoint request);

@@ -9,15 +9,10 @@ using BLL.ViewModels.User;
 using Manager_Point.ApplicationDbContext;
 using Manager_Point.Models;
 using Manager_Point.Models.Enum;
-using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Primitives;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System.Collections.Generic;
-using System.Net.WebSockets;
 
 namespace BLL.Services.Implement
 {
@@ -51,7 +46,8 @@ namespace BLL.Services.Implement
             set => _average = value;
         }
 
-        private float _average; public string Rank { get; set; }
+        private float _average; 
+        //public string Rank { get; set; }
     }
     public class ClassServices : IClassServices
     {
@@ -333,7 +329,7 @@ namespace BLL.Services.Implement
 
                         // Môn học đã tồn tại, cập nhật trung bình
                         existingSubject.Avegare = (existingSubject.Avegare + gradePoint.Average) / 2;
-                        existingSubject.Rank = GetRank(gradePoint.Average);
+                       // existingSubject.Rank = GetRank(gradePoint.Average);
                         // existingUserData.TotalPoint  += gradePoint.Average;
 
                     }
@@ -345,7 +341,7 @@ namespace BLL.Services.Implement
                             SubjectId = gradePoint.SubjectId,
                             SubjectName = _appContext.Subjects.FirstOrDefault(s => s.Id == gradePoint.SubjectId)?.Name,
                             Avegare = gradePoint.Average,
-                            Rank = GetRank(gradePoint.Average),
+                          //  Rank = GetRank(gradePoint.Average),
 
 
                         });
@@ -602,7 +598,7 @@ namespace BLL.Services.Implement
 
                         // Môn học đã tồn tại, cập nhật trung bình
                         existingSubject.Avegare = (existingSubject.Avegare + gradePoint.Average * 2) / 3;
-                        existingSubject.Rank = GetRank(gradePoint.Average);
+                       // existingSubject.Rank = GetRank(gradePoint.Average);
                         existingUserData.TotalPoint += existingSubject.Avegare;
 
                     }
@@ -614,7 +610,7 @@ namespace BLL.Services.Implement
                             SubjectId = gradePoint.SubjectId,
                             SubjectName = _appContext.Subjects.FirstOrDefault(s => s.Id == gradePoint.SubjectId)?.Name,
                             Avegare = gradePoint.Average,
-                            Rank = GetRank(gradePoint.Average),
+                            //Rank = GetRank(gradePoint.Average),
 
 
                         });

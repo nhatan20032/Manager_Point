@@ -158,11 +158,11 @@ namespace BLL.Services.Implement
 
 		}
 
-		public async Task<vm_gradepoint> Get_By_Id(int id)
+		public  async Task<vm_gradepoint> Get_By_Id(int ClassId, int UserId, int SubjectId, int Semester)
 		{
 			try
 			{
-				var gradepoint = await _appContext.GradePoints.ProjectTo<vm_gradepoint>(_mapper.ConfigurationProvider).SingleOrDefaultAsync(x => x.Id == id);
+				var gradepoint = await  _appContext.GradePoints.ProjectTo<vm_gradepoint>(_mapper.ConfigurationProvider).FirstOrDefaultAsync(x => x.ClassId == ClassId && x.UserId == UserId && x.SubjectId == SubjectId && x.Semester == (Semester)Enum.ToObject(typeof(Semester), Semester));
 				if (gradepoint == null) return null!;
 				return gradepoint;
 			}
@@ -212,7 +212,28 @@ namespace BLL.Services.Implement
 					}
 					foreach (var gradeData in gradeDataList)
 					{
-						var checkedGrade = _appContext.GradePoints.FirstOrDefault(c => c.ClassId == gradeData.ClassId && c.UserId == gradeData.UserId && c.SubjectId == gradeData.SubjectId);
+                        #region cập nhật điểm
+                       
+                            var vm_gradepoint = _appContext.GradePoints.ProjectTo<vm_gradepoint>(_mapper.ConfigurationProvider).Where(c => c.UserId == gradeData.UserId && c.Semester == (Semester)Enum.ToObject(typeof(Semester), gradeData.Semester)).ToList();
+                            foreach (var item in vm_gradepoint)
+                            {
+                                if (item.ExaminationPoint != null && item.ExaminationPoint.Any())
+                                {
+                                    var objForUpdate = await _appContext.GradePoints.FindAsync(item.Id);
+                                    float avg = (item.Midterm_Grades * 2 + item.Final_Grades * 3 + (item.ExaminationPoint).Sum() / (item.ExaminationPoint).Count()) / 6;
+                                    objForUpdate.Average = avg;
+                                    await _appContext.SaveChangesAsync();
+                                }
+                                else
+                                {
+                                    var objForUpdate = await _appContext.GradePoints.FindAsync(item.Id);
+                                    float avg = (item.Midterm_Grades * 2 + item.Final_Grades * 3 + 0) / 6;
+                                    objForUpdate.Average = avg;
+                                    await _appContext.SaveChangesAsync();
+                                }
+                            }
+                        #endregion
+                        var checkedGrade = _appContext.GradePoints.FirstOrDefault(c => c.ClassId == gradeData.ClassId && c.UserId == gradeData.UserId && c.SubjectId == gradeData.SubjectId);
 						if (checkedGrade != null)
 						{
 							// Cập nhật thuộc tính chỉ khi nó là null hoặc 0

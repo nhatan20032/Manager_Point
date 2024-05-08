@@ -26,7 +26,7 @@
         </div>
     </div>
 </div>
-
+@*<partial name="Update" />*@
 <script src="~/js/GetInClassHomeRoom/GetInClassHomeRoom.js"></script>
 <script>
     $(document).ready(function () {
@@ -38,6 +38,40 @@
         GetDataGradePointS1(classId);
         GetDataGradePointS2(classId);
         GetDataGradePointS3(classId);
-    });
+    })
 
+
+    //$('#user_create_form').on('submit', function (event) {
+    //    var form = $(this);
+    //    if (!form[0].checkValidity()) {
+    //        event.preventDefault();
+    //        event.stopPropagation();
+    //    } else {
+    //        var formData = {};
+    //        $('#user_create_form').find('input, select, textarea').each(function (index, element) {
+    //            var fieldId = $(element).attr('id');
+    //            var fieldType = $(element).attr('type');
+    //            var fieldValue;
+    //            if (fieldType === 'file') {
+    //                return;
+    //            }
+    //            if ($(element).is('select') && $(element).attr('id') === 'gender') {
+    //                fieldValue = parseInt($(element).val());
+    //            } else {
+    //                fieldValue = $(element).val();
+    //            }
+
+    //            formData[fieldId] = fieldValue;
+    //        });
+    //        console.log(formData);
+    //        event.preventDefault();
+    //        createUser(formData, function () {
+    //            $('#user_create_form').trigger('reset');
+    //            toastr.success('Tạo môn học thành công');
+    //            $('#createModal').modal('hide');
+    //            form.removeClass('was-validated');
+    //        });
+    //    }
+    //    form.addClass('was-validated');
+    //});
 </script>
