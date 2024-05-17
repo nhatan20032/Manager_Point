@@ -10,6 +10,7 @@ namespace BLL.ViewModels.GradePoint
         public int ClassId { get; set; }
         public string? subjectName { get; set; }
         public string? userName { get; set; }
+        public string? User_Code { get; set; }
         public List<float>? ExaminationPoint { get; set; }
         public string? className { get; set; }
         public Semester Semester { get; set; }

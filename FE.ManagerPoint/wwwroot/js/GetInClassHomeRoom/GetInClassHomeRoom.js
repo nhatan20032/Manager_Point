@@ -131,9 +131,10 @@ function GetDataGradePointBySubject(idClass) {
             
             var columns = [
                 { data: 'Id', title: 'ID', visible: false },
-                { data: 'UserId', title: 'UserId' },
+                /*{ data: 'UserId', title: 'UserId' },
+                { data: 'SubjectId', title: 'SubjectId' },
                 { data: 'ClassId', title: 'ClassId' },
-                { data: 'Semester', title: 'Semester' },
+                { data: 'Semester', title: 'Semester' },*/
                 { data: 'userName', title: 'Tên học sinh' },
                 { data: 'subjectName', title: 'Môn học' },
                 { data: 'ExaminationPoint', title: 'Điểm thành phần' },
@@ -143,10 +144,9 @@ function GetDataGradePointBySubject(idClass) {
                 {
                     title: 'Thao tác',
                     render: function (data, type, row) {
-                        let tp = `<div class="btn btn-primary"  >Thêm điểm thành phần</div>`;
-                        let bd = `<a  class="btn btn-success" onclick="GetById(${row.ClassId}, ${row.UserId}, ${row.Semester})" >Thêm điểm </a>`;
-                        let sbd = `<div class="btn btn-warning"  >Sửa điểm</div>`;
-                        return `<div>  ${bd} ${sbd} ${tp} </div>`;
+                        let tp = `<div class="btn btn-primary"  >Vào điểm  thành phần</div>`;
+                        let bd = `<a  class="btn btn-success" onclick="GetById(${row.ClassId},${row.SubjectId}, ${row.UserId}, ${row.Semester})" >Vào điểm </a>`;
+                        return `<div class="bdct">  ${bd} ${tp} </div>`;
                     }
 
                 }
@@ -187,15 +187,25 @@ function GetDataGradePointBySubject2(idClass) {
 
             var columns = [
                 { data: 'Id', title: 'ID', visible: false },
-                { data: 'UserId', title: 'UserId' },
+               /* { data: 'UserId', title: 'UserId' },
+                { data: 'SubjectId', title: 'SubjectId' },
                 { data: 'ClassId', title: 'ClassId' },
-                { data: 'Semester', title: 'Semester' },
+                { data: 'Semester', title: 'Semester' },*/
                 { data: 'userName', title: 'Tên học sinh' },
                 { data: 'subjectName', title: 'Môn học' },
                 { data: 'ExaminationPoint', title: 'Điểm thành phần' },
                 { data: 'Midterm_Grades', title: 'Điểm giữa kỳ' },
                 { data: 'Final_Grades', title: 'Điểm cuối kỳ' },
-                { data: 'Average', title: 'Điểm trung bình' }
+                { data: 'Average', title: 'Điểm trung bình' },
+                {
+                    title: 'Thao tác',
+                    render: function (data, type, row) {
+                        let tp = `<div class="btn btn-primary"  >Vào điểm  thành phần</div>`;
+                        let bd = `<a  class="btn btn-success" onclick="GetById(${row.ClassId},${row.SubjectId}, ${row.UserId}, ${row.Semester})" >Vào điểm </a>`;
+                        return `<div  class="bdct">  ${bd}  ${tp} </div>`;
+                    }
+
+                }
             ];
 
             $('#Subject-2').DataTable({
@@ -295,14 +305,16 @@ function Import_Excel(callback) {
 }
 
 
-
-function GetById(ClassId, UserId,) {
+// ngươi dùng ở đây là học sinh
+function GetById(ClassId, SubjectId, UserId, Semester) {
     $.ajax({
         url: `https://localhost:44335/gradepoint/get_by_id`,
         method: "GET",
         data: {
             ClassId: ClassId,
             UserId: UserId,
+            SubjectId: SubjectId,
+            Semester: Semester
         },
         success: function (res) {
             if (res == null) {
@@ -311,18 +323,30 @@ function GetById(ClassId, UserId,) {
             }
             console.log(res);
             $("#id").val(res.id);
-            $("#user_Code_md").val(res.user_Code);
-            $("#name_md").val(res.name);
-            $("#gender_md").val(res.gender);
-            $("#nation_md").val(res.nation);
-            $("#password_md").val(res.password);
-            $("#address_md").val(res.address);
-            $("#email_md").val(res.email);
-            $("#DOB_md").val(res.dob);
-            $("#phone_md").val(res.phoneNumber);
-            $("#description_md").val(res.description);
-            $("#avatar_md").val(res.avatarUrl);
+            $("#className").val(res.className);
+            $("#subjectName").val(res.subjectName);
+            $("#userName").val(res.userName);
+            $("#user_Code").val(res.user_Code);
+            $("#semester").val(res.semester);
+            $("#midterm_Grades").val(res.midterm_Grades);
+            $("#final_Grades").val(res.final_Grades);
             $("#updateModal").modal("show");
+        },
+    });
+}
+
+
+function updateTranscript(id, object, callback) {
+    $.ajax({
+        url: `https://localhost:44335/gradepoint/modified?id=${id}`,
+        method: "PUT",
+        data: JSON.stringify(object),
+        contentType: 'application/json',
+        success: function (res) {
+            if (callback && typeof callback === "function") {
+                callback();
+            }
+            $('#Subject-1').DataTable().ajax.reload();
         },
     });
 }

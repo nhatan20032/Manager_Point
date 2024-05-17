@@ -10,6 +10,7 @@ namespace BLL.Extentions.Automapper
         {
             CreateMap<GradePoint, vm_gradepoint>()
                 .ForMember(dest => dest.userName, opt => opt.MapFrom(src => src.User.Name))
+                .ForMember(dest => dest.User_Code, opt => opt.MapFrom(src => src.User.User_Code))
                 .ForMember(dest => dest.subjectName, opt => opt.MapFrom(src => src.Subject.Name))
                 .ForMember(dest => dest.className, opt => opt.MapFrom(src => src.Class.Name))
                 .ForMember(

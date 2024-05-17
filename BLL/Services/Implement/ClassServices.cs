@@ -535,6 +535,7 @@ namespace BLL.Services.Implement
                         var grades = userGradePoints[userId][subjectId];
                         var result = new vm_gradepoint_whole_year
                         {
+                            SubjectId = subjectId,
                             UserName = vm_gradePoint.First(gp => gp.UserId == userId).userName, // Lấy tên người dùng từ bất kỳ bản ghi nào của người dùng
                             SubjectName = _appContext.Subjects.FirstOrDefault(c => c.Id == subjectId)?.Name,
                             Semester1 = grades.k1,

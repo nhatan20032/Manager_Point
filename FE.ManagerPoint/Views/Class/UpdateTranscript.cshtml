@@ -1,1 +1,100 @@
-﻿
+﻿<!-- Modal Update -->
+<div class="modal fade" id="updateModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="updateModal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Vào điểm học sinh</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="transcript_update_form" class="needs-validation" novalidate>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <label for="id" class="form-label">Id</label>
+                        </div>
+                        <div class="col-md-9">
+                            <input id="id" class="form-control" type="text"  readonly />
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-3">
+                            <label for="className" class="form-label">Lớp : </label>
+                        </div>
+                        <div class="col-md-9">
+                            <input id="className" class="form-control" type="text"  readonly />
+                          
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-3">
+                            <label for="subjectName" class="form-label">Môn : </label>
+                        </div>
+                        <div class="col-md-9">
+                            <input id="subjectName" type="text" class="form-control" readonly />
+                           
+                        </div>
+                    </div>
+                  
+                    <div class="row mt-3">
+                        <div class="col-md-3">
+                            <label for="userName" class="form-label">Học sinh : </label>
+                        </div>
+                        <div class="col-md-9">
+                            <input id="userName" class="form-control" readonly />
+                        </div>
+					</div>
+                    <div class="row mt-3">
+                        <div class="col-md-3">
+                            <label for="userName" class="form-label">Mã học sinh : </label>
+                        </div>
+                        <div class="col-md-9">
+                            <input id="user_Code" class="form-control" readonly />
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+						<div class="col-md-3">
+                            <label for="semester" class="form-label">Học kỳ : </label>
+						</div>
+						<div class="col-md-9">
+                            <input id="semester" type="text" class="form-control" readonly />
+
+						</div>
+					</div>
+                    <div class="row mt-3">
+                        <div class="col-md-3">
+                            <label for="midterm_Grades" class="form-label">Điểm giữa kỳ</label>
+                        </div>
+                        <div class="col-md-9">
+                            <input id="midterm_Grades" type="number" class="form-control" min="0" max="10" step="0.1" />
+                        </div>
+
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-3">
+                            <label for="final_Grades" class="form-label">Điểm cuối kỳ</label>
+                        </div>
+                        <div class="col-md-9">
+                            <input id="final_Grades" type="number" class="form-control" min="0" max="10" step="0.1" />
+                           
+                        </div>
+                    </div>
+                  </div>
+                <div class="modal-footer">
+                    <button id="save_md" type="submit" class="btn btn-primary">Lưu</button>
+                    <button id="un_save_md" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        $('#un_save_md[data-bs-dismiss="modal"]').on('click', function () {
+            $('#user_update_form').trigger('reset');
+            if ($('#user_update_form').hasClass('was-validated')) {
+                $('#user_update_form').removeClass('was-validated');
+            }
+        });
+
+    });
+</script>

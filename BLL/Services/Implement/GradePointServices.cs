@@ -2,25 +2,20 @@
 using AutoMapper.QueryableExtensions;
 using BLL.Services.Interface;
 using BLL.ViewModels;
-using BLL.ViewModels.Class;
-using BLL.ViewModels.Course;
 using BLL.ViewModels.GradePoint;
 using Manager_Point.ApplicationDbContext;
 using Manager_Point.Models;
 using Manager_Point.Models.Enum;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.SignalR;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Primitives;
 using Newtonsoft.Json;
 using OfficeOpenXml;
-using System.Collections.Generic;
 using System.Data.Entity;
 
 namespace BLL.Services.Implement
 {
 
-	public class GradePointServices : IGradePointServices
+    public class GradePointServices : IGradePointServices
 	{
 		private readonly AppDbContext _appContext;
 		private readonly IMapper _mapper;
@@ -158,11 +153,11 @@ namespace BLL.Services.Implement
 
 		}
 
-		public  async Task<vm_gradepoint> Get_By_Id(int ClassId, int UserId, int SubjectId, int Semester)
+		public vm_gradepoint Get_By_Id(int ClassId, int UserId, int SubjectId, int Semester)
 		{
 			try
 			{
-				var gradepoint = await  _appContext.GradePoints.ProjectTo<vm_gradepoint>(_mapper.ConfigurationProvider).FirstOrDefaultAsync(x => x.ClassId == ClassId && x.UserId == UserId && x.SubjectId == SubjectId && x.Semester == (Semester)Enum.ToObject(typeof(Semester), Semester));
+				var gradepoint =  _appContext.GradePoints.ProjectTo<vm_gradepoint>(_mapper.ConfigurationProvider).FirstOrDefault(x => x.ClassId == ClassId && x.UserId == UserId && x.SubjectId == SubjectId && x.Semester == (Semester)Enum.ToObject(typeof(Semester), Semester));
 				if (gradepoint == null) return null!;
 				return gradepoint;
 			}
@@ -363,13 +358,13 @@ namespace BLL.Services.Implement
 			{
 				var objForUpdate = await _appContext.GradePoints.FindAsync(id);
 				if (objForUpdate == null) return -1;
-				objForUpdate.SubjectId = request.SubjectId;
-				objForUpdate.UserId = request.UserId;
-				objForUpdate.ClassId = request.ClassId;
-				objForUpdate.Semester = request.Semester;
+				//objForUpdate.SubjectId = request.SubjectId;
+				//objForUpdate.UserId = request.UserId;
+				//objForUpdate.ClassId = request.ClassId;
+				//objForUpdate.Semester = request.Semester;
 				objForUpdate.Midterm_Grades = request.Midterm_Grades;
 				objForUpdate.Final_Grades = request.Final_Grades;
-				objForUpdate.Average = request.Average;
+				//objForUpdate.Average = request.Average;
 				// Không cần gọi Attach hoặc Update vì objForUpdate đã được
 				// theo dõi trong DbContext neuse có sự thay đổi thì nó sẽ cập nhật vô DB
 				await _appContext.SaveChangesAsync();

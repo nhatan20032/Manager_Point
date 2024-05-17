@@ -546,3 +546,10 @@ div.dt-container div.dt-layout-row.dt-layout-table div.dt-layout-cell{
 span.dt-column-order {
     display: none;
 }
+
+
+
+.bdct {
+    display: flex;
+    gap:5px;
+}
