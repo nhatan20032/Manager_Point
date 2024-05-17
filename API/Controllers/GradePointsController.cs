@@ -32,9 +32,9 @@ namespace API.Controllers
         }
 
         [HttpGet("/gradepoint/get_by_id")]
-		public async Task<IActionResult> Get_By_Id(int ClassId , int UserId, int SubjectId, int Semester)
+		public IActionResult Get_By_Id(int ClassId , int UserId, int SubjectId, int Semester)
 		{
-			var abc = await _gradePointService.Get_By_Id(ClassId, UserId, SubjectId, Semester);
+			var abc = _gradePointService.Get_By_Id(ClassId, UserId, SubjectId, Semester);
             return Ok(abc);
 		}
 		[HttpGet("/gradepoint/GradePointByClass")]
