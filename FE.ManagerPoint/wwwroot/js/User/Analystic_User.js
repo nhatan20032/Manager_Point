@@ -243,3 +243,157 @@ function count_student_course() {
         }
     });
 }
+function count_student_year() {
+    $.ajax({
+        url: 'https://localhost:44335/user/Count_Student_In_Year',
+        type: 'GET',
+        dataType: 'json',
+        success: function (data) {
+            // Chuyển đổi dữ liệu từ API thành mảng ApexCharts yêu cầu
+            var chartData = data.map(function (item) {
+                return {
+                    x: item.Years,
+                    y: item.Student
+                };
+            });
+            console.log(chartData);
+            // Cấu hình biểu đồ
+            var options = {
+                series: chartData.map(function (item) {
+                    return item.y;
+                }),
+                chart: {
+                    type: 'pie',
+                    height: 350,
+                    toolbar: {
+                        show: true,
+                        tools: {
+                            download: true,
+                            selection: true,
+                            zoom: true,
+                            zoomin: true,
+                            zoomout: true,
+                            pan: true
+                        },
+                        export: {
+                            csv: {
+                                filename: 'Count_Student.csv',
+                                columnDelimiter: ',',
+                                headerCategory: 'Năm',
+                                headerValue: 'Số lượng học sinh',
+                                dateFormatter: function (timestamp) {
+                                    return new Date(timestamp).toDateString();
+                                }
+                            },
+                            svg: {
+                                filename: 'Count_Student.svg'
+                            },
+                            png: {
+                                filename: 'Count_Student.png'
+                            }
+                        },
+                        autoSelected: 'zoom'
+                    }
+                },
+                labels: chartData.map(function (item) {
+                    return item.x;
+                }),
+                responsive: [{
+                    breakpoint: 480,
+                    options: {
+                        chart: {
+                            width: 200
+                        },
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }]
+            };
+
+            // Render biểu đồ với cấu hình và dữ liệu đã chuyển đổi từ API
+            var chart = new ApexCharts(document.querySelector("#chart_student_year"), options);
+            chart.render();
+        },
+        error: function (xhr, status, error) {
+            console.error('Error calling API:', error);
+        }
+    });
+}
+function count_student_class() {
+    $.ajax({
+        url: 'https://localhost:44335/user/Count_Students_By_Class',
+        type: 'GET',
+        dataType: 'json',
+        success: function (data) {
+            // Chuyển đổi dữ liệu từ API thành mảng ApexCharts yêu cầu
+            var chartData = data.map(function (item) {
+                return {
+                    x: item.Classes,
+                    y: item.Student
+                };
+            });
+            console.log(chartData);
+            // Cấu hình biểu đồ
+            var options = {
+                series: chartData.map(function (item) {
+                    return item.y;
+                }),
+                chart: {
+                    type: 'pie',
+                    height: 350,
+                    toolbar: {
+                        show: true,
+                        tools: {
+                            download: true,
+                            selection: true,
+                            zoom: true,
+                            zoomin: true,
+                            zoomout: true,
+                            pan: true
+                        },
+                        export: {
+                            csv: {
+                                filename: 'Count_Student.csv',
+                                columnDelimiter: ',',
+                                headerCategory: 'Lớp',
+                                headerValue: 'Số lượng học sinh',
+                                dateFormatter: function (timestamp) {
+                                    return new Date(timestamp).toDateString();
+                                }
+                            },
+                            svg: {
+                                filename: 'Count_Student.svg'
+                            },
+                            png: {
+                                filename: 'Count_Student.png'
+                            }
+                        },
+                        autoSelected: 'zoom'
+                    }
+                },
+                labels: chartData.map(function (item) {
+                    return item.x;
+                }),
+                responsive: [{
+                    breakpoint: 480,
+                    options: {
+                        chart: {
+                            width: 200
+                        },
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }]
+            };
+
+            // Render biểu đồ với cấu hình và dữ liệu đã chuyển đổi từ API
+            var chart = new ApexCharts(document.querySelector("#chart_student_classes"), options);
+            chart.render();
+        },
+        error: function (xhr, status, error) {
+            console.error('Error calling API:', error);
+        }
+    });
+}

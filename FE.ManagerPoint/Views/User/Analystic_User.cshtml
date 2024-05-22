@@ -16,8 +16,8 @@
     <div class="col-md-6">
         <div class="card">
             <div class="card-body">
-                <h5 class="card-title">Số lượng giáo viên theo từng môn</h5>
-                <div id="chart_teacher_subject"></div>
+                <h5 class="card-title">Số lượng học sinh theo năm</h5>
+                <div id="chart_student_year"></div>
             </div>
         </div>
     </div>
@@ -30,11 +30,32 @@
         </div>
     </div>
 </div>
+<div class="row mt-3">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Số lượng học sinh theo Lớp</h5>
+                <div id="chart_student_classes"></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Số lượng giáo viên theo từng môn</h5>
+                <div id="chart_teacher_subject"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script src="~/js/User/Analystic_User.js"></script>
 <script>
     $(document).ready(function () {
         count_teacher_subject();
         count_student_teacher();
         count_student_course();
+        count_student_year();
+        count_student_class();
     });
 </script>
