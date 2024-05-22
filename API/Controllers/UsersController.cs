@@ -34,7 +34,7 @@ namespace API.Controllers
         public async Task<IActionResult> Get_All_Teacher_No_HomeRoom(int start = 0, int length = 10, string search = "", int subject = 0, int classes = 0)
         {
             return Ok(await _userServices.Get_All_Teacher_No_HomeRoom(start, length, search, subject, classes));
-        }        
+        }
         [HttpGet("/user/count_all_teacher_student")]
         public async Task<IActionResult> Count_All_Teacher_Student()
         {
@@ -49,16 +49,11 @@ namespace API.Controllers
         public async Task<IActionResult> Count_Student_In_Year()
         {
             return Ok(await _userServices.Count_Student_In_Year());
-        }        
+        }
         [HttpGet("/user/Count_Students_By_Class")]
         public async Task<IActionResult> Count_Students_By_Class()
         {
             return Ok(await _userServices.Count_Students_By_Class());
-        }        
-        [HttpGet("/user/Count_Students_By_Semster")]
-        public async Task<IActionResult> Count_Students_By_Semster()
-        {
-            return Ok(await _userServices.Count_Students_By_Semster());
         }
         [HttpGet("/user/Count_Students_By_Course")]
         public async Task<IActionResult> Count_Students_By_Course()
@@ -66,7 +61,7 @@ namespace API.Controllers
             return Ok(await _userServices.Count_Students_By_Course());
         }
         [HttpGet("/user/get_all_student")]
-        public async Task<IActionResult> Get_All_Student(int start = 0, int length = 10, string search = "",  int classes = 0, int check_class = 0)
+        public async Task<IActionResult> Get_All_Student(int start = 0, int length = 10, string search = "", int classes = 0, int check_class = 0)
         {
             return Ok(await _userServices.Get_All_Student(start, length, search, classes, check_class));
         }
