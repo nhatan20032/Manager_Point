@@ -315,10 +315,10 @@ namespace BLL.Services.Implement
                     .ProjectTo<vm_user>(_mapper.ConfigurationProvider);
 
                 // Đếm số lượng giáo viên
-                int teacherCount = await vm_UserQuery.CountAsync(t => t.Role_Code!.Any(t => t =="gv"));
+                int teacherCount = await vm_UserQuery.CountAsync(t => t.Role_Code!.Any(t => t == "gv") && t.Status == Status.Active);
 
                 // Đếm số lượng học sinh
-                int studentCount = await vm_UserQuery.CountAsync(t => t.Role_Code!.Any(t => t == "hs"));
+                int studentCount = await vm_UserQuery.CountAsync(t => t.Role_Code!.Any(t => t == "hs") && t.Status == Status.Active);
 
                 var result = new
                 {
@@ -353,7 +353,7 @@ namespace BLL.Services.Implement
                     .Include(u => u.Teacher_Classes!).ThenInclude(tc => tc.Class)
                     .AsQueryable()
                     .ProjectTo<vm_teacher>(_mapper.ConfigurationProvider)
-                    .Where(u => u.Role_Code!.Any(t => t == "gv") && u.Subject_id!.All(t => t == subject.Id))
+                    .Where(u => u.Role_Code!.Any(t => t == "gv") && u.Subject_id!.All(t => t == subject.Id) && u.Status == Status.Active)
                     .CountAsync();
 
                     var subjectInfo = new
@@ -684,7 +684,104 @@ namespace BLL.Services.Implement
 
             return new AuthenticateResponse(vm_User, token);
         }
+        public async Task<string> Count_Student_In_Year()
+        {
+            try
+            {
+                var studentCourse = new List<object>();
 
+                var courses = await _appContext.Courses.ToListAsync();
+
+                foreach (var course in courses)
+                {
+                    int? startYear = course.StartTime?.Date.Year;
+                    int? endYear = course.EndTime?.Date.Year;
+                    int totalCount = await _appContext.Users
+                                        .Include(u => u.User_Roles!).ThenInclude(ur => ur.Role!)
+                                        .Include(u => u.Student_Classes!).ThenInclude(sc => sc.Class).ThenInclude(c => c.Course)
+                                        .Where(u => u.Student_Classes!.Any(sc => sc.Class.Course.StartTime.HasValue &&
+                                                                                sc.Class.Course.StartTime.Value.Year >= startYear &&
+                                                                                sc.Class.Course.EndTime.HasValue &&
+                                                                                sc.Class.Course.EndTime.Value.Year <= endYear))
+                                        .AsQueryable()
+                                        .ProjectTo<vm_student>(_mapper.ConfigurationProvider)
+                                        .Where(u => u.Role_Code!.Contains("hs") && u.Course_id!.Contains(course.Id) && u.Status == Status.Active)
+                                        .CountAsync();
+                    if (startYear == endYear)
+                    {
+                        var CoursesInfo = new
+                        {
+                            Years = $"{startYear}",
+                            Student = totalCount
+                        };
+
+                        studentCourse.Add(CoursesInfo);
+                    }
+                    else
+                    {
+                        var CoursesInfo = new
+                        {
+                            Years = $"{startYear} - {endYear}",
+                            Student = totalCount
+                        };
+
+                        studentCourse.Add(CoursesInfo);
+                    }                    
+                }
+
+                var jsonResult = JsonConvert.SerializeObject(studentCourse, Formatting.Indented);
+                return jsonResult;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in Count_Teachers_By_Subject: {ex.Message}");
+                throw;
+            }
+        }
+        public async Task<string> Count_Students_By_Class()
+        {
+            try
+            {
+                var studentCourse = new List<object>();
+
+                var classes = await _appContext.Classes.ToListAsync();
+
+                foreach (var classed in classes)
+                {
+                    int totalCount = await _appContext.Users
+                    .Include(u => u.User_Roles!).ThenInclude(ur => ur.Role!)
+                    .Include(u => u.Student_Classes!).ThenInclude(tc => tc.Class).ThenInclude(t => t.Course)
+                    .AsQueryable()
+                    .ProjectTo<vm_student>(_mapper.ConfigurationProvider)
+                    .Where(u => u.Role_Code!.Contains("hs") && u.Student_Class_id!.Contains(classed.Id) && u.Status == Status.Active)
+                    .CountAsync();
+                    var classInfo = await _appContext.Classes
+                        .Include(c => c.Course)  // Include the related Course entity
+                        .Where(c => c.Id == classed.Id)
+                        .Select(c => new
+                        {
+                            ClassCode = c.ClassCode,
+                            CourseName = c.Course.Name // Assuming Course has a CourseName property
+                        })
+                        .FirstOrDefaultAsync();
+                    var CoursesInfo = new
+                    {
+                        Classes = $"{classInfo!.ClassCode} - {classInfo!.CourseName}",
+                        Student = totalCount
+                    };
+
+                    studentCourse.Add(CoursesInfo);
+                }
+
+                var jsonResult = JsonConvert.SerializeObject(studentCourse, Formatting.Indented);
+                return jsonResult;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in Count_Teachers_By_Subject: {ex.Message}");
+                throw;
+            }
+        }        
         public async Task<string> Count_Students_By_Course()
         {
             try
@@ -700,7 +797,7 @@ namespace BLL.Services.Implement
                     .Include(u => u.Student_Classes!).ThenInclude(tc => tc.Class).ThenInclude(t => t.Course)
                     .AsQueryable()
                     .ProjectTo<vm_student>(_mapper.ConfigurationProvider)
-                    .Where(u => u.Role_Code!.Contains("hs") && u.Course_id!.Contains(course.Id))
+                    .Where(u => u.Role_Code!.Contains("hs") && u.Course_id!.Contains(course.Id) && u.Status == Status.Active)
                     .CountAsync();
 
                     var CoursesInfo = new
@@ -720,6 +817,6 @@ namespace BLL.Services.Implement
                 Console.WriteLine($"Error in Count_Teachers_By_Subject: {ex.Message}");
                 throw;
             }
-        }        
+        }
     }
 }

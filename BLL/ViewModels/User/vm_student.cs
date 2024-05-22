@@ -20,6 +20,7 @@ namespace BLL.ViewModels.User
         public string? Email { get; set; }
         public string? Description { get; set; }
         public DateTime DOB { get; set; }
+        public DateTime Created_at { get; set; }
         public Gender Gender { get; set; }
         public string? AvatarUrl { get; set; }
         public string? Address { get; set; }
