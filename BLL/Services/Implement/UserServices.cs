@@ -28,8 +28,10 @@ namespace BLL.Services.Implement
         private readonly IMapper _mapper;
         private readonly IJwtUtils _jwtUtils;
         private readonly IWebHostEnvironment _hostingEnvironment;
-        public UserServices(IMapper mapper, IJwtUtils jwtUtils, IHttpContextAccessor httpContextAccessor, IWebHostEnvironment webHostEnvironment)
+        private readonly IClassServices _classServices;
+        public UserServices(IClassServices classServices, IMapper mapper, IJwtUtils jwtUtils, IHttpContextAccessor httpContextAccessor, IWebHostEnvironment webHostEnvironment)
         {
+            _classServices = classServices;
             _appContext = new AppDbContext();
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _jwtUtils = jwtUtils;
@@ -302,6 +304,40 @@ namespace BLL.Services.Implement
                 throw;
             }
         }
+
+        public async Task<string> Count_All_Rank_Student()
+        {
+            try
+            {
+                var list_class = _classServices.Get_List();
+                var list_id_class = list_class.Select(c => c.Id).ToList();
+                List<StudentData> allStudents = new();
+
+                foreach (var item in list_id_class)
+                {
+                    var students = await _classServices.GetRank(item);
+                    allStudents.AddRange(students);
+                }
+
+                var rankCounts = allStudents
+                    .GroupBy(student => student.Rank)
+                    .Select(group => new
+                    {
+                        Rank = group.Key,
+                        Student = group.Count()
+                    })
+                    .ToList();
+
+                var jsonResult = JsonConvert.SerializeObject(rankCounts, Formatting.Indented);
+                return jsonResult;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in Count_All_Rank_Student: {ex.Message}");
+                throw;
+            }
+        }
+
 
         public async Task<string> Count_All_Teacher_Student()
         {
@@ -726,7 +762,7 @@ namespace BLL.Services.Implement
                         };
 
                         studentCourse.Add(CoursesInfo);
-                    }                    
+                    }
                 }
 
                 var jsonResult = JsonConvert.SerializeObject(studentCourse, Formatting.Indented);
@@ -781,7 +817,7 @@ namespace BLL.Services.Implement
                 Console.WriteLine($"Error in Count_Teachers_By_Subject: {ex.Message}");
                 throw;
             }
-        }        
+        }
         public async Task<string> Count_Students_By_Course()
         {
             try

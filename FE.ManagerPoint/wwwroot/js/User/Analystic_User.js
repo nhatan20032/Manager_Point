@@ -166,6 +166,97 @@ function count_student_teacher() {
         }
     });
 }
+function count_all_rank_student() {
+    $.ajax({
+        url: 'https://localhost:44335/user/Count_Student_Rank',
+        type: 'GET',
+        dataType: 'json',
+        success: function (data) {
+            // Chuyển đổi dữ liệu từ API thành định dạng mà ApexCharts yêu cầu
+            var categories = data.map(function (item) {
+                return item.Rank;
+            });
+            var seriesData = data.map(function (item) {
+                return item.Student;
+            });
+
+            // Cấu hình biểu đồ
+            var options = {
+                series: [{
+                    name: 'Học sinh',
+                    data: seriesData
+                }],
+                chart: {
+                    type: 'bar',
+                    height: 350,
+                    toolbar: {
+                        show: true,
+                        tools: {
+                            download: true,
+                            selection: true,
+                            zoom: true,
+                            zoomin: true,
+                            zoomout: true,
+                            pan: true
+                        },
+                        export: {
+                            csv: {
+                                filename: 'Teacher_Student.csv',
+                                columnDelimiter: ',',
+                                dateFormatter: function (timestamp) {
+                                    return new Date(timestamp).toDateString();
+                                }
+                            },
+                            svg: {
+                                filename: 'Teacher_Student.svg'
+                            },
+                            png: {
+                                filename: 'Teacher_Student.png'
+                            }
+                        },
+                        autoSelected: 'zoom'
+                    }
+                },
+                plotOptions: {
+                    bar: {
+                        horizontal: false,
+                        columnWidth: '55%',
+                        endingShape: 'rounded'
+                    },
+                },
+                dataLabels: {
+                    enabled: false
+                },
+                stroke: {
+                    show: true,
+                    width: 2,
+                    colors: ['transparent']
+                },
+                xaxis: {
+                    categories: categories
+                },
+                fill: {
+                    opacity: 1
+                },
+                tooltip: {
+                    y: {
+                        formatter: function (val) {
+                            return val + " em";
+                        }
+                    }
+                }
+            };
+
+            // Render biểu đồ với cấu hình và dữ liệu đã chuyển đổi từ API
+            var chart = new ApexCharts(document.querySelector("#chart_all_rank_student"), options);
+            chart.render();
+        },
+        error: function (xhr, status, error) {
+            console.error('Error calling API:', error);
+        }
+    });
+}
+
 function count_student_course() {
     $.ajax({
         url: 'https://localhost:44335/user/Count_Students_By_Course',

@@ -14,6 +14,7 @@ namespace BLL.Services.Interface
         public Task<string> Count_Students_By_Course();
         public Task<string> Count_Student_In_Year();
         public Task<string> Count_Students_By_Class();
+        public Task<string> Count_All_Rank_Student();
         public Task<string> Get_All_Student(int offset = 0, int limit = 10, string search = "", int classes = 0, int check_class = 0);
         public Task<vm_user> Get_By_Id(int id);
         public Task<vm_teacher> Get_By_HomeRoom_Id(int idClass);

@@ -1,5 +1,5 @@
-﻿using BLL.ViewModels.Class;
-using BLL.ViewModels.Teacher_Class;
+﻿using BLL.ViewModels;
+using BLL.ViewModels.Class;
 
 namespace BLL.Services.Interface
 {
@@ -19,6 +19,7 @@ namespace BLL.Services.Interface
 
         public Task<string> GradePointByClass(int idClass, int? semester = null);
         public Task<string> GradePointByClassAllYear(int idClass, int? semester = null);
+        public Task<List<StudentData>> GetRank(int idClass, int? semester = null);
         public Task<string> GradePointSubjectByClass(int idClass, int idUser, int? semester = null);
 
     }
