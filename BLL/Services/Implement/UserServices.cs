@@ -337,7 +337,39 @@ namespace BLL.Services.Implement
                 throw;
             }
         }
+        public async Task<string> Count_All_Rank_Student_Year()
+        {
+            try
+            {
+                var list_class = _classServices.Get_List();
+                var list_id_class = list_class.Select(c => c.Id).ToList();
+                var courses = await _appContext.Courses.ToListAsync();
+                List<StudentData> allStudents = new();
 
+                foreach (var item in list_id_class)
+                {
+                    var students = await _classServices.GetRank(item);
+                    allStudents.AddRange(students);
+                }
+
+                var rankCounts = allStudents
+                    .GroupBy(student => student.Rank)
+                    .Select(group => new
+                    {
+                        Rank = group.Key,
+                        Student = group.Count()
+                    })
+                    .ToList();
+
+                var jsonResult = JsonConvert.SerializeObject(rankCounts, Formatting.Indented);
+                return jsonResult;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in Count_All_Rank_Student: {ex.Message}");
+                throw;
+            }
+        }
 
         public async Task<string> Count_All_Teacher_Student()
         {

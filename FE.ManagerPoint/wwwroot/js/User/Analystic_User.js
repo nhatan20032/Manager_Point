@@ -201,17 +201,17 @@ function count_all_rank_student() {
                         },
                         export: {
                             csv: {
-                                filename: 'Teacher_Student.csv',
+                                filename: 'Rank_Student.csv',
                                 columnDelimiter: ',',
                                 dateFormatter: function (timestamp) {
                                     return new Date(timestamp).toDateString();
                                 }
                             },
                             svg: {
-                                filename: 'Teacher_Student.svg'
+                                filename: 'Rank_Student.svg'
                             },
                             png: {
-                                filename: 'Teacher_Student.png'
+                                filename: 'Rank_Student.png'
                             }
                         },
                         autoSelected: 'zoom'
