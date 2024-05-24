@@ -357,6 +357,12 @@ namespace BLL.Services.Implement
 			try
 			{
 				var objForUpdate = await _appContext.GradePoints.FindAsync(id);
+				var checkPoint = _appContext.Examinations.FirstOrDefault(c => c.GradePointId == id);
+				float  sumPoint = 0;
+				if (checkPoint != null)
+				{
+					sumPoint =  _appContext.Examinations.Where(c => c.GradePointId == id).Sum(c=>c.Point);
+				}
 				if (objForUpdate == null) return -1;
 				//objForUpdate.SubjectId = request.SubjectId;
 				//objForUpdate.UserId = request.UserId;
@@ -364,7 +370,7 @@ namespace BLL.Services.Implement
 				//objForUpdate.Semester = request.Semester;
 				objForUpdate.Midterm_Grades = request.Midterm_Grades;
 				objForUpdate.Final_Grades = request.Final_Grades;
-				//objForUpdate.Average = request.Average;
+				objForUpdate.Average = (sumPoint + objForUpdate.Midterm_Grades * 2 + objForUpdate.Final_Grades*3)/6;
 				// Không cần gọi Attach hoặc Update vì objForUpdate đã được
 				// theo dõi trong DbContext neuse có sự thay đổi thì nó sẽ cập nhật vô DB
 				await _appContext.SaveChangesAsync();

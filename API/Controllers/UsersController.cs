@@ -64,6 +64,11 @@ namespace API.Controllers
         public async Task<IActionResult> Count_All_Rank_Student_GradeLevel()
         {
             return Ok(await _userServices.Count_All_Rank_Student_GradeLevel());
+        }        
+        [HttpGet("/user/Count_All_Rank_Student_Course")]
+        public async Task<IActionResult> Count_All_Rank_Student_Course()
+        {
+            return Ok(await _userServices.Count_All_Rank_Student_Course());
         }
         [HttpGet("/user/Count_Students_By_Class")]
         public async Task<IActionResult> Count_Students_By_Class()

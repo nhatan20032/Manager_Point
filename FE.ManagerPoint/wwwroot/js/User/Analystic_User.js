@@ -107,6 +107,7 @@ function count_student_rank_gradelevel() {
             var options = {
                 chart: {
                     type: 'bar',
+                    height: 450,
                     stacked: true
                 },
                 series: series,
@@ -116,6 +117,8 @@ function count_student_rank_gradelevel() {
                 plotOptions: {
                     bar: {
                         horizontal: true,
+                        columnWidth: '55%',
+                        columnHeigth: '55%',
                         endingShape: 'rounded'
                     },
                 },
@@ -162,6 +165,7 @@ function count_student_rank_year() {
             var options = {
                 chart: {
                     type: 'bar',
+                    height: 450,
                     stacked: true
                 },
                 series: series,
@@ -171,6 +175,8 @@ function count_student_rank_year() {
                 plotOptions: {
                     bar: {
                         horizontal: true,
+                        columnWidth: '55%',
+                        columnHeigth: '55%',
                         endingShape: 'rounded'
                     },
                 },
@@ -180,6 +186,62 @@ function count_student_rank_year() {
             };
 
             var chart = new ApexCharts(document.querySelector("#chart_all_rank_student_year"), options);
+            chart.render();
+        },
+        error: function (error) {
+            console.log('Error fetching data:', error);
+        }
+    });
+}
+function count_student_rank_course() {
+    $.ajax({
+        url: 'https://localhost:44335/user/Count_All_Rank_Student_Course',
+        type: 'GET',
+        dataType: 'json',
+        success: function (data) {
+            var course = data.map(item => item.Course);
+            var seriesData = {};
+
+            data.forEach(item => {
+                item.Ranks.forEach(rank => {
+                    if (!seriesData[rank.Rank]) {
+                        seriesData[rank.Rank] = [];
+                    }
+                    seriesData[rank.Rank].push(rank.Count);
+                });
+            });
+
+            var series = Object.keys(seriesData).map(rank => {
+                return {
+                    name: rank,
+                    data: seriesData[rank]
+                };
+            });
+
+            var options = {
+                chart: {
+                    type: 'bar',
+                    height: 450,
+                    stacked: true
+                },
+                series: series,
+                xaxis: {
+                    categories: course
+                },
+                plotOptions: {
+                    bar: {
+                        horizontal: true,
+                        columnWidth: '55%',
+                        columnHeigth: '55%',
+                        endingShape: 'rounded'
+                    },
+                },
+                title: {
+                    text: 'Số học lực của học sinh theo từng khoá'
+                }
+            };
+
+            var chart = new ApexCharts(document.querySelector("#chart_all_rank_student_course"), options);
             chart.render();
         },
         error: function (error) {
@@ -247,6 +309,7 @@ function count_student_teacher() {
                     bar: {
                         horizontal: true,
                         columnWidth: '55%',
+                        columnHeigth: '55%',
                         endingShape: 'rounded'
                     },
                 },

@@ -158,7 +158,7 @@ function GetDataGradePointBySubject(idClass) {
                         buttons: ['copy', 'csv', 'excel', 'pdf', 'print']
                     }
                 },
-                "processing": true,
+               // "processing": true,
                 data: data.data,
                 columns: columns,
                 "searching": true,
