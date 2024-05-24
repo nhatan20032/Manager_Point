@@ -338,6 +338,53 @@ namespace BLL.Services.Implement
             }
         }
 
+        public async Task<string> Count_All_Rank_Student_GradeLevel()
+        {
+            try
+            {
+                var list_class = _classServices.Get_List();
+                var gradeLevels = list_class.Select(c => c.GradeLevel).Distinct().ToList();
+                var allRanksByGradeLevel = new List<object>();
+
+                foreach (var gradeLevel in gradeLevels)
+                {
+                    var list_id_class = list_class.Where(c => c.GradeLevel == gradeLevel).Select(c => c.Id).ToList();
+                    List<StudentData> allStudents = new();
+
+                    foreach (var item in list_id_class)
+                    {
+                        var students = await _classServices.GetRank(item);
+                        allStudents.AddRange(students);
+                    }
+
+                    var rankCounts = allStudents
+                        .GroupBy(student => student.Rank)
+                        .Select(group => new
+                        {
+                            Rank = group.Key,
+                            StudentCount = group.Count()
+                        })
+                        .ToList<object>(); // Convert to List<object>
+
+                    var gradeLevelObject = new
+                    {
+                        GradeLevel = $"Khối {gradeLevel}",
+                        Ranks = rankCounts
+                    };
+
+                    allRanksByGradeLevel.Add(gradeLevelObject);
+                }
+
+                var jsonResult = JsonConvert.SerializeObject(allRanksByGradeLevel, Formatting.Indented);
+                return jsonResult;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in GetRanksByGradeLevel: {ex.Message}");
+                throw;
+            }
+        }
+
         public async Task<string> Count_All_Rank_Student_Year()
         {
             try
