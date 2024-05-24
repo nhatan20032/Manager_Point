@@ -385,6 +385,68 @@ namespace BLL.Services.Implement
             }
         }
 
+        public async Task<string> Count_All_Rank_Student_Course()
+        {
+            try
+            {
+                var list_class = _classServices.Get_List();
+                var list_id_class = list_class.Select(c => c.Id).ToList();
+
+                var courses = await _appContext.Courses.ToListAsync();
+                var filteredCourses = courses.Where(course => list_id_class.Contains(course.Id)).ToList();
+
+                var courseYears = filteredCourses.Select(course => new
+                {
+                    course_id = course.Id,
+                    course = $"Khoá {course.Name}"
+                }).ToList();
+
+                List<StudentData> allStudents = new();
+
+                foreach (var item in list_id_class)
+                {
+                    var students = await _classServices.GetRank(item);
+                    allStudents.AddRange(students);
+                }
+
+                var studentCourseYears = (from student in allStudents
+                                          join coursese in courseYears on student.ClassId equals coursese.course_id
+                                          select new
+                                          {
+                                              student.Rank,
+                                              coursese.course
+                                          }).ToList();
+
+                var rankCountsByYear = studentCourseYears
+                    .GroupBy(sc => new { sc.course, sc.Rank })
+                    .Select(group => new
+                    {
+                        Course = group.Key.course,
+                        Rank = group.Key.Rank,
+                        Count = group.Count()
+                    })
+                    .GroupBy(r => r.Course)
+                    .Select(group => new
+                    {
+                        Course = group.Key,
+                        Ranks = group.Select(rankGroup => new
+                        {
+                            Rank = rankGroup.Rank,
+                            Count = rankGroup.Count
+                        }).ToList()
+                    })
+                    .ToList();
+
+                var jsonResult = JsonConvert.SerializeObject(rankCountsByYear, Formatting.Indented);
+                return jsonResult;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in Count_All_Rank_Student_Year: {ex.Message}");
+                throw;
+            }
+        }
+
         public async Task<string> Count_All_Rank_Student_Year()
         {
             try
