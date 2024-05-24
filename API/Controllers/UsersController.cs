@@ -50,6 +50,16 @@ namespace API.Controllers
         {
             return Ok(await _userServices.Count_Student_In_Year());
         }
+        [HttpGet("/user/Count_Student_Rank")]
+        public async Task<IActionResult> Count_All_Rank_Student()
+        {
+            return Ok(await _userServices.Count_All_Rank_Student());
+        }
+        [HttpGet("/user/Count_All_Rank_Student_Year")]
+        public async Task<IActionResult> Count_All_Rank_Student_Year()
+        {
+            return Ok(await _userServices.Count_All_Rank_Student_Year());
+        }
         [HttpGet("/user/Count_Students_By_Class")]
         public async Task<IActionResult> Count_Students_By_Class()
         {

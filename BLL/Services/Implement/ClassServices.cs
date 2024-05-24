@@ -16,25 +16,6 @@ using Newtonsoft.Json;
 
 namespace BLL.Services.Implement
 {
-    public class Data
-    {
-        public int ClassId { get; set; }
-        public string ClassName { get; set; }
-        public string UserName { get; set; }
-        public int UserId { get; set; }
-        public int SubjectId { get; set; }
-        public float TotalPoint
-        {
-            get => (float)Math.Round(_totalPoint, 1);
-            set => _totalPoint = value;
-        }
-
-        private float _totalPoint;
-        public string Rank { get; set; }
-        public string Conduct { get; set; }
-        public List<SubjectByClass> SubjectClasses { get; set; }
-
-    }
     public class SubjectByClass
     {
         public int Semester { get; set; }
@@ -284,7 +265,7 @@ namespace BLL.Services.Implement
             }
 
             var classGradePoints = query.ToList();
-            var groupData = new List<Data>();
+            var groupData = new List<StudentData>();
             var totalGroupData = groupData.Count();
 
             foreach (var gradePoint in classGradePoints)
@@ -352,7 +333,7 @@ namespace BLL.Services.Implement
                 else
                 {
                     // Người dùng chưa tồn tại trong groupData, tạo một mục mới
-                    var userData = new Data
+                    var userData = new StudentData
                     {
                         ClassId = gradePoint.ClassId,
                         ClassName = _appContext.Classes.FirstOrDefault(c => c.Id == gradePoint.ClassId)?.Name,
@@ -383,7 +364,7 @@ namespace BLL.Services.Implement
             };
 
 
-            var paginatedResult = new Pagination<Data>
+            var paginatedResult = new Pagination<StudentData>
             {
                 // Có thể cần cập nhật draw tại đây
                 draw = totalGroupData,
@@ -579,7 +560,7 @@ namespace BLL.Services.Implement
             }
 
             var classGradePoints = query.ToList();
-            var groupData = new List<Data>();
+            var groupData = new List<StudentData>();
             var totalGroupData = groupData.Count();
 
             foreach (var gradePoint in classGradePoints)
@@ -622,7 +603,7 @@ namespace BLL.Services.Implement
                 else
                 {
                     // Người dùng chưa tồn tại trong groupData, tạo một mục mới
-                    var userData = new Data
+                    var userData = new StudentData
                     {
                         ClassId = gradePoint.ClassId,
                         ClassName = _appContext.Classes.FirstOrDefault(c => c.Id == gradePoint.ClassId)?.Name,
@@ -658,7 +639,7 @@ namespace BLL.Services.Implement
             };
 
 
-            var paginatedResult = new Pagination<Data>
+            var paginatedResult = new Pagination<StudentData>
             {
                 // Có thể cần cập nhật draw tại đây
                 draw = totalGroupData,
@@ -669,6 +650,96 @@ namespace BLL.Services.Implement
 
             var jsonResult = JsonConvert.SerializeObject(paginatedResult, Formatting.Indented);
             return jsonResult;
+        }
+        public async Task<List<StudentData>> GetRank(int idClass, int? semester = null)
+        {
+            var query = _appContext.GradePoints.Where(x => x.ClassId == idClass);
+
+            if (semester.HasValue)
+            {
+                query = query.Where(x => x.Semester == (Semester)Enum.ToObject(typeof(Semester), semester));
+            }
+
+            var classGradePoints = query.ToList();
+            var groupData = new List<StudentData>();
+            var totalGroupData = groupData.Count();
+
+            foreach (var gradePoint in classGradePoints)
+            {
+                var user = _appContext.Users.FirstOrDefault(u => u.Id == gradePoint.UserId);
+                if (user == null)
+                    continue;
+
+                var existingUserData = groupData.FirstOrDefault(d => d.UserId == gradePoint.UserId);
+                if (existingUserData != null)
+                {
+                    // Kiểm tra xem môn học đã tồn tại trong danh sách chưa
+                    var existingSubject = existingUserData.SubjectClasses.FirstOrDefault(s => s.SubjectId == gradePoint.SubjectId);
+
+                    if (existingSubject != null)
+                    {
+
+                        // Môn học đã tồn tại, cập nhật trung bình
+                        existingSubject.Avegare = (existingSubject.Avegare + gradePoint.Average * 2) / 3;
+                        // existingSubject.Rank = GetRank(gradePoint.Average);
+                        existingUserData.TotalPoint += existingSubject.Avegare;
+
+                    }
+                    else
+                    {
+                        // Môn học chưa tồn tại, thêm mới vào danh sách
+                        existingUserData.SubjectClasses.Add(new SubjectByClass
+                        {
+                            SubjectId = gradePoint.SubjectId,
+                            SubjectName = _appContext.Subjects.FirstOrDefault(s => s.Id == gradePoint.SubjectId)?.Name,
+                            Avegare = gradePoint.Average,
+                            //Rank = GetRank(gradePoint.Average),
+
+
+                        });
+                        // existingUserData.TotalPoint += gradePoint.Average;
+                    }
+
+                }
+                else
+                {
+                    // Người dùng chưa tồn tại trong groupData, tạo một mục mới
+                    var userData = new StudentData
+                    {
+                        ClassId = gradePoint.ClassId,
+                        ClassName = _appContext.Classes.FirstOrDefault(c => c.Id == gradePoint.ClassId)?.Name,
+                        UserName = user.Name,
+                        UserId = gradePoint.UserId,
+                        SubjectClasses = new List<SubjectByClass>
+                        {
+                            new SubjectByClass
+                            {
+                                Semester = Convert.ToInt32(gradePoint.Semester),
+                                SubjectId = gradePoint.SubjectId,
+                                SubjectName = _appContext.Subjects.FirstOrDefault(s => s.Id == gradePoint.SubjectId)?.Name,
+                                Avegare = gradePoint.Average
+                            }
+                        },
+
+
+                    };
+                    userData.TotalPoint = 0;
+
+                    groupData.Add(userData);
+                }
+
+            }
+            // float abc = 0;
+            //  int count = 0;
+            foreach (var userData in groupData)
+            {
+                //  abc +=  userData.TotalPoint ;
+                // count++;
+                userData.TotalPoint /= userData.SubjectClasses.Count();
+                userData.Rank = GetRankCN(userData.TotalPoint, userData.SubjectClasses);
+            };
+
+            return groupData;
         }
     }
 }

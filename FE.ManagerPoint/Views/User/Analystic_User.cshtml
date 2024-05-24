@@ -6,17 +6,34 @@
     <div class="col-md-12">
         <div class="card">
             <div class="card-body">
-                <h5 class="card-title">Tổng số lượng giáo viên và học sinh</h5>
                 <div id="chart_teacher_student"></div>
             </div>
         </div>
     </div>
 </div>
 <div class="row mt-3">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-body">
+                <div id="chart_all_rank_student"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row mt-3">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-body">
+                <div id="chart_all_rank_student_year"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-3">
     <div class="col-md-6">
         <div class="card">
             <div class="card-body">
-                <h5 class="card-title">Số lượng học sinh theo năm</h5>
                 <div id="chart_student_year"></div>
             </div>
         </div>
@@ -24,7 +41,6 @@
     <div class="col-md-6">
         <div class="card">
             <div class="card-body">
-                <h5 class="card-title">Số lượng học sinh theo kỳ</h5>
                 <div id="chart_student_course"></div>
             </div>
         </div>
@@ -34,7 +50,6 @@
     <div class="col-md-6">
         <div class="card">
             <div class="card-body">
-                <h5 class="card-title">Số lượng học sinh theo Lớp</h5>
                 <div id="chart_student_classes"></div>
             </div>
         </div>
@@ -42,7 +57,6 @@
     <div class="col-md-6">
         <div class="card">
             <div class="card-body">
-                <h5 class="card-title">Số lượng giáo viên theo từng môn</h5>
                 <div id="chart_teacher_subject"></div>
             </div>
         </div>
@@ -57,5 +71,7 @@
         count_student_course();
         count_student_year();
         count_student_class();
+        count_all_rank_student();
+        count_student_rank_year();
     });
 </script>
