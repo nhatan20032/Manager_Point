@@ -17,6 +17,9 @@
                 series: chartData.map(function (item) {
                     return item.y;
                 }),
+                title: {
+                    text: 'Số lượng giáo viên theo từng môn'
+                },
                 chart: {
                     type: 'pie',
                     height: 350,
@@ -75,6 +78,60 @@
         }
     });
 }
+function count_student_rank_year() {
+    $.ajax({
+        url: 'https://localhost:44335/user/Count_All_Rank_Student_Year',
+        type: 'GET',
+        dataType: 'json',
+        success: function (data) {
+            var years = data.map(item => item.Year);
+            var seriesData = {};
+
+            data.forEach(item => {
+                item.Ranks.forEach(rank => {
+                    if (!seriesData[rank.Rank]) {
+                        seriesData[rank.Rank] = [];
+                    }
+                    seriesData[rank.Rank].push(rank.Count);
+                });
+            });
+
+            var series = Object.keys(seriesData).map(rank => {
+                return {
+                    name: rank,
+                    data: seriesData[rank]
+                };
+            });
+
+            var options = {
+                chart: {
+                    type: 'bar',
+                    stacked: true
+                },
+                series: series,
+                xaxis: {
+                    categories: years
+                },
+                plotOptions: {
+                    bar: {
+                        horizontal: true,
+                        endingShape: 'rounded'
+                    },
+                },
+                title: {
+                    text: 'Số học lực của học sinh theo từng năm'
+                }
+            };
+
+            var chart = new ApexCharts(document.querySelector("#chart_all_rank_student_year"), options);
+            chart.render();
+        },
+        error: function (error) {
+            console.log('Error fetching data:', error);
+        }
+    });
+}
+
 function count_student_teacher() {
     $.ajax({
         url: 'https://localhost:44335/user/count_all_teacher_student',
@@ -96,6 +153,9 @@ function count_student_teacher() {
             // Cấu hình biểu đồ
             var options = {
                 series: chartData,
+                title: {
+                    text: 'Số lượng giáo viên và học sinh'
+                },
                 chart: {
                     type: 'bar',
                     height: 350,
@@ -186,6 +246,9 @@ function count_all_rank_student() {
                     name: 'Học sinh',
                     data: seriesData
                 }],
+                title: {
+                    text: 'Số lượng danh hiệu của học sinh toàn trường'
+                },
                 chart: {
                     type: 'bar',
                     height: 350,
@@ -276,6 +339,9 @@ function count_student_course() {
                 series: chartData.map(function (item) {
                     return item.y;
                 }),
+                title: {
+                    text: 'Số lượng học sinh theo kì'
+                },
                 chart: {
                     type: 'pie',
                     height: 350,
@@ -353,6 +419,9 @@ function count_student_year() {
                 series: chartData.map(function (item) {
                     return item.y;
                 }),
+                title: {
+                    text: 'Số lượng học sinh theo năm'
+                },
                 chart: {
                     type: 'pie',
                     height: 350,
@@ -430,6 +499,9 @@ function count_student_class() {
                 series: chartData.map(function (item) {
                     return item.y;
                 }),
+                title: {
+                    text: 'Số lượng học sinh theo lớp'
+                },
                 chart: {
                     type: 'pie',
                     height: 350,

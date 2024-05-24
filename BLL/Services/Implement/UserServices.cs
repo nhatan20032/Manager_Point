@@ -337,39 +337,79 @@ namespace BLL.Services.Implement
                 throw;
             }
         }
+
         public async Task<string> Count_All_Rank_Student_Year()
         {
             try
             {
+                // Step 1: Retrieve the list of classes
                 var list_class = _classServices.Get_List();
                 var list_id_class = list_class.Select(c => c.Id).ToList();
+
+                // Step 2: Retrieve the courses and filter them based on the class IDs
                 var courses = await _appContext.Courses.ToListAsync();
+                var filteredCourses = courses.Where(course => list_id_class.Contains(course.Id)).ToList();
+
+                // Step 3: Project the courses to include course_id and startYear
+                var courseYears = filteredCourses.Select(course => new
+                {
+                    course_id = course.Id,
+                    startYear = (course.EndTime?.Date.Year == course.StartTime?.Date.Year)
+                                ? course.StartTime?.Date.Year.ToString()
+                                : $"{course.StartTime?.Date.Year} - {course.EndTime?.Date.Year}"
+                }).ToList();
+
                 List<StudentData> allStudents = new();
 
+                // Step 4: Get the students for each class and their ranks
                 foreach (var item in list_id_class)
                 {
                     var students = await _classServices.GetRank(item);
                     allStudents.AddRange(students);
                 }
 
-                var rankCounts = allStudents
-                    .GroupBy(student => student.Rank)
+                // Step 5: Combine student data with course start year
+                var studentCourseYears = (from student in allStudents
+                                          join courseYear in courseYears on student.ClassId equals courseYear.course_id
+                                          select new
+                                          {
+                                              student.Rank,
+                                              courseYear.startYear
+                                          }).ToList();
+
+                // Step 6: Group by year and rank, then calculate the counts
+                var rankCountsByYear = studentCourseYears
+                    .GroupBy(sc => new { sc.startYear, sc.Rank })
                     .Select(group => new
                     {
-                        Rank = group.Key,
-                        Student = group.Count()
+                        Year = group.Key.startYear,
+                        Rank = group.Key.Rank,
+                        Count = group.Count()
+                    })
+                    .GroupBy(r => r.Year)
+                    .Select(group => new
+                    {
+                        Year = group.Key,
+                        Ranks = group.Select(rankGroup => new
+                        {
+                            Rank = rankGroup.Rank,
+                            Count = rankGroup.Count
+                        }).ToList()
                     })
                     .ToList();
 
-                var jsonResult = JsonConvert.SerializeObject(rankCounts, Formatting.Indented);
+                // Step 7: Serialize the results to JSON
+                var jsonResult = JsonConvert.SerializeObject(rankCountsByYear, Formatting.Indented);
                 return jsonResult;
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error in Count_All_Rank_Student: {ex.Message}");
+                Console.WriteLine($"Error in Count_All_Rank_Student_Year: {ex.Message}");
                 throw;
             }
         }
+
+
 
         public async Task<string> Count_All_Teacher_Student()
         {
