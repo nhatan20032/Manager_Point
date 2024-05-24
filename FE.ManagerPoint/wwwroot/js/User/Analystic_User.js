@@ -78,6 +78,62 @@
         }
     });
 }
+
+function count_student_rank_gradelevel() {
+    $.ajax({
+        url: 'https://localhost:44335/user/Count_All_Rank_Student_GradeLevel',
+        type: 'GET',
+        dataType: 'json',
+        success: function (data) {
+            var gradeLevel = data.map(item => item.GradeLevel);
+            var seriesData = {};
+
+            data.forEach(item => {
+                item.Ranks.forEach(rank => {
+                    if (!seriesData[rank.Rank]) {
+                        seriesData[rank.Rank] = [];
+                    }
+                    seriesData[rank.Rank].push(rank.StudentCount);
+                });
+            });
+
+            var series = Object.keys(seriesData).map(rank => {
+                return {
+                    name: rank,
+                    data: seriesData[rank]
+                };
+            });
+
+            var options = {
+                chart: {
+                    type: 'bar',
+                    stacked: true
+                },
+                series: series,
+                xaxis: {
+                    categories: gradeLevel
+                },
+                plotOptions: {
+                    bar: {
+                        horizontal: true,
+                        endingShape: 'rounded'
+                    },
+                },
+                title: {
+                    text: 'Số học lực của học sinh theo từng khối'
+                }
+            };
+
+            var chart = new ApexCharts(document.querySelector("#chart_all_rank_student_gradelevel"), options);
+            chart.render();
+        },
+        error: function (error) {
+            console.log('Error fetching data:', error);
+        }
+    });
+}
+
+
 function count_student_rank_year() {
     $.ajax({
         url: 'https://localhost:44335/user/Count_All_Rank_Student_Year',
