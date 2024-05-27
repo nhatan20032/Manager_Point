@@ -9,6 +9,7 @@ if (roleCode !== 'admin') {
 }
 if (roleCode == 'gv') {
     $('#grade_point').hide();
+    $('#analystic').hide();
 }
 if (roleCode == 'hs') {
     $('#headTeacher').hide();
