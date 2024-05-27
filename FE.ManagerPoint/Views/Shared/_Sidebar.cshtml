@@ -1,7 +1,7 @@
 <div id='sidebar' class="sidebar">
     <ul class="nav-list">
         <li>
-            <div class="icon-link">
+            <div id="analystic" class="icon-link">
                 <a id="static_teacher" class="static_teacher" href="/User/Analystic_User">
                     <i class="fa-solid fa-chart-simple"></i>
                     <span class="link-name">Thống kê</span>
@@ -18,62 +18,28 @@
             </ul>
         </li>
         <li>
-            <div class="icon-link">
+            <div id="grade_point" class="icon-link">
                 <a id="gradepoint" class="gradepoint" href="/Gradepoint/Index">
                     <i class="fa-solid fa-file-pen"></i>
                     <span class="link-name">Bảng điểm</span>
-                </a>
-                <!-- <i class="fas fa-caret-down arrow"></i> -->
+                </a>             
             </div>
-
-            <ul class="sub-menu">
-                <!-- <li><a href="" class="link-name">Quản đơn hàng</a></li> -->
-                <li>
-                    <a id="gradepoint" class="gradepoint" href="/Gradepoint/Index">
-                        Bảng điểm
-                    </a>
-                </li>
-            </ul>
         </li>
         <li>
-            <div class="icon-link">
-                <a href="/Class/ClassHomeRoom?idUser=1">
+            <div id="headTeacher" class="icon-link">
+                <a href="">
                     <i class="fa-solid fa-chalkboard-user"></i>
                     <span class="link-name">Lớp chủ nhiệm</span>
                 </a>
-                <!-- <i class="fas fa-caret-down arrow"></i> -->
             </div>
-
-            <ul class="sub-menu">
-                <!-- <li><a href="" class="link-name">Quản đơn hàng</a></li> -->
-                <li>
-                    <a href="/Class/ClassHomeRoom?idUser=1">
-                        Lớp
-                        chủ
-                        nhiệm
-                    </a>
-                </li>
-            </ul>
         </li>
         <li>
-            <div class="icon-link">
-                <a href="/Class/ClassOnBoard?idUser=9">
+            <div id="subjectTeacher" class="icon-link">
+                <a href="">
                     <i class="fa-solid fa-person-chalkboard"></i>
                     <span class="link-name">Lớp giảng dạy</span>
                 </a>
-                <!-- <i class="fas fa-caret-down arrow"></i> -->
             </div>
-
-            <ul class="sub-menu">
-                <!-- <li><a href="" class="link-name">Quản đơn hàng</a></li> -->
-                <li>
-                    <a href="/Class/ClassOnBoard?idUser=9">
-                        Lớp
-                        giảng
-                        dạy
-                    </a>
-                </li>
-            </ul>
         </li>
         <li>
             <div class="icon-link">
@@ -81,19 +47,10 @@
                     <i class="fa-solid fa-heart"></i>
                     <span class="link-name">Khen thưởng / kỉ luật</span>
                 </a>
-                <!-- <i class="fas fa-caret-down arrow"></i> -->
             </div>
-            <ul class="sub-menu">
-                <li>
-                    <a asp-area="MyArea" asp-controller="MyController" asp-action="MyAction">
-                        Khen
-                        thưởng / kỉ luật
-                    </a>
-                </li>
-            </ul>
         </li>
         <li>
-            <div class="icon-link">
+            <div id="user_manage" class="icon-link">
                 <a id="user" href="/User/Index">
                     <i class="fa-solid fa-user-group"></i>
                     <span class="link-name">Quản lý người dùng</span>
@@ -116,10 +73,8 @@
             </ul>
         </li>
         <li>
-            <div class="icon-link">
-                <a asp-area="MyArea" asp-controller="MyController" asp-action="MyAction">
-                    <!-- <i class="fa-solid fa-graduation-cap"></i> -->
-
+            <div id="class_manage" class="icon-link">
+                <a href="/Class/Index">
                     <i class="fa-solid fa-users"></i>
                     <span class="link-name">Quản lí lớp học</span>
                 </a>
@@ -146,18 +101,15 @@
             </ul>
         </li>
         <li>
-            <div class="icon-link">
+            <div id="course_manage" class="icon-link">
                 <a id="course" class="course" href="/Course/Index">
                     <i class="fa-solid fa-school"></i>
-
-                    <span class="link-name">Quản lí khóa  / lớp</span>
-
+                    <span class="link-name">Quản lí khóa / lớp</span>
                 </a>
                 <i class="fas fa-caret-down arrow"></i>
             </div>
 
             <ul class="sub-menu">
-
                 <li><a class="link-name">Quản lí khóa / lớp </a></li>
                 <li>
                     <a id="course" class="course" href="/Course/Index">Khóa học</a>
@@ -172,7 +124,7 @@
             </ul>
         </li>
         <li>
-            <div class="icon-link">
+            <div id="subject_manage" class="icon-link">
                 <a id="subject" class="subject" href="/Subject/Index">
                     <i class="fa-solid fa-book-open"></i>
                     <span class="link-name">Quản lý môn học</span>
@@ -199,17 +151,6 @@
                     <span class="link-name">Hỗ trợ</span>
                 </a>
             </div>
-
-            <ul class="sub-menu">
-
-                <li>
-                    <a asp-area="MyArea" asp-controller="MyController" asp-action="MyAction">
-                        Hỗ
-                        trợ
-                    </a>
-                </li>
-
-            </ul>
         </li>
         <li>
             <div class="icon-link">
@@ -222,11 +163,18 @@
     </ul>
 </div>
 <script>
-    $(document).ready(function(){
-        $('#logout-link').on('click', function(){
+    $(document).ready(function () {
+        var userId = sessionStorage.getItem('UserId');
+        $('#logout-link').on('click', function () {
             sessionStorage.clear();
             localStorage.clear();
             window.location.href = '/Account/Login';
         })
+        if (userId && roleCode == 'gv') {
+            var url_subject = `/Class/ClassOnBoard?idUser=${userId}`;
+            var url_head = `/Class/ClassHomeRoom?idUser=${userId}`;
+            $('#subjectTeacher a').attr('href', url_subject);
+            $('#headTeacher a').attr('href', url_head);
+        }
     })
 </script>
