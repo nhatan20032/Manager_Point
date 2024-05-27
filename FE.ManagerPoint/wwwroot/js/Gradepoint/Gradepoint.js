@@ -1,4 +1,5 @@
 ﻿function setupGrid() {
+    console.log(userId);
     this.$table = $('#gradepoint_table').DataTable({
         "language": {
             "sProcessing": "Đang xử lý...",
@@ -20,19 +21,14 @@
         "processing": true,
         "serverSide": true,
         "ajax": {
-            "url": "https://localhost:44335/gradepoint/get_all",
+            "url": `https://localhost:44335/gradepoint/get_all?id=${userId}`,
             "data": function (d) {
-                
                 delete d.columns;
                 d.search = d.search.value;
                 d.semester = $('#semester').val();
             },
             "dataSrc": "data",
-           
         },
-        
-       
-
         "rowId": "Id",
         "columns": [
             { "data": "subjectName", "orderable": false },
@@ -40,9 +36,7 @@
             { "data": "Midterm_Grades", "orderable": false },
             { "data": "Final_Grades", "orderable": false },
             { "data": "Average", "orderable": false },
-            
         ],
-
         "searching": true,
         "paging": true,
         "lengthChange": true,
@@ -76,17 +70,13 @@ function GetAllYear() {
         "processing": true,
         "serverSide": true,
         "ajax": {
-            "url": "https://localhost:44335/gradepoint/get_all_year",
+            "url": `https://localhost:44335/gradepoint/get_all_year?id=${userId}&classes=${classId}`,
             "data": function (d) {
                 delete d.columns;
                 d.search = d.search.value;
             },
             "dataSrc": "data",
-
         },
-
-
-
         "rowId": "Id",
         "columns": [
             { "data": "SubjectName", "orderable": false },

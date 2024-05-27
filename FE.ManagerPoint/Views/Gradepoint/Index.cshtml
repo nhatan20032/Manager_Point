@@ -126,7 +126,6 @@
 	$(document).ready(function () {
 		setupGrid();
 		GetAllYear();
-
 		$("#semester").select2({ width: '100%' });
 		$("#semester").change(function () {
 			$('#gradepoint_table').DataTable().ajax.reload();

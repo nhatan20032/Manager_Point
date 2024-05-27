@@ -163,8 +163,7 @@
     </ul>
 </div>
 <script>
-    $(document).ready(function () {
-        var userId = sessionStorage.getItem('UserId');
+    $(document).ready(function () {       
         $('#logout-link').on('click', function () {
             sessionStorage.clear();
             localStorage.clear();

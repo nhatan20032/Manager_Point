@@ -895,10 +895,8 @@ namespace BLL.Services.Implement
             var vm_User = _appContext.Users.ProjectTo<vm_user>(_mapper.ConfigurationProvider).Where(x => x.User_Code == model.UserCode && x.Password == model.Password).SingleOrDefault();
             // return null if user not found
             if (vm_User == null) return null;
-
             // authentication successful so generate jwt token
             var token = _jwtUtils.GenerateJwtToken(vm_User);
-
             return new AuthenticateResponse(vm_User, token);
         }
         public async Task<string> Count_Student_In_Year()
