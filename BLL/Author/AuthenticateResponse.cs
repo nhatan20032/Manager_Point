@@ -6,6 +6,7 @@ namespace BLL.Author
     {
         public int Id { get; set; }
         public string? UserCode { get; set; }
+        public List<string>? RoleCode { get; set; }
         public string? FullName { get; set; }
         public ICollection<string>? Role { get; set; }
         public string? Token { get; set; }
@@ -14,6 +15,7 @@ namespace BLL.Author
         {
             Id = user.Id;
             UserCode = user.User_Code;
+            RoleCode = user.Role_Code;
             FullName = user.Name;
             Role = user.Role_User;
             Token = token;

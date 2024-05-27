@@ -213,23 +213,20 @@
         </li>
         <li>
             <div class="icon-link">
-                <a asp-area="MyArea" asp-controller="MyController" asp-action="MyAction">
+                <a href="" id="logout-link">
                     <i class="fa-solid fa-right-from-bracket"></i>
                     <span class="link-name">Đăng xuất</span>
                 </a>
             </div>
-
-            <ul class="sub-menu">
-
-                <li>
-                    <a asp-area="MyArea" asp-controller="MyController" asp-action="MyAction">
-                        Đăng
-                        xuất
-                    </a>
-                </li>
-
-            </ul>
         </li>
-
     </ul>
 </div>
+<script>
+    $(document).ready(function(){
+        $('#logout-link').on('click', function(){
+            sessionStorage.clear();
+            localStorage.clear();
+            window.location.href = '/Account/Login';
+        })
+    })
+</script>
