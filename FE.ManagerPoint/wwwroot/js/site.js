@@ -1,4 +1,6 @@
 ﻿var roleCode = sessionStorage.getItem('RoleCode');
+var userId = parseInt(sessionStorage.getItem('UserId'));
+var classId = parseInt(sessionStorage.getItem('ClassId'));
 if (roleCode !== 'admin') {
     $('#user_manage').hide();
     $('#class_manage').hide();

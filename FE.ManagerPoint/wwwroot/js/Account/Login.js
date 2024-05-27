@@ -9,6 +9,7 @@
             sessionStorage.setItem('Token', res.token);
             sessionStorage.setItem('UserId', res.id);
             sessionStorage.setItem('UserCode', res.userCode);
+            sessionStorage.setItem('ClassId', res.classId);
             sessionStorage.setItem('RoleCode', res.roleCode);
             sessionStorage.setItem('UserRole', res.role);
             sessionStorage.setItem('FullName', res.fullName);
