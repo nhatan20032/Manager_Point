@@ -48,7 +48,6 @@
                 Password: password
             };
             console.log(request);
-            showLoadingSpinner(); // Hiển thị spinner khi bắt đầu gửi yêu cầu đăng nhập
             Login(request);
         });
 
@@ -57,17 +56,7 @@
                 event.preventDefault();
                 $("#submit").click();
             }
-        });
-
-        function showLoadingSpinner() {
-            $("#loading-spinner").show(); // Hiển thị spinner
-            $("#submit").prop("disabled", true); // Vô hiệu hóa nút submit trong khi spinner đang hiển thị
-        }
-
-        function hideLoadingSpinner() {
-            $("#loading-spinner").hide(); // Ẩn spinner sau khi yêu cầu đăng nhập đã xử lý xong
-            $("#submit").prop("disabled", false); // Bật lại nút submit
-        }
+        });        
     });
 
 </script>
