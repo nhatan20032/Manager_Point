@@ -9,6 +9,7 @@ namespace BLL.Services.Interface
         public List<vm_class> Get_List();
         public Task<string> Get_By_Id(int id);
         public Task<vm_class> Get_By_Id_vm_class(int id);
+        public Task<List<vm_class>> Get_By_Id_User_vm_class(int user_id);
         public Task<string> GetClassOnBoard(int idUser);
         public Task<string> GetHomeRoomOnBoard(int idUser);
         public Task<int> Create_Item(vm_create_class request);

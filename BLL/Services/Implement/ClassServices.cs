@@ -27,7 +27,7 @@ namespace BLL.Services.Implement
             set => _average = value;
         }
 
-        private float _average; 
+        private float _average;
         //public string Rank { get; set; }
     }
     public class ClassServices : IClassServices
@@ -310,7 +310,7 @@ namespace BLL.Services.Implement
 
                         // Môn học đã tồn tại, cập nhật trung bình
                         existingSubject.Avegare = (existingSubject.Avegare + gradePoint.Average) / 2;
-                       // existingSubject.Rank = GetRank(gradePoint.Average);
+                        // existingSubject.Rank = GetRank(gradePoint.Average);
                         // existingUserData.TotalPoint  += gradePoint.Average;
 
                     }
@@ -322,7 +322,7 @@ namespace BLL.Services.Implement
                             SubjectId = gradePoint.SubjectId,
                             SubjectName = _appContext.Subjects.FirstOrDefault(s => s.Id == gradePoint.SubjectId)?.Name,
                             Avegare = gradePoint.Average,
-                          //  Rank = GetRank(gradePoint.Average),
+                            //  Rank = GetRank(gradePoint.Average),
 
 
                         });
@@ -580,7 +580,7 @@ namespace BLL.Services.Implement
 
                         // Môn học đã tồn tại, cập nhật trung bình
                         existingSubject.Avegare = (existingSubject.Avegare + gradePoint.Average * 2) / 3;
-                       // existingSubject.Rank = GetRank(gradePoint.Average);
+                        // existingSubject.Rank = GetRank(gradePoint.Average);
                         existingUserData.TotalPoint += existingSubject.Avegare;
 
                     }
@@ -740,6 +740,23 @@ namespace BLL.Services.Implement
             };
 
             return groupData;
+        }
+
+        public async Task<List<vm_class>> Get_By_Id_User_vm_class(int user_id)
+        {
+            try
+            {
+                var user_classes = _appContext.Classes.ProjectTo<Student_Class>(_mapper.ConfigurationProvider).SingleOrDefault(x => x.UserId == user_id);
+                if (user_classes == null) return null!;
+                var classes = _appContext.Classes.Where(t => t.Id == user_classes!.ClassId).ProjectTo<vm_class>(_mapper.ConfigurationProvider).ToList();
+                if (classes == null) return null!;
+                return classes;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in Get_By_Id: {ex.Message}");
+                throw;
+            }
         }
     }
 }

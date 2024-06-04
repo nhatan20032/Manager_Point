@@ -10,10 +10,10 @@
     background: -webkit-linear-gradient(to right, #6a11cb, #39A9B8, rgb(162, 14, 241, 0.70), #6a11cb);
     background: linear-gradient(to right, #6a11cb, #39A9B8, rgba(37, 117, 252, 0.7), #6a11cb);
     background-size: 200% 200%;
-    animation: wave-animation 10s cubic-bezier(0.4, 0, 0.2, 1) infinite alternate;
+    /*animation: wave-animation 10s cubic-bezier(0.4, 0, 0.2, 1) infinite alternate;*/
 }
 
-@keyframes wave-animation {
+/*@keyframes wave-animation {
     0% {
         background-position: 0%;
     }
@@ -33,7 +33,7 @@
     100% {
         background-position: 200%;
     }
-}
+}*/
 
 .form-outline.form-white input:hover {
     border-color: #ffffff;
