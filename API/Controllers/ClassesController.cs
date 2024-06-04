@@ -36,7 +36,13 @@ namespace API.Controllers
             return Ok(await _classService.Get_By_Id(id));
         }
 
-		[HttpPost("/class/create")]
+        [HttpGet("/class/get_by_id_user")]
+        public async Task<IActionResult> Get_By_Id_user(int user_id)
+        {
+            return Ok(await _classService.Get_By_Id_User_vm_class(user_id));
+        }
+
+        [HttpPost("/class/create")]
 		public async Task<IActionResult> Create_Item([FromBody] vm_create_class request)
 		{
 			if (request == null)
