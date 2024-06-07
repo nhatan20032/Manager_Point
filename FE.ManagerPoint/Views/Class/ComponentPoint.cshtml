@@ -1,0 +1,63 @@
+﻿<!-- Modal Create -->
+<div class="modal fade" id="createModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="createModal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    Vào điểm thành phần
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="componentPoint" class="needs-validation" novalidate>
+                <div class="modal-body">
+                    <div class="row mt-3">
+                        <div class="col-md-2">
+                            <label for="point" class="form-label">Id</label>
+                        </div>
+                        <div class="col-md-10">
+                            <input id="id" class="form-control" type="text" readonly />
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-2">
+                            <label for="point" class="form-label">Điểm</label>
+                        </div>
+                        <div class="col-md-10">
+                            <input id="point" class="form-control" min="0" max="10" step="1" type="number" required />
+                            <div class="invalid-feedback">
+                                Xin hãy nhập tên <p style="color:red">Điểm</p>!
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-2">
+                            <label for="status" class="form-label">loại điểm</label>
+                        </div>
+                        <div class="col-md-10">
+                            <select id="status" class="form-control" required>
+                                <option selected>--- Chọn loại điểm thành phần ---</option>
+                                <option value="1">15 phút </option>
+                                <option value="2">Kiểm tra miệng</option>
+                                
+                            </select>
+                            <div class="invalid-feedback">
+                                Vui lòng nhập loại điểm
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="save" type="submit" class="btn btn-primary">Lưu</button>
+                    <button id="un_save" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+        $(document).ready(function () {
+            $('#un_save[data-bs-dismiss="modal"]').on('click', function () {
+            $('#componentPoint').trigger('reset');
+            });
+        });
+</script>

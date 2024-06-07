@@ -1,4 +1,5 @@
-﻿function GetDataGradePointS1(idClass) {
+﻿//giao vien chu nhiem
+function GetDataGradePointS1(idClass) {
     $.ajax({
         url: `https://localhost:44335/gradepoint/GradePointByClass?idClass=${idClass}&semester=1`,
         method: 'GET',
@@ -116,6 +117,7 @@ function GetDataGradePointS3(idClass) {
         }
     });
 }
+// giao vien bo mon
 function GetDataGradePointBySubject(idClass) {
     var userId = sessionStorage.getItem("UserId");
     if (!userId) {
@@ -144,7 +146,7 @@ function GetDataGradePointBySubject(idClass) {
                 {
                     title: 'Thao tác',
                     render: function (data, type, row) {
-                        let tp = `<div class="btn btn-primary"  >Vào điểm  thành phần</div>`;
+                        let tp = `<div class="btn btn-primary" onclick="openModalWithId(${row.Id})"  >Vào điểm  thành phần</div>`;
                         let bd = `<a  class="btn btn-success" onclick="GetById(${row.ClassId},${row.SubjectId}, ${row.UserId}, ${row.Semester})" >Vào điểm </a>`;
                         return `<div class="bdct">  ${bd} ${tp} </div>`;
                     }
@@ -170,7 +172,6 @@ function GetDataGradePointBySubject(idClass) {
         }
     });
 }
-
 function GetDataGradePointBySubject2(idClass) {
     var userId = sessionStorage.getItem("UserId");
 
@@ -200,7 +201,7 @@ function GetDataGradePointBySubject2(idClass) {
                 {
                     title: 'Thao tác',
                     render: function (data, type, row) {
-                        let tp = `<div class="btn btn-primary"  >Vào điểm  thành phần</div>`;
+                        let tp = `<div class="btn btn-primary" onclick="openModalWithId(${row.Id})"  >Vào điểm  thành phần</div>`;
                         let bd = `<a  class="btn btn-success" onclick="GetById(${row.ClassId},${row.SubjectId}, ${row.UserId}, ${row.Semester})" >Vào điểm </a>`;
                         return `<div  class="bdct">  ${bd}  ${tp} </div>`;
                     }
@@ -343,10 +344,35 @@ function updateTranscript(id, object, callback) {
         data: JSON.stringify(object),
         contentType: 'application/json',
         success: function (res) {
+            location.reload()
             if (callback && typeof callback === "function") {
                 callback();
             }
-            $('#Subject-1').DataTable().ajax.reload();
+            
         },
+    });
+}
+
+function openModalWithId(id) {
+    document.getElementById('id').value = id;
+    var modal = new bootstrap.Modal(document.getElementById('createModal'));
+    modal.show();
+}
+function createPoint(object, callback) {
+    $.ajax({
+        url: `https://localhost:44335/examination/create`,
+        method: 'POST',
+        data: JSON.stringify(object),
+        contentType: 'application/json',
+        success: function (res) {
+            location.reload();
+            if (callback && typeof callback === "function") {
+                callback();
+            }
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            console.error('Error:', textStatus, errorThrown);
+            console.error('Response:', jqXHR.responseText);
+        }
     });
 }

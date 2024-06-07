@@ -69,6 +69,7 @@ namespace BLL.Services.Implement
             try
             {
                 var obj = _mapper.Map<Role>(request);
+                obj.Role_Code = obj.Role_Code!.Trim();
                 _appContext.Roles.AddRange(obj);
                 await _appContext.SaveChangesAsync();
                 return obj.Id;
