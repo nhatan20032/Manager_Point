@@ -746,7 +746,7 @@ namespace BLL.Services.Implement
         {
             try
             {
-                var user_classes = _appContext.Classes.ProjectTo<Student_Class>(_mapper.ConfigurationProvider).SingleOrDefault(x => x.UserId == user_id);
+                var user_classes = _appContext.Students_Classes.SingleOrDefault(x => x.UserId == user_id);
                 if (user_classes == null) return null!;
                 var classes = _appContext.Classes.Where(t => t.Id == user_classes!.ClassId).ProjectTo<vm_class>(_mapper.ConfigurationProvider).ToList();
                 if (classes == null) return null!;
