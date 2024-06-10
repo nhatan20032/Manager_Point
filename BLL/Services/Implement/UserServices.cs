@@ -892,7 +892,7 @@ namespace BLL.Services.Implement
 
         public AuthenticateResponse? Authenticate(AuthenticateRequest model)
         {
-            var vm_User = _appContext.Users.ProjectTo<vm_user>(_mapper.ConfigurationProvider).Where(x => x.User_Code == model.UserCode && x.Password == model.Password).SingleOrDefault();
+            var vm_User = _appContext.Users.ProjectTo<vm_user>(_mapper.ConfigurationProvider).Where(x => x.User_Code == model.UserCode.Trim() && x.Password == model.Password.Trim()).SingleOrDefault();
             // return null if user not found
             if (vm_User == null) return null;
             // authentication successful so generate jwt token

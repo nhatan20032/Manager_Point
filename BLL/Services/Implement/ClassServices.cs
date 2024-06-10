@@ -742,13 +742,13 @@ namespace BLL.Services.Implement
             return groupData;
         }
 
-        public async Task<List<vm_class>> Get_By_Id_User_vm_class(int user_id)
+        public  async Task<List<vm_class>> Get_By_Id_User_vm_class(int user_id)
         {
             try
             {
                 var user_classes = _appContext.Students_Classes.SingleOrDefault(x => x.UserId == user_id);
                 if (user_classes == null) return null!;
-                var classes = _appContext.Classes.Where(t => t.Id == user_classes!.ClassId).ProjectTo<vm_class>(_mapper.ConfigurationProvider).ToList();
+                var classes = await _appContext.Classes.Where(t => t.Id == user_classes!.ClassId).ProjectTo<vm_class>(_mapper.ConfigurationProvider).ToListAsync();
                 if (classes == null) return null!;
                 return classes;
             }

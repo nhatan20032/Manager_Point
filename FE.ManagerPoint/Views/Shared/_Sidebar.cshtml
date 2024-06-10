@@ -163,17 +163,23 @@
     </ul>
 </div>
 <script>
-    $(document).ready(function () {       
+    $(document).ready(function () {
         $('#logout-link').on('click', function () {
             sessionStorage.clear();
             localStorage.clear();
             window.location.href = '/Account/Login';
-        })
-        if (userId && roleCode == 'gv') {
+        });
+        if (roleCode.includes("gv")) {
             var url_subject = `/Class/ClassOnBoard?idUser=${userId}`;
             var url_head = `/Class/ClassHomeRoom?idUser=${userId}`;
             $('#subjectTeacher a').attr('href', url_subject);
             $('#headTeacher a').attr('href', url_head);
         }
-    })
+
+        if (roleCode.includes("hs")) {
+            var gradepoint = `/Gradepoint/Index`;
+            $('#gradepoint a').attr('href', gradepoint);
+        }
+    });
+
 </script>

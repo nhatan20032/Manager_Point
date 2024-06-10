@@ -28,6 +28,7 @@
 	</div>
 </div>
 <partial name="ExcelImportPoint" />
+<partial name="ComponentPoint" />
 <partial name="UpdateTranscript" />
 <script src="~/js/GetInClassHomeRoom/GetInClassHomeRoom.js"></script>
 <script>
@@ -78,6 +79,30 @@
 				updateTranscript(id, object, function () {
 					toastr.success('Vào điểm thành công');
 					let = $('#updateModal').modal('hide');
+					form.removeClass('was-validated');
+				});
+			}
+			form.addClass('was-validated');
+		});
+		$('#componentPoint').on('submit', function (event) {
+			var form = $(this);
+			if (!form[0].checkValidity()) {
+				event.preventDefault();
+				event.stopPropagation();
+			} else {
+				let id = $("#id").val();
+				let point = $("#point").val();
+				let status = $("#status").val();
+				let object = {
+					GradePointId: id,
+					Point: point,
+					TypePoint: status,
+				};
+				event.preventDefault();
+				createPoint(object, function () {
+					$('#componentPoint').trigger('reset');
+					toastr.success('Vào điểm thành công');
+					$('#createModal').modal('hide');
 					form.removeClass('was-validated');
 				});
 			}
